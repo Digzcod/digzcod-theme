@@ -1,0 +1,32 @@
+
+{% comment %} Customers Login Section {% endcomment %}
+<section class="page-width">
+  <h1>Sign in</h1>
+
+  {% form 'customer_login' %}
+    {% if form.errors %}
+      <ul class="form-errors">
+        {% for field in form.errors %}
+          <li>{{ form.errors.messages[field] | join: ', ' }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+
+    <div class="field">
+      <label for="CustomerEmail">Email</label>
+      <input type="email" id="CustomerEmail" name="customer[email]" required>
+    </div>
+
+    <div class="field">
+      <label for="CustomerPassword">Password</label>
+      <input type="password" id="CustomerPassword" name="customer[password]" required>
+    </div>
+
+    <button type="submit">Sign in</button>
+
+    <p class="mt-3">
+      <a href="{{ routes.account_register_url }}">Create account</a> ·
+      <a href="{{ routes.account_recover_url }}">Forgot password?</a>
+    </p>
+  {% endform %}
+</section>
