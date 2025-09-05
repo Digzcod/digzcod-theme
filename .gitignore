@@ -17,6 +17,9 @@ yarn-error.log*
 # Shopify CLI files
 .shopify/
 
+# GitHub specific files
+.github/
+
 # IDE and editor files
 .vscode/
 .idea/
