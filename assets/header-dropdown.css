@@ -62,8 +62,8 @@
 /* Dropdown menu container */
 .nav-dropdown__menu {
   position: absolute;
-  left: 0;
-  top: 100%;
+  left: -3rem;
+  top: 2rem;
   z-index: 50;
   min-width: 14rem; /* 224px */
   margin-top: 0.5rem;
@@ -85,7 +85,7 @@
   text-decoration: none;
   transition: all 0.15s ease-in-out;
   border-radius: 0.25rem;
-  margin: 0.125rem 0.25rem;
+  /* margin: 1rem 0.25rem; */
 }
 
 .nav-dropdown__menu a[role="menuitem"]:hover,
