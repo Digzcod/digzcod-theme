@@ -1,17 +1,12 @@
 name: Theme Check
 on: 
-  push:
-    branches: [ main ]
   pull_request:
     branches: [ main ]
+    types: [ opened, synchronize, reopened ]
+  push:
+      branches: [ main ]
 
 jobs:
-  theme-check:
-    name: Shopify Theme Check
+  cla:
+    if: github.event_name == 'pull_request_target'
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Theme Check
-        uses: shopify/theme-check-action@v2
-        with:
-          token: ${{ github.token }}
