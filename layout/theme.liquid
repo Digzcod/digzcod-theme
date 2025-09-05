@@ -22,13 +22,10 @@
   </head>
 
   <body class="">
-    {% sections 'header-group' %}
+    {% sections 'header-step' %}
 
     {{ content_for_layout }}
 
     {% sections 'footer-group' %}
-
-    {% # Load Header Dropdown JavaScript %}
-    <script src="{{ 'header-dropdown.js' | asset_url }}" defer></script>
   </body>
 </html>

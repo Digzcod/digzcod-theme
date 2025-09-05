@@ -25,7 +25,30 @@
       "password": "Password",
       "submit": "Sign in",
       "title": "Login"
-    }
+    },
+    "register": {
+      "title": "Create Account",
+      "errors": {
+        "email_taken": "An account already exists with this email address"
+      }
+    },
+    "account": {
+      "title": "Account"
+    },
+    "log_out": "Log out"
+  },
+  "general": {
+    "cart": {
+      "title": "Cart"
+    },
+    "mobile_menu": {
+      "toggle": "Toggle mobile menu",
+      "title": "Menu"
+    },
+    "navigation": {
+      "expand_menu": "Expand menu"
+    },
+    "close": "Close"
   },
   "collections": {
     "title": "Collections"

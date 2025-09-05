@@ -7,21 +7,7 @@
   <h1>Create account</h1>
 
   {% form 'create_customer' %}
-    {% if form.errors %}
-      <ul class="form-errors">
-        {% for field in form.errors %}
-          {% for message in messages %}
-            <li>
-              {% if field == 'email' and form.errors.messages.email contains 'taken' %}
-                An account already exists with this email.
-              {% else %}
-                {{ message }}
-              {% endif %}
-            </li>
-          {% endfor %}
-        {% endfor %}
-      </ul>
-    {% endif %}
+    
 
     <div class="field">
       <label for="RegisterFirstName">First name</label>
@@ -53,6 +39,22 @@
         required
       >
     </div>
+    
+    {% if form.errors %}
+      <ul class="form-errors">
+        {% for field in form.errors %}
+          {% for message in field[1] %}
+            <li>
+              {% if field[0] == 'email' and message contains 'taken' %}
+                {{ 'customers.register.errors.email_taken' | t }}
+              {% else %}
+                {{ field[0] | capitalize }}: {{ message }}
+              {% endif %}
+            </li>
+          {% endfor %}
+        {% endfor %}
+      </ul>
+    {% endif %}
 
     <div class="field">
       <label for="RegisterPassword">Password</label>
