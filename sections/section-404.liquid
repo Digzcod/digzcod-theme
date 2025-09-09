@@ -1,0 +1,77 @@
+<section class="container-404">
+
+<div>
+     <img src="{{ '404-portal.svg' | asset_url }}" width="300" height="300">
+</div>
+    <h1 class="heading">{{ section.settings.heading_title }}</h1>
+    <p class="subheading">{{ section.settings.subheading_title }}</p>
+    <button class="btn-404">
+        <a href="{{ shop.url }}">Back to Home</a>
+    </button>
+</section>
+
+{% comment %} {{ '404.css' | asset_url | stylesheet_tag }} {% endcomment %}
+
+{% schema %}
+{
+"name": "404",
+// "tag": "div",
+"settings": [
+{
+"type": "text",
+"id": "heading_title",
+"label": "Heading Title 404",
+"default": "Page Not Found 404"
+},
+{
+"type": "textarea",
+"id": "subheading_title",
+"label": "Subheading Title 404",
+"default": "Sorry, the page you are looking for does not exist."
+}
+]
+
+}
+{% endschema %}
+
+
+{% stylesheet %}
+  .container-404 {
+    margin-top: 10rem;
+    display: grid;
+    justify-items: center;
+    text-align: center;
+    /* padding: 100px 20px; */
+    gap: 10px;
+  }
+
+  .container-404 h1 {
+    font-size: 36px;
+    margin: 0;
+  }
+
+  .container-404 p {
+    font-size: 18px;
+    color: #666;
+    margin: 0;
+  }
+
+  .heading {
+    font-size: xx-large;
+    font-weight: bold;
+  }
+
+  .subheading {
+    font-size: medium;
+  }
+
+  .btn-404 {
+    padding-top:5px;
+    padding-bottom:5px;
+    padding-right: 1rem;
+    padding-left: 1rem;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+  }
+{% endstylesheet %}

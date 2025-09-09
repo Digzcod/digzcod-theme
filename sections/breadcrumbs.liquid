@@ -1,0 +1,165 @@
+{% comment %}
+  Breadcrumbs section for navigation
+{% endcomment %}
+
+{% unless template == 'index' %}
+  <nav class="breadcrumbs" role="navigation" aria-label="Breadcrumb navigation">
+    <div class="breadcrumbs__container">
+      <ol class="breadcrumbs__list" role="list" itemscope itemtype="https://schema.org/BreadcrumbList">
+        <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <a href="{{ routes.root_url }}" class="breadcrumbs__link" itemprop="item">
+            <span itemprop="name">Home</span>
+          </a>
+          <meta itemprop="position" content="1">
+        </li>
+
+        {% case template %}
+          {% when 'article' %}
+            <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <a href="{{ blog.url }}" class="breadcrumbs__link" itemprop="item">
+                <span itemprop="name">{{ blog.title }}</span>
+              </a>
+              <meta itemprop="position" content="2">
+            </li>
+            <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="breadcrumbs__text" itemprop="name">{{ article.title }}</span>
+              <meta itemprop="position" content="3">
+            </li>
+
+          {% when 'blog' %}
+            <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="breadcrumbs__text" itemprop="name">{{ blog.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+
+          {% when 'page' %}
+            <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="breadcrumbs__text" itemprop="name">{{ page.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+
+          {% when 'collection' %}
+            <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+              <span class="breadcrumbs__text" itemprop="name">{{ collection.title }}</span>
+              <meta itemprop="position" content="2">
+            </li>
+
+          {% when 'product' %}
+            {% if collection %}
+              <li class="breadcrumbs__item" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <a href="{{ collection.url }}" class="breadcrumbs__link" itemprop="item">
+                  <span itemprop="name">{{ collection.title }}</span>
+                </a>
+                <meta itemprop="position" content="2">
+              </li>
+              <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span class="breadcrumbs__text" itemprop="name">{{ product.title }}</span>
+                <meta itemprop="position" content="3">
+              </li>
+            {% else %}
+              <li class="breadcrumbs__item breadcrumbs__item--current" itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+                <span class="breadcrumbs__text" itemprop="name">{{ product.title }}</span>
+                <meta itemprop="position" content="2">
+              </li>
+            {% endif %}
+        {% endcase %}
+      </ol>
+    </div>
+  </nav>
+{% endunless %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": "section",
+  "class": "section",
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_breadcrumbs",
+      "label": "Show breadcrumbs",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Breadcrumbs"
+    }
+  ]
+}
+{% endschema %}
+
+{% stylesheet %}
+.breadcrumbs {
+  --breadcrumbs-font-size: 0.875rem;
+  --breadcrumbs-color: #6b7280;
+  --breadcrumbs-link-color: #374151;
+  --breadcrumbs-separator-color: #d1d5db;
+  --breadcrumbs-spacing: 0.5rem;
+
+  padding: 1rem 0;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.breadcrumbs__container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--breadcrumbs-spacing);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--breadcrumbs-font-size);
+}
+
+.breadcrumbs__item {
+  display: flex;
+  align-items: center;
+}
+
+.breadcrumbs__item:not(:last-child)::after {
+  content: "/";
+  color: var(--breadcrumbs-separator-color);
+  margin-left: var(--breadcrumbs-spacing);
+  pointer-events: none;
+}
+
+.breadcrumbs__link {
+  color: var(--breadcrumbs-link-color);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.breadcrumbs__link:hover {
+  color: #111827;
+  text-decoration: underline;
+}
+
+.breadcrumbs__text {
+  color: var(--breadcrumbs-color);
+}
+
+.breadcrumbs__item--current .breadcrumbs__text {
+  font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+  .breadcrumbs {
+    padding: 0.75rem 0;
+  }
+  
+  .breadcrumbs__container {
+    padding: 0 1rem;
+  }
+  
+  .breadcrumbs__list {
+    font-size: 0.8125rem;
+  }
+}
+{% endstylesheet %}

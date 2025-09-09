@@ -16,7 +16,7 @@
     "fonts": "Fonts",
     "footer": "Footer",
     "group": "Group",
-    "header": "Header Digzcod",
+    "header": "Header",
     "layout": "Layout",
     "main": "Main",
     "page": "Page",
@@ -29,9 +29,21 @@
     "section": "Section",
     "settings": "Settings",
     "sidebar": "Sidebar",
+    "template": "Template",
     "text": "Text",
     "theme": "Theme",
     "typography": "Typography"
+  },
+  "blog": {
+    "general": {
+      "all_categories": "All Categories",
+      "no_articles": "No Articles Found",
+      "no_articles_desc": "Check back soon for new articles and updates."
+    },
+    "article": {
+      "by_author": "by {{ author }}",
+      "min_read": "min read"
+    }
   },
   "labels": {
     "alignment": "Alignment",

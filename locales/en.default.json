@@ -5,6 +5,34 @@
     "back_to_shopping": "Back to shopping"
   },
   "blog": {
+    "general": {
+      "all_categories": "All Categories",
+      "no_articles": "No Articles Found",
+      "no_articles_desc": "Check back soon for new articles and updates."
+    },
+    "article": {
+      "by_author": "by {{ author }}",
+      "min_read": "min read",
+      "comments_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      },
+      "tagged": "Tagged:",
+      "share": "Share this article",
+      "share_on_twitter": "Share on Twitter",
+      "share_on_facebook": "Share on Facebook", 
+      "share_via_email": "Share via email",
+      "write_comment": "Write a comment",
+      "comment_error_title": "There was an error submitting your comment",
+      "comment_success": "Your comment was posted successfully! Thank you!",
+      "comment_success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "comment_form_name": "Name",
+      "comment_form_email": "Email",
+      "comment_form_comment": "Comment",
+      "comment_form_submit": "Post comment",
+      "related_articles": "Related Articles",
+      "read_more": "Read more"
+    },
     "article_comments": "Comments",
     "article_metadata_html": "{{ date }} by {{ author }}",
     "comment_form_body": "Comment",
@@ -48,10 +76,37 @@
     "navigation": {
       "expand_menu": "Expand menu"
     },
+    "pagination": {
+      "label": "Pagination",
+      "page": "Go to page {{ page }}",
+      "current_page": "Currently on page {{ page }}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "breadcrumbs": {
+      "navigation": "Breadcrumb navigation",
+      "home": "Home"
+    },
     "close": "Close"
+  },
+  "accessibility": {
+    "error": "Error"
   },
   "collections": {
     "title": "Collections"
+  },
+  "sections": {
+    "carousel": {
+      "previous_slide": "Previous slide",
+      "next_slide": "Next slide", 
+      "slide_dots": "Slide navigation dots",
+      "go_to_slide": "Go to slide",
+      "slide_status": "Slide CURRENT_PLACEHOLDER of TOTAL_PLACEHOLDER",
+      "slide_label": "Slide {{ current }} of {{ total }}",
+      "opens_new_window": "(opens in new window)",
+      "pause_autoplay": "Pause autoplay",
+      "resume_autoplay": "Resume autoplay"
+    }
   },
   "gift_card": {
     "add_to_apple_wallet": "Add to Apple Wallet",

@@ -1,0 +1,947 @@
+<section 
+  class="hc-wrapper" 
+  aria-label="{{ section.settings.aria_label | escape }}"
+  aria-roledescription="carousel">
+  
+  <!-- Carousel Status for Screen Readers -->
+  <div class="hc-sr-only" aria-live="polite" aria-atomic="true" id="carousel-status-{{ section.id }}">
+    {{ 'sections.carousel.slide_status' | t: current: 1, total: section.blocks.size }}
+  </div>
+  
+  <div 
+    class="hc-viewport" 
+    id="hc-{{ section.id }}"
+    role="region"
+    aria-labelledby="carousel-status-{{ section.id }}"
+    tabindex="0">
+    {%- for block in section.blocks -%}
+      {%- liquid
+        assign img = block.settings.image
+        assign has_content = false
+        if block.settings.heading != blank or block.settings.subheading != blank or block.settings.btn_label != blank
+          assign has_content = true
+        endif
+      -%}
+      
+      <article 
+        class="hc-slide" 
+        role="group"
+        aria-roledescription="slide"
+        aria-label="{{ 'sections.carousel.slide_label' | t: current: forloop.index, total: section.blocks.size }}"
+        {{ block.shopify_attributes }}>
+        {%- if img -%}
+          <img
+            class="hc-img"
+            src="{{ img | image_url: width: 1920 }}"
+            srcset="
+              {{ img | image_url: width: 768 }} 768w,
+              {{ img | image_url: width: 1280 }} 1280w,
+              {{ img | image_url: width: 1920 }} 1920w"
+            sizes="100vw"
+            width="{{ img.width }}"
+            height="{{ img.height }}"
+            alt="{{ block.settings.alt | default: 'Carousel image' | escape }}"
+            loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}">
+        {%- endif -%}
+
+        {%- if has_content -%}
+          <div class="hc-overlay hc-{{ block.settings.text_align }}">
+            {%- if block.settings.subheading != blank -%}
+              <p class="hc-sub">{{ block.settings.subheading | escape }}</p>
+            {%- endif -%}
+            
+            {%- if block.settings.heading != blank -%}
+              <h2 class="hc-title">{{ block.settings.heading | escape }}</h2>
+            {%- endif -%}
+            
+            {%- if block.settings.btn_label != blank and block.settings.btn_link != blank -%}
+              <a 
+                class="hc-btn" 
+                href="{{ block.settings.btn_link | escape }}"
+                {% if block.settings.btn_link contains 'http' %}
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                {% endif %}>
+                {{ block.settings.btn_label | escape }}
+                {%- if block.settings.btn_link contains 'http' -%}
+                  <span class="hc-sr-only">{{ 'sections.carousel.opens_new_window' | t }}</span>
+                {%- endif -%}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+      </article>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.show_arrows -%}
+    <div class="hc-arrows">
+      <button 
+        type="button" 
+        class="hc-prev" 
+        aria-label="{{ 'sections.carousel.previous_slide' | t }}"
+        aria-controls="hc-{{ section.id }}"
+        {% if section.blocks.size <= 1 %}disabled{% endif %}>
+        <span aria-hidden="true">‹</span>
+      </button>
+      <button 
+        type="button" 
+        class="hc-next" 
+        aria-label="{{ 'sections.carousel.next_slide' | t }}"
+        aria-controls="hc-{{ section.id }}"
+        {% if section.blocks.size <= 1 %}disabled{% endif %}>
+        <span aria-hidden="true">›</span>
+      </button>
+    </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_dots and section.blocks.size > 1 -%}
+    <div class="hc-dots" role="tablist" aria-label="{{ 'sections.carousel.slide_dots' | t }}"></div>
+  {%- endif -%}
+
+  {%- if section.settings.autoplay and section.blocks.size > 1 -%}
+    <button 
+      type="button" 
+      class="hc-play-pause" 
+      aria-label="{{ 'sections.carousel.pause_autoplay' | t }}"
+      aria-controls="hc-{{ section.id }}">
+      <span class="hc-pause-icon" aria-hidden="true">⏸</span>
+      <span class="hc-play-icon" aria-hidden="true" style="display: none;">▶</span>
+    </button>
+  {%- endif -%}
+</section>
+
+<style>
+  /* Screen Reader Only Content */
+  .hc-sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .hc-wrapper {
+    position: relative;
+    overflow: hidden;
+    --hero-height: {{ section.settings.hero_height }}vh;
+    --hero-height-mobile: {{ section.settings.hero_height_mobile }}vh;
+    --text-color: {{ section.settings.text_color }};
+    --overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+    --btn-bg: {{ section.settings.btn_bg }};
+    --btn-text: {{ section.settings.btn_text }};
+  }
+
+  /* Viewport */
+  .hc-viewport {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 100%;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-behavior: auto; /* Changed from smooth to auto for custom control */
+    scrollbar-width: none;
+  }
+
+  .hc-viewport::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Focus Management */
+  .hc-viewport:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  .hc-viewport:focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  /* Slides */
+  .hc-slide {
+    position: relative;
+    height: var(--hero-height);
+    min-height: 360px;
+    scroll-snap-align: start;
+  }
+
+  .hc-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  /* Text Overlay */
+  .hc-overlay {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    align-content: center;
+    gap: 0.5rem;
+    padding: clamp(12px, 3vw, 48px);
+    color: var(--text-color);
+    background: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, var(--overlay-opacity)),
+      rgba(0, 0, 0, var(--overlay-opacity))
+    );
+  }
+
+  /* Text Alignment */
+  .hc-left {
+    justify-items: start;
+    text-align: left;
+  }
+
+  .hc-center {
+    justify-items: center;
+    text-align: center;
+  }
+
+  .hc-right {
+    justify-items: end;
+    text-align: right;
+  }
+
+  /* Typography */
+  .hc-title {
+    font-size: clamp(22px, 4vw, 44px);
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .hc-sub {
+    font-size: clamp(14px, 2vw, 18px);
+    opacity: 0.9;
+    margin: 0;
+  }
+
+  /* Button */
+  .hc-btn {
+    display: inline-block;
+    margin-top: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--btn-bg);
+    color: var(--btn-text);
+    border-radius: 8px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    transform: translateY(0);
+  }
+
+  .hc-btn:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+
+  /* Navigation Arrows */
+  .hc-arrows {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+  }
+
+  .hc-prev,
+  .hc-next {
+    pointer-events: auto;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.35);
+    color: #fff;
+    font-size: 28px;
+    line-height: 44px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    z-index: 2;
+  }
+
+  .hc-prev:hover,
+  .hc-next:hover {
+    background: rgba(0, 0, 0, 0.6);
+    transform: translateY(-50%) scale(1.1);
+  }
+
+  .hc-prev:focus,
+  .hc-next:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  .hc-prev:disabled,
+  .hc-next:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    pointer-events: none;
+  }
+
+  .hc-prev {
+    left: 8px;
+  }
+
+  .hc-next {
+    right: 8px;
+  }
+
+  /* Play/Pause Button */
+  .hc-play-pause {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(4px);
+    z-index: 3;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hc-play-pause:hover {
+    background: rgba(0, 0, 0, 0.7);
+    transform: scale(1.1);
+  }
+
+  .hc-play-pause:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  /* Dot Navigation */
+  .hc-dots {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 8px;
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+  }
+
+  .hc-dots button {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 0;
+    background: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(1);
+    position: relative;
+  }
+
+  .hc-dots button:hover {
+    background: rgba(255, 255, 255, 0.8);
+    transform: scale(1.2);
+  }
+
+  .hc-dots button:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
+
+  .hc-dots button[aria-current="true"] {
+    background: #fff;
+    transform: scale(1.3);
+  }
+
+  .hc-dots button[aria-selected="true"] {
+    background: #fff;
+    transform: scale(1.3);
+  }
+
+  /* Reduced Motion Support */
+  @media (prefers-reduced-motion: reduce) {
+    .hc-viewport {
+      scroll-behavior: auto;
+    }
+    
+    .hc-btn,
+    .hc-prev,
+    .hc-next,
+    .hc-dots button,
+    .hc-play-pause {
+      transition: none;
+    }
+    
+    .hc-prev:hover,
+    .hc-next:hover,
+    .hc-play-pause:hover {
+      transform: none;
+    }
+    
+    .hc-dots button:hover,
+    .hc-dots button[aria-current="true"] {
+      transform: none;
+    }
+  }
+
+  /* Mobile Styles */
+  @media screen and (max-width: 768px) {
+    .hc-slide {
+      height: var(--hero-height-mobile);
+    }
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('hc-{{ section.id }}');
+    if (!carousel) return;
+
+    const slides = [...carousel.children];
+    const dotsContainer = carousel.parentElement.querySelector('.hc-dots');
+    const prevButton = carousel.parentElement.querySelector('.hc-prev');
+    const nextButton = carousel.parentElement.querySelector('.hc-next');
+    const playPauseButton = carousel.parentElement.querySelector('.hc-play-pause');
+    const statusElement = document.getElementById('carousel-status-{{ section.id }}');
+    
+    let currentSlide = 0;
+    let isAutoplayRunning = {{ section.settings.autoplay | json }};
+    let autoplayTimer = null;
+    let isUserInteracting = false;
+
+    // Respect user's motion preferences
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const animationDuration = prefersReducedMotion ? 0 : 800;
+
+    // Custom smooth scroll function with better easing
+    const smoothScrollTo = (targetPosition, duration = animationDuration) => {
+      if (duration === 0 || prefersReducedMotion) {
+        carousel.scrollLeft = targetPosition;
+        return Promise.resolve();
+      }
+
+      return new Promise((resolve) => {
+        const startPosition = carousel.scrollLeft;
+        const distance = targetPosition - startPosition;
+        const startTime = performance.now();
+
+        // Easing function for smoother animation (ease-out-cubic)
+        const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+        const animateScroll = (currentTime) => {
+          const elapsed = currentTime - startTime;
+          const progress = Math.min(elapsed / duration, 1);
+          const easedProgress = easeOutCubic(progress);
+          
+          carousel.scrollLeft = startPosition + (distance * easedProgress);
+          
+          if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+          } else {
+            resolve();
+          }
+        };
+
+        requestAnimationFrame(animateScroll);
+      });
+    };
+
+    // Navigate to specific slide
+    const goToSlide = (slideIndex, updateFocus = false) => {
+      if (slideIndex < 0 || slideIndex >= slides.length) return;
+      
+      const targetPosition = carousel.clientWidth * slideIndex;
+      currentSlide = slideIndex;
+      
+      smoothScrollTo(targetPosition).then(() => {
+        updateUI();
+        if (updateFocus) {
+          slides[slideIndex].focus();
+        }
+      });
+    };
+
+    // Update UI elements
+    const updateUI = () => {
+      updateActiveDot();
+      updateArrows();
+      updateStatus();
+    };
+
+    // Update status for screen readers
+    const updateStatus = () => {
+      if (statusElement) {
+        const statusText = '{{ 'sections.carousel.slide_status' | t: current: 'CURRENT_PLACEHOLDER', total: 'TOTAL_PLACEHOLDER' }}'
+          .replace('CURRENT_PLACEHOLDER', currentSlide + 1)
+          .replace('TOTAL_PLACEHOLDER', slides.length);
+        statusElement.textContent = statusText;
+      }
+    };
+
+    // Initialize dot navigation
+    if (dotsContainer && slides.length > 1) {
+      slides.forEach((_, index) => {
+        const dotButton = document.createElement('button');
+        dotButton.type = 'button';
+        dotButton.setAttribute('role', 'tab');
+        dotButton.setAttribute('aria-label', `{{ 'sections.carousel.go_to_slide' | t }} ${index + 1}`);
+        dotButton.setAttribute('aria-controls', `hc-{{ section.id }}`);
+        dotButton.addEventListener('click', () => {
+          goToSlide(index);
+          pauseAutoplay();
+        });
+        dotsContainer.appendChild(dotButton);
+      });
+    }
+
+    // Update active dot indicator
+    const updateActiveDot = () => {
+      if (!dotsContainer) return;
+      
+      const dots = [...dotsContainer.children];
+      dots.forEach((dot, index) => {
+        const isActive = index === currentSlide;
+        dot.setAttribute('aria-current', isActive ? 'true' : 'false');
+        dot.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        dot.setAttribute('tabindex', isActive ? '0' : '-1');
+      });
+    };
+
+    // Update arrow button states
+    const updateArrows = () => {
+      if (prevButton) {
+        prevButton.disabled = slides.length <= 1;
+        prevButton.setAttribute('aria-disabled', prevButton.disabled);
+      }
+      if (nextButton) {
+        nextButton.disabled = slides.length <= 1;
+        nextButton.setAttribute('aria-disabled', nextButton.disabled);
+      }
+    };
+
+    // Listen for scroll events with throttling
+    let scrollTimeout;
+    carousel.addEventListener('scroll', () => {
+      if (scrollTimeout) {
+        window.cancelAnimationFrame(scrollTimeout);
+      }
+      scrollTimeout = window.requestAnimationFrame(() => {
+        if (!isUserInteracting) {
+          const newSlideIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
+          if (newSlideIndex !== currentSlide) {
+            currentSlide = newSlideIndex;
+            updateUI();
+          }
+        }
+      });
+    });
+
+    // Arrow navigation
+    if (prevButton) {
+      prevButton.addEventListener('click', () => {
+        const prevIndex = currentSlide > 0 ? currentSlide - 1 : slides.length - 1;
+        goToSlide(prevIndex);
+        pauseAutoplay();
+      });
+    }
+
+    if (nextButton) {
+      nextButton.addEventListener('click', () => {
+        const nextIndex = currentSlide < slides.length - 1 ? currentSlide + 1 : 0;
+        goToSlide(nextIndex);
+        pauseAutoplay();
+      });
+    }
+
+    // Keyboard navigation
+    carousel.addEventListener('keydown', (e) => {
+      let handled = false;
+      
+      switch (e.key) {
+        case 'ArrowLeft':
+          if (currentSlide > 0) {
+            goToSlide(currentSlide - 1, true);
+            handled = true;
+          }
+          break;
+        case 'ArrowRight':
+          if (currentSlide < slides.length - 1) {
+            goToSlide(currentSlide + 1, true);
+            handled = true;
+          }
+          break;
+        case 'Home':
+          goToSlide(0, true);
+          handled = true;
+          break;
+        case 'End':
+          goToSlide(slides.length - 1, true);
+          handled = true;
+          break;
+        case ' ':
+        case 'Enter':
+          if (isAutoplayRunning) {
+            pauseAutoplay();
+          } else {
+            startAutoplay();
+          }
+          handled = true;
+          break;
+      }
+      
+      if (handled) {
+        e.preventDefault();
+        pauseAutoplay();
+      }
+    });
+
+    // Autoplay functionality
+    const startAutoplay = () => {
+      if (slides.length <= 1 || !{{ section.settings.autoplay | json }}) return;
+      
+      isAutoplayRunning = true;
+      updatePlayPauseButton();
+      
+      autoplayTimer = setInterval(() => {
+        const nextIndex = (currentSlide + 1) % slides.length;
+        goToSlide(nextIndex);
+      }, {{ section.settings.autoplay_ms | default: 5000 }});
+    };
+
+    const pauseAutoplay = () => {
+      isAutoplayRunning = false;
+      updatePlayPauseButton();
+      
+      if (autoplayTimer) {
+        clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    const updatePlayPauseButton = () => {
+      if (!playPauseButton) return;
+      
+      const pauseIcon = playPauseButton.querySelector('.hc-pause-icon');
+      const playIcon = playPauseButton.querySelector('.hc-play-icon');
+      
+      if (isAutoplayRunning) {
+        pauseIcon.style.display = 'block';
+        playIcon.style.display = 'none';
+        playPauseButton.setAttribute('aria-label', '{{ 'sections.carousel.pause_autoplay' | t }}');
+      } else {
+        pauseIcon.style.display = 'none';
+        playIcon.style.display = 'block';
+        playPauseButton.setAttribute('aria-label', '{{ 'sections.carousel.resume_autoplay' | t }}');
+      }
+    };
+
+    // Play/pause button
+    if (playPauseButton) {
+      playPauseButton.addEventListener('click', () => {
+        if (isAutoplayRunning) {
+          pauseAutoplay();
+        } else {
+          startAutoplay();
+        }
+      });
+    }
+
+    // Pause on user interaction
+    const pauseOnInteraction = () => {
+      pauseAutoplay();
+      isUserInteracting = true;
+      setTimeout(() => {
+        isUserInteracting = false;
+      }, 1000);
+    };
+
+    carousel.addEventListener('mouseenter', pauseAutoplay);
+    carousel.addEventListener('focusin', pauseAutoplay);
+    carousel.addEventListener('touchstart', pauseOnInteraction, { passive: true });
+
+    // Resume autoplay when appropriate
+    carousel.addEventListener('mouseleave', () => {
+      if ({{ section.settings.autoplay | json }} && !isUserInteracting) {
+        setTimeout(startAutoplay, 1000);
+      }
+    });
+
+    carousel.addEventListener('focusout', () => {
+      if ({{ section.settings.autoplay | json }} && !isUserInteracting) {
+        setTimeout(startAutoplay, 1000);
+      }
+    });
+
+    // Improved touch/swipe experience
+    let startX = 0;
+    let scrollStartLeft = 0;
+    let isDragging = false;
+    let startTime = 0;
+
+    carousel.addEventListener('touchstart', (e) => {
+      startX = e.touches[0].clientX;
+      scrollStartLeft = carousel.scrollLeft;
+      isDragging = true;
+      startTime = Date.now();
+      isUserInteracting = true;
+    }, { passive: true });
+
+    carousel.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      
+      const currentX = e.touches[0].clientX;
+      const diffX = startX - currentX;
+      carousel.scrollLeft = scrollStartLeft + diffX;
+    }, { passive: true });
+
+    carousel.addEventListener('touchend', (e) => {
+      if (!isDragging) return;
+      isDragging = false;
+      
+      const endTime = Date.now();
+      const duration = endTime - startTime;
+      const endX = e.changedTouches[0].clientX;
+      const diffX = startX - endX;
+      const velocity = Math.abs(diffX) / duration;
+      
+      // Determine if it's a swipe (fast movement) or just a drag
+      if (velocity > 0.5 && Math.abs(diffX) > 50) {
+        // Swipe detected
+        if (diffX > 0 && currentSlide < slides.length - 1) {
+          goToSlide(currentSlide + 1);
+        } else if (diffX < 0 && currentSlide > 0) {
+          goToSlide(currentSlide - 1);
+        } else {
+          // Snap back to current slide
+          goToSlide(currentSlide);
+        }
+      } else {
+        // Just snap to nearest slide
+        const newSlideIndex = Math.round(carousel.scrollLeft / carousel.clientWidth);
+        goToSlide(newSlideIndex);
+      }
+      
+      setTimeout(() => {
+        isUserInteracting = false;
+      }, 500);
+    });
+
+    // Handle visibility change (pause when tab is not visible)
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        pauseAutoplay();
+      } else if ({{ section.settings.autoplay | json }} && !isUserInteracting) {
+        setTimeout(startAutoplay, 1000);
+      }
+    });
+
+    // Initialize
+    updateUI();
+    if ({{ section.settings.autoplay | json }} && slides.length > 1) {
+      startAutoplay();
+    }
+  });
+</script>
+
+{% schema %}
+{
+  "name": "Home Carousel",
+  "tag": "section",
+  "class": "section-carousel",
+  "settings": [
+    {
+      "type": "text",
+      "id": "aria_label",
+      "label": "Aria label",
+      "default": "Homepage promotional carousel",
+      "info": "Describes the carousel for screen readers"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Desktop height (vh)",
+      "min": 40,
+      "max": 90,
+      "step": 5,
+      "default": 60,
+      "unit": "vh"
+    },
+    {
+      "type": "range",
+      "id": "hero_height_mobile",
+      "label": "Mobile height (vh)",
+      "min": 30,
+      "max": 80,
+      "step": 5,
+      "default": 50,
+      "unit": "vh"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Dark overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "default": 20,
+      "unit": "%"
+    },
+    {
+      "type": "color",
+      "id": "btn_bg",
+      "label": "Button background",
+      "default": "#111827"
+    },
+    {
+      "type": "color",
+      "id": "btn_text",
+      "label": "Button text",
+      "default": "#ffffff"
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_arrows",
+      "label": "Arrows",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_dots",
+      "label": "Dots",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "autoplay",
+      "label": "Autoplay",
+      "default": true
+    },
+    {
+      "type": "number",
+      "id": "autoplay_ms",
+      "label": "Autoplay interval (ms)",
+      "default": 5000,
+      "info": "Time between automatic slide transitions"
+    },
+    {
+      "type": "checkbox",
+      "id": "pause_on_hover",
+      "label": "Pause on hover",
+      "default": true,
+      "info": "Pause autoplay when users hover over the carousel"
+    }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "text",
+          "id": "alt",
+          "label": "Alt text",
+          "default": "Carousel image",
+          "info": "Describes the image for screen readers"
+        },
+        {
+          "type": "header",
+          "content": "Content"
+        },
+        {
+          "type": "text",
+          "id": "subheading",
+          "label": "Subheading"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading"
+        },
+        {
+          "type": "select",
+          "id": "text_align",
+          "label": "Text alignment",
+          "default": "center",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            },
+            {
+              "value": "center",
+              "label": "Center"
+            },
+            {
+              "value": "right",
+              "label": "Right"
+            }
+          ]
+        },
+        {
+          "type": "text",
+          "id": "btn_label",
+          "label": "Button label"
+        },
+        {
+          "type": "url",
+          "id": "btn_link",
+          "label": "Button link"
+        }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [
+    {
+      "name": "Home Carousel",
+      "category": "Media",
+      "blocks": [
+        {
+          "type": "slide",
+          "settings": {
+            "heading": "Welcome to our store",
+            "subheading": "Discover our amazing products",
+            "btn_label": "Shop now",
+            "text_align": "center"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
