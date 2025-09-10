@@ -11,7 +11,50 @@
   "sections": {
     "main": {
       "type": "section-carousel",
-      "settings": {}
+      "blocks": {
+        "slide_DaMwEp": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/defuser-v3.png",
+            "alt": "Wellness Starts at Home",
+            "subheading": "Create a spa-like atmosphere with our premium diffusers.",
+            "heading": "Wellness Starts at Home",
+            "text_align": "center",
+            "btn_label": "View Products",
+            "btn_link": "shopify://collections/all"
+          }
+        },
+        "slide_wQKmpR": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/defuser-v3.png",
+            "alt": "Wellness Starts at Home",
+            "subheading": "Create a spa-like atmosphere with our premium diffusers.",
+            "heading": "Wellness Starts at Home",
+            "text_align": "center",
+            "btn_label": "View Products",
+            "btn_link": "shopify://collections/all"
+          }
+        }
+      },
+      "block_order": [
+        "slide_DaMwEp",
+        "slide_wQKmpR"
+      ],
+      "settings": {
+        "aria_label": "Homepage promotional carousel",
+        "hero_height": 60,
+        "hero_height_mobile": 50,
+        "text_color": "#ffffff",
+        "overlay_opacity": 20,
+        "btn_bg": "#111827",
+        "btn_text": "#ffffff",
+        "show_arrows": true,
+        "show_dots": true,
+        "autoplay": true,
+        "autoplay_ms": 5000,
+        "pause_on_hover": true
+      }
     }
   },
   "order": [
