@@ -39,6 +39,18 @@
         "slide_iJhqib": {
           "type": "slide",
           "settings": {
+            "image": "shopify://shop_images/defuser-v4.png",
+            "alt": "The Perfect Gift of Wellness",
+            "subheading": "Surprise someone special with our diffuser and essential oil gift set, crafted for relaxation",
+            "heading": "The Perfect Gift of Wellness",
+            "text_align": "center",
+            "btn_label": "Shop Gift Sets",
+            "btn_link": "shopify://collections/all"
+          }
+        },
+        "slide_EGTp4g": {
+          "type": "slide",
+          "settings": {
             "image": "shopify://shop_images/defuser-v2.png",
             "alt": "Breathe Easy, Live Fresh",
             "subheading": "Refresh your space with eucalyptus and peppermint blends.",
@@ -52,7 +64,8 @@
       "block_order": [
         "slide_DaMwEp",
         "slide_wQKmpR",
-        "slide_iJhqib"
+        "slide_iJhqib",
+        "slide_EGTp4g"
       ],
       "settings": {
         "aria_label": "Homepage promotional carousel",
