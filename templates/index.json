@@ -27,19 +27,32 @@
         "slide_wQKmpR": {
           "type": "slide",
           "settings": {
-            "image": "shopify://shop_images/defuser-v3.png",
-            "alt": "Wellness Starts at Home",
-            "subheading": "Create a spa-like atmosphere with our premium diffusers.",
-            "heading": "Wellness Starts at Home",
+            "image": "shopify://shop_images/defuser-v1.png",
+            "alt": "Relax with Aromatherapy",
+            "subheading": "Discover calming diffusers and natural oils for your home.",
+            "heading": "Relax with Aromatherapy",
             "text_align": "center",
-            "btn_label": "View Products",
+            "btn_label": "Shop Now",
+            "btn_link": "shopify://collections/all"
+          }
+        },
+        "slide_iJhqib": {
+          "type": "slide",
+          "settings": {
+            "image": "shopify://shop_images/defuser-v2.png",
+            "alt": "Breathe Easy, Live Fresh",
+            "subheading": "Refresh your space with eucalyptus and peppermint blends.",
+            "heading": "Breathe Easy, Live Fresh",
+            "text_align": "center",
+            "btn_label": "Explore Collection",
             "btn_link": "shopify://collections/all"
           }
         }
       },
       "block_order": [
         "slide_DaMwEp",
-        "slide_wQKmpR"
+        "slide_wQKmpR",
+        "slide_iJhqib"
       ],
       "settings": {
         "aria_label": "Homepage promotional carousel",
