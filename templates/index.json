@@ -78,7 +78,7 @@
         "show_arrows": true,
         "show_dots": true,
         "autoplay": true,
-        "autoplay_ms": 10000,
+        "autoplay_ms": 8000,
         "pause_on_hover": true
       }
     }
