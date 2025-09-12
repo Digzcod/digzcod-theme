@@ -167,7 +167,7 @@
         "heading": "Best Sellers",
         "heading_tag": "h2",
         "subheading": "Shop our most popular products",
-        "collection": "",
+        "collection": "best-selling-oil-diffusers",
         "products_to_show": 4,
         "add_to_cart_text": "Add to Cart",
         "show_vendor": false,
