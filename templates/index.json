@@ -182,6 +182,7 @@
     "story": {
       "type": "story",
       "settings": {
+        "image": "shopify://shop_images/story-defuser.png",
         "image_position": "left",
         "eyebrow": "Our Philosophy",
         "heading": "Wellness & Calm",
