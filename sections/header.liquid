@@ -1,125 +1,94 @@
-<div class="header-default nav_small-screen">
-  <!-- STORE NAME / STORE LOGO -->
-  <div class="store_name flex items gap-x-5">
-    <h1 class="text-xl font-bold truncate capitalize">{{ section.settings.header_title_digz | default: 'SM STORE' }}
-    </h1>
-  </div>
-  {% assign main_menu_linklist = linklists[section.settings.step_linklist].links %}
-  <!-- NAVIGATION MENU -->
-  <nav class="hidden md:flex space-x-10">
-    <div class="flex items-center gap-x-8">
-      {% comment %} Use main-menu by default or fall back to any available menu {% endcomment %}
-      {% if main_menu_linklist.size > 0 %}
-      {% for link in main_menu_linklist %}
-      {% if link.links != blank %}
-      <header-dropdown class="nav-dropdown relative" data-dropdown>
-        <button type="button"
-          class="nav-dropdown__trigger inline-flex items-center gap-2 px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md {% if link.active %}text-blue-600 border-b-2 border-blue-600{% endif %}"
-          aria-expanded="false" aria-haspopup="true">
-          {{ link.title }}
-          {% render 'icon-dropdown-menu' %}
-        </button>
+<header class="site-header">
+  <div class="header-container">
+    <!-- STORE NAME / STORE LOGO -->
+    <div class="store-logo">
+      <h1 class="store-name">{{ section.settings.header_title_digz | default: 'SM STORE' }}</h1>
+    </div>
 
-        <div
-          class="nav-dropdown__menu absolute left-0 z-50 top-20 w-56 origin-top-left rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none opacity-0 invisible transform scale-95 transition-all duration-200 ease-out"
-          role="menu" aria-orientation="vertical">
-          <div class="py-1" role="none">
-            {% for sublink in link.links %}
-            <a href="{{ sublink.url }}"
-              class="block px-4 py-3 text-sm text-gray-700 hover:bg-gray-50 hover:text-gray-900 transition-colors duration-150 {% if sublink.active %}bg-blue-50 text-blue-700 active{% endif %}"
-              role="menuitem">
-              {{ sublink.title }}
+    {% assign main_menu_linklist = linklists[section.settings.step_linklist].links %}
+    
+    <!-- DESKTOP NAVIGATION MENU -->
+    <nav class="desktop-nav">
+      <div class="nav-links">
+        {% comment %} Use main-menu by default or fall back to any available menu {% endcomment %}
+        {% if main_menu_linklist.size > 0 %}
+          {% for link in main_menu_linklist %}
+            {% if link.links != blank %}
+              <header-dropdown class="nav-dropdown" data-dropdown>
+                <button type="button" class="nav-dropdown__trigger {% if link.active %}active{% endif %}" aria-expanded="false" aria-haspopup="true">
+                  {{ link.title }}
+                  {% render 'icon-dropdown-menu' %}
+                </button>
+
+                <div class="nav-dropdown__menu" role="menu" aria-orientation="vertical">
+                  <div class="dropdown-content" role="none">
+                    {% for sublink in link.links %}
+                      <a href="{{ sublink.url }}" class="dropdown-link {% if sublink.active %}active{% endif %}" role="menuitem">
+                        {{ sublink.title }}
+                      </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </header-dropdown>
+            {% else %}
+              <a href="{{ link.url }}" class="nav-link {% if link.active %}active{% endif %}">
+                {{ link.title }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <!-- Sample navigation links when no menu is configured -->
+          <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+          <a href="{{ routes.collections_url }}" class="nav-link">Shop</a>
+          <a href="/pages/about" class="nav-link">About</a>
+          <a href="/pages/contact" class="nav-link">Contact</a>
+        {% endif %}
+      </div>
+    </nav>
+
+    <!-- RIGHT SIDE ACTIONS -->
+    <div class="header-actions">
+      <div class="action-links">
+        <a href="{{ routes.cart_url }}" class="cart-link">
+          {% render 'icon-shopping-bag' %}
+          <span class="cart-text">{{ 'general.cart.title' | t }}</span>
+        </a>
+        
+        {% if customer %}
+          <a href="{{ routes.account_url }}" class="account-link">
+            {{ 'customers.account.title' | t }}
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="logout-link">
+            {{ 'customers.log_out' | t }}
+          </a>
+        {% else %}
+          {% if shop.customer_accounts_enabled %}
+            <a href="{{ routes.account_login_url }}" class="login-link">
+              {{ 'customers.login.title' | t }}
             </a>
-            {% endfor %}
-          </div>
-        </div>
-      </header-dropdown>
-      {% else %}
-      <a href="{{ link.url }}"
-        class="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 {% if link.active %}text-blue-600 border-b-2 border-blue-600{% endif %}">
-        {{ link.title }}
-      </a>
-      {% endif %}
-      {% endfor %}
-      {% else %}
-      <!-- Sample navigation links when no menu is configured -->
-      <a href="{{ routes.root_url }}"
-        class="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        Home
-      </a>
-      <a href="{{ routes.collections_url }}"
-        class="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        Shop
-      </a>
-      <a href="/pages/about"
-        class="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        About
-      </a>
-      <a href="/pages/contact"
-        class="px-4 py-3 text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-        Contact
-      </a>
-      {% endif %}
-      <!-- End of navigation links -->
+            <a href="{{ routes.account_register_url }}" class="register-link">
+              {{ 'customers.register.title' | t }}
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
     </div>
-  </nav>
 
-
-
-  <!-- RIGHT SIDE ACTIONS -->
-  <div class="hidden md:flex items-center justify-end md:flex-1 gap-x-6">
-    <div class="flex items-center gap-x-2">
-      {% render 'icon-shopping-bag' %}
-      <a href="{{ routes.cart_url }}"
-        class="whitespace-nowrap text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1">
-
-        {{ 'general.cart.title' | t }}
-      </a>
+    <!-- MOBILE MENU BUTTON -->
+    <div class="mobile-menu-button-container">
+      <button type="button" class="mobile-menu-button" aria-expanded="false" aria-controls="mobile-menu" aria-label="{{ 'general.mobile_menu.toggle' | t }}" id="mobile-menu-button">
+        <span class="mobile-menu-button__icon">
+          {% render 'icon-menu' %}
+        </span>
+        <span class="mobile-menu-button__close hidden">
+          {% render 'icon-close' %}
+        </span>
+      </button>
     </div>
-    {% if customer %}
-    <a href="{{ routes.account_url }}"
-      class="text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1">
-      {{ 'customers.account.title' | t }}
-    </a>
-    <a href="{{ routes.account_logout_url }}"
-      class="text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1">
-      {{ 'customers.log_out' | t }}
-    </a>
-    {% else %}
-
-    {% if shop.customer_accounts_enabled %}
-    <a href="{{ routes.account_login_url }}"
-      class="text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1">
-      {{ 'customers.login.title' | t }}
-    </a>
-    <a href="{{ routes.account_register_url }}"
-      class="text-base font-medium text-gray-700 hover:text-gray-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 rounded-md px-2 py-1">
-      {{ 'customers.register.title' | t }}
-    </a>
-    {% endif %}
-
-    {% endif %}
   </div>
-
-  <!-- MOBILE MENU BUTTON -->
-  <div class="mobile-menu-button-container">
-    <button type="button"
-      class="mobile-menu-button inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200"
-      aria-expanded="false" aria-controls="mobile-menu" aria-label="{{ 'general.mobile_menu.toggle' | t }}"
-      id="mobile-menu-button">
-      <span class="mobile-menu-button__icon">
-        {% render 'icon-menu' %}
-      </span>
-      <span class="mobile-menu-button__close hidden">
-        {% render 'icon-close' %}
-      </span>
-    </button>
-  </div>
-</div>
-
+</header>
 <!-- MOBILE MENU MODAL -->
-<div class="mobile-menu-overlay" id="mobile-menu" role="dialog" aria-modal="true"
-  aria-label="{{ 'general.mobile_menu.toggle' | t }}">
+<div class="mobile-menu-overlay" id="mobile-menu" role="dialog" aria-modal="true" aria-label="{{ 'general.mobile_menu.toggle' | t }}">
   <!-- Backdrop -->
   <div class="mobile-menu-backdrop" aria-hidden="true"></div>
 
@@ -127,7 +96,7 @@
   <div class="mobile-menu-panel">
     <!-- Header -->
     <div class="mobile-menu-header">
-      <div class="mobile-menu-logo capitalize">
+      <div class="mobile-menu-logo">
         <h2>{{ section.settings.header_title_digz | default: 'SM Store' }}</h2>
       </div>
       <button type="button" class="mobile-menu-close" aria-label="{{ 'general.close' | t | default: 'Close' }}">
@@ -135,43 +104,38 @@
       </button>
     </div>
 
-
-
     <!-- Navigation Content -->
     <div class="mobile-menu-content">
       <nav class="mobile-menu-nav" role="navigation" aria-label="{{ 'general.mobile_menu.toggle' | t }}">
         {% comment %} Use main-menu for mobile navigation {% endcomment %}
         {% if main_menu_linklist.size > 0 %}
-        {% for link in main_menu_linklist %}
-        {% if link.links != blank %}
-        <div class="mobile-dropdown" data-mobile-dropdown>
-          <button type="button" class="mobile-dropdown__trigger {% if link.active %}active{% endif %}"
-            aria-expanded="false" aria-haspopup="true"
-            aria-label="{{ 'general.navigation.expand_menu' | t | default: 'Expand menu' }}: {{ link.title }}">
-            <span>{{ link.title }}</span>
-            <span class="mobile-dropdown__icon" aria-hidden="true">{% render 'icon-dropdown-menu' %}</span>
-          </button>
-          <div class="mobile-dropdown__menu" role="menu" aria-hidden="true">
-            {% for sublink in link.links %}
-            <a href="{{ sublink.url }}" class="mobile-dropdown__link {% if sublink.active %}active{% endif %}"
-              role="menuitem" tabindex="-1">
-              {{ sublink.title }}
-            </a>
-            {% endfor %}
-          </div>
-        </div>
+          {% for link in main_menu_linklist %}
+            {% if link.links != blank %}
+              <div class="mobile-dropdown" data-mobile-dropdown>
+                <button type="button" class="mobile-dropdown__trigger {% if link.active %}active{% endif %}" aria-expanded="false" aria-haspopup="true" aria-label="{{ 'general.navigation.expand_menu' | t | default: 'Expand menu' }}: {{ link.title }}">
+                  <span>{{ link.title }}</span>
+                  <span class="mobile-dropdown__icon" aria-hidden="true">{% render 'icon-dropdown-menu' %}</span>
+                </button>
+                <div class="mobile-dropdown__menu" role="menu" aria-hidden="true">
+                  {% for sublink in link.links %}
+                    <a href="{{ sublink.url }}" class="mobile-dropdown__link {% if sublink.active %}active{% endif %}" role="menuitem" tabindex="-1">
+                      {{ sublink.title }}
+                    </a>
+                  {% endfor %}
+                </div>
+              </div>
+            {% else %}
+              <a href="{{ link.url }}" class="mobile-menu-link {% if link.active %}active{% endif %}">
+                {{ link.title }}
+              </a>
+            {% endif %}
+          {% endfor %}
         {% else %}
-        <a href="{{ link.url }}" class="mobile-menu-link {% if link.active %}active{% endif %}">
-          {{ link.title }}
-        </a>
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        <!-- Sample mobile navigation links when no menu is configured -->
-        <a href="{{ routes.root_url }}" class="mobile-menu-link">Home</a>
-        <a href="{{ routes.collections_url }}" class="mobile-menu-link">Shop</a>
-        <a href="/pages/about" class="mobile-menu-link">About</a>
-        <a href="/pages/contact" class="mobile-menu-link">Contact</a>
+          <!-- Sample mobile navigation links when no menu is configured -->
+          <a href="{{ routes.root_url }}" class="mobile-menu-link">Home</a>
+          <a href="{{ routes.collections_url }}" class="mobile-menu-link">Shop</a>
+          <a href="/pages/about" class="mobile-menu-link">About</a>
+          <a href="/pages/contact" class="mobile-menu-link">Contact</a>
         {% endif %}
       </nav>
 
@@ -179,27 +143,25 @@
       <div class="mobile-menu-actions">
         <div class="mobile-menu-actions-group">
           {% if customer %}
-          <a href="{{ routes.account_url }}" class="mobile-action-link">
-            <span class="mobile-action-icon">👤</span>
-            <span>{{ 'customers.account.title' | t }}</span>
-          </a>
-          <a href="{{ routes.account_logout_url }}" class="mobile-action-link">
-            <span class="mobile-action-icon">🚪</span>
-            <span>{{ 'customers.log_out' | t }}</span>
-          </a>
+            <a href="{{ routes.account_url }}" class="mobile-action-link">
+              <span class="mobile-action-icon">👤</span>
+              <span>{{ 'customers.account.title' | t }}</span>
+            </a>
+            <a href="{{ routes.account_logout_url }}" class="mobile-action-link">
+              <span class="mobile-action-icon">🚪</span>
+              <span>{{ 'customers.log_out' | t }}</span>
+            </a>
           {% else %}
-          
-          {% if shop.customer_accounts_enabled %}
-          <a href="{{ routes.account_login_url }}" class="mobile-action-link">
-            <span class="mobile-action-icon">🔑</span>
-            <span>{{ 'customers.login.title' | t }}</span>
-          </a>
-          <a href="{{ routes.account_register_url }}" class="mobile-action-link">
-            <span class="mobile-action-icon">📝</span>
-            <span>{{ 'customers.register.title' | t }}</span>
-          </a>
-          {% endif %}
-
+            {% if shop.customer_accounts_enabled %}
+              <a href="{{ routes.account_login_url }}" class="mobile-action-link">
+                <span class="mobile-action-icon">🔑</span>
+                <span>{{ 'customers.login.title' | t }}</span>
+              </a>
+              <a href="{{ routes.account_register_url }}" class="mobile-action-link">
+                <span class="mobile-action-icon">📝</span>
+                <span>{{ 'customers.register.title' | t }}</span>
+              </a>
+            {% endif %}
           {% endif %}
           <a href="{{ routes.cart_url }}" class="mobile-action-link cart-link">
             <span class="mobile-action-icon">{% render 'icon-shopping-bag' %}</span>
@@ -209,23 +171,250 @@
       </div>
     </div>
   </div>
-
-  <div class="mobile-menu-button-container">
-    <button type="button" class="mobile-menu-button" aria-label="{{ 'general.mobile_menu.toggle' | t }}">
-      <span class="mobile-menu-button__icon" aria-hidden="true">{% render 'icon-menu' %}</span>
-      <span class="mobile-menu-button__close hidden" aria-hidden="true">{% render 'icon-close' %}</span>
-    </button>
-  </div>
-
 </div>
 
 {{ 'header-dropdown.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'mobile-menu.js' | asset_url }}" defer></script>
 <script src="{{ 'mobile-dropdown.js' | asset_url }}" defer></script>
-
 {{ 'mobile-menu.css' | asset_url | stylesheet_tag }}
 {{ 'mobile-dropdown-enhancements.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'header-dropdown.js' | asset_url }}" defer></script>
+
+{% stylesheet %}
+  /* Header Styles */
+  .site-header {
+    width: 100%;
+    background: var(--color-background, #fff);
+    border-bottom: 1px solid var(--color-border, #e5e5e5);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  /* Store Logo */
+  .store-logo {
+    flex-shrink: 0;
+  }
+
+  .store-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--color-foreground, #333);
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* Desktop Navigation */
+  .desktop-nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+    margin: 0 40px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .nav-link {
+    color: var(--color-foreground, #333);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  /* Dropdown Styles */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown__trigger {
+    color: var(--color-foreground, #333);
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav-dropdown__trigger:hover,
+  .nav-dropdown__trigger.active {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .nav-dropdown__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .nav-dropdown.active .nav-dropdown__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-content {
+    padding: 8px 0;
+  }
+
+  .dropdown-link {
+    display: block;
+    color: var(--color-foreground, #333);
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .dropdown-link:hover,
+  .dropdown-link.active {
+    background-color: var(--color-background-2, #f5f5f5);
+    color: var(--color-link, #0066cc);
+  }
+
+  /* Header Actions */
+  .header-actions {
+    display: none;
+    flex-shrink: 0;
+  }
+
+  .action-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cart-link,
+  .account-link,
+  .login-link,
+  .register-link,
+  .logout-link {
+    color: var(--color-foreground, #333);
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .cart-link:hover,
+  .account-link:hover,
+  .login-link:hover,
+  .register-link:hover,
+  .logout-link:hover {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .cart-text {
+    font-weight: 500;
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-button-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-menu-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: var(--color-foreground, #333);
+    transition: background-color 0.3s ease;
+  }
+
+  .mobile-menu-button:hover {
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .mobile-menu-button__icon,
+  .mobile-menu-button__close {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Desktop Media Query */
+  @media (min-width: 768px) {
+    .desktop-nav {
+      display: flex;
+    }
+    
+    .header-actions {
+      display: flex;
+    }
+    
+    .mobile-menu-button-container {
+      display: none;
+    }
+  }
+
+  /* Mobile styles */
+  @media (max-width: 767px) {
+    .header-container {
+      padding: 0 16px;
+      height: 60px;
+    }
+    
+    .store-name {
+      font-size: 1.25rem;
+    }
+  }
+{% endstylesheet %}
 
 
 

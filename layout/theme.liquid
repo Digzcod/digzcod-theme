@@ -23,9 +23,18 @@
 
   <body class="">
     {% sections 'header-step' %}
+   <div class="main_body">
 
-    {{ content_for_layout }}
+     {{ content_for_layout }}
+     </div>
 
     {% sections 'footer-group' %}
   </body>
 </html>
+
+{% style %}
+  .main_body {
+    width: 100%;
+    min-height: 100vh;
+  }
+{% endstyle %}

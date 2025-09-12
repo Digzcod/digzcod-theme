@@ -1,0 +1,470 @@
+{% comment %} 
+  Story Section
+   
+  This section displays a two-column layout with an image on the left
+  and text content on the right, ideal for storytelling and brand messaging. 
+{% endcomment %}
+
+{% liquid
+  assign image = section.settings.image
+  assign image_position = section.settings.image_position | default: 'left'
+  assign content_alignment = section.settings.content_alignment | default: 'left'
+  assign section_layout = section.settings.section_layout | default: 'contained'
+%}
+
+<section
+  class="story story--image-{{ image_position }} story--layout-{{ section_layout }}"
+  id="Story-{{ section.id }}"
+  style="
+    --section-padding-top: {{ section.settings.padding_top }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom }}px;
+    --story-gap: {{ section.settings.content_gap }}px;
+    --story-bg: {{ section.settings.background_color }};
+    --story-text: {{ section.settings.text_color }};
+  ">
+  <div class="story__container">
+    <div class="story__content">
+
+      {% comment %} Image Column {% endcomment %}
+      <div class="story__image-column">
+        {% if image != blank %}
+          <div class="story__image-wrapper">
+            {% render 'image'
+              ,
+ image: image
+              ,
+ class: 'story__image'
+              ,
+ width: 800
+              ,
+ height: 600
+              ,
+ crop: 'center'
+            %}
+          </div>
+        {% else %}
+          <div class="story__image-placeholder">
+            {{ 'image' | placeholder_svg_tag: 'story__placeholder-svg' }}
+          </div>
+        {% endif %}
+      </div>
+
+      {% comment %} Text Column {% endcomment %}
+      <div class="story__text-column story__text-column--align-{{ content_alignment }}">
+        <div class="story__text-content">
+
+          {% if section.settings.eyebrow != blank %}
+            <p class="story__eyebrow">
+              {{ section.settings.eyebrow }}
+            </p>
+          {% endif %}
+
+          {% if section.settings.heading != blank %}
+            <{{ section.settings.heading_tag }} class="story__heading">
+              {{ section.settings.heading }}
+              </{{ section.settings.heading_tag }}>
+            {% endif %}
+
+            {% if section.settings.text != blank %}
+              <div class="story__text">
+                {{ section.settings.text }}
+              </div>
+            {% endif %}
+
+            {% if section.settings.button_text != blank and section.settings.button_url != blank %}
+              <div class="story__button-wrapper">
+                <a
+                  href="{{ section.settings.button_url }}"
+                  class="story__button button button--{{ section.settings.button_style }}"
+                  {% if section.settings.button_url contains 'http' %}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  {% endif %}>
+                  {{ section.settings.button_text }}
+                </a>
+              </div>
+            {% endif %}
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  {% stylesheet %}
+    .story {
+      padding-top: var(--section-padding-top, 60px);
+      padding-bottom: var(--section-padding-bottom, 60px);
+      background-color: var(--story-bg, transparent);
+      color: var(--story-text, inherit);
+    }
+
+    .story__container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    .story--layout-full-width .story__container {
+      max-width: none;
+      padding: 0;
+    }
+
+    .story__content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--story-gap, 60px);
+      align-items: center;
+      min-height: 400px;
+    }
+
+    /* Image positioning */
+    .story--image-right .story__content {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .story--image-right .story__image-column {
+      order: 2;
+    }
+
+    .story--image-right .story__text-column {
+      order: 1;
+    }
+
+    .story__image-wrapper {
+      position: relative;
+      width: 100%;
+      overflow: hidden;
+      border-radius: 12px;
+    }
+
+    .story__image {
+      width: 100%;
+      height: auto;
+      display: block;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .story__image-placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      min-height: 400px;
+      background-color: #f3f4f6;
+      border-radius: 12px;
+    }
+
+    .story__placeholder-svg {
+      width: 80px;
+      height: 80px;
+      opacity: 0.3;
+    }
+
+    .story__text-content {
+      max-width: 500px;
+    }
+
+    .story__text-column--align-center .story__text-content {
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .story__text-column--align-right .story__text-content {
+      margin-left: auto;
+      text-align: right;
+    }
+
+    .story__eyebrow {
+      font-size: 14px;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #6b7280;
+      margin: 0 0 12px;
+    }
+
+    .story__heading {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 600;
+      line-height: 1.2;
+      margin: 0 0 20px;
+    }
+
+    .story__text {
+      font-size: 16px;
+      line-height: 1.6;
+      margin: 0 0 32px;
+    }
+
+    .story__text p {
+      margin: 0 0 16px;
+    }
+
+    .story__text p:last-child {
+      margin-bottom: 0;
+    }
+
+    .story__button-wrapper {
+      margin-top: 32px;
+    }
+
+    .story__button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 28px;
+      font-size: 16px;
+      font-weight: 500;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      border: 2px solid transparent;
+    }
+
+    .button--primary {
+      background-color: #1f2937;
+      color: white;
+    }
+
+    .button--primary:hover {
+      background-color: #374151;
+      transform: translateY(-1px);
+    }
+
+    .button--secondary {
+      background-color: transparent;
+      color: #1f2937;
+      border-color: #1f2937;
+    }
+
+    .button--secondary:hover {
+      background-color: #1f2937;
+      color: white;
+    }
+
+    /* Responsive Design */
+    @media screen and (max-width: 768px) {
+      .story__content {
+        grid-template-columns: 1fr;
+        gap: var(--story-gap, 40px);
+        text-align: center;
+      }
+
+      .story--image-right .story__image-column,
+      .story--image-right .story__text-column {
+        order: unset;
+      }
+
+      .story__text-content {
+        max-width: none;
+      }
+
+      .story__text-column--align-right .story__text-content,
+      .story__text-column--align-center .story__text-content {
+        margin: 0;
+        text-align: center;
+      }
+
+      .story__heading {
+        font-size: clamp(24px, 6vw, 32px);
+      }
+
+      .story {
+        padding-top: var(--section-padding-top, 40px);
+        padding-bottom: var(--section-padding-bottom, 40px);
+      }
+    }
+
+    @media screen and (max-width: 480px) {
+      .story__container {
+        padding: 0 16px;
+      }
+
+      .story__content {
+        gap: var(--story-gap, 32px);
+      }
+
+      .story__button {
+        width: 100%;
+        padding: 16px 24px;
+      }
+    }
+  {% endstylesheet %}
+
+  {% schema %}
+    {
+      "name": "Story",
+      "tag": "section",
+      "class": "section-story",
+      "settings": [
+        {
+          "type": "image_picker",
+          "id": "image",
+          "label": "Image"
+        },
+        {
+          "type": "select",
+          "id": "image_position",
+          "label": "Image position",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            }, {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        },
+        {
+          "type": "text",
+          "id": "eyebrow",
+          "label": "Eyebrow text"
+        },
+        {
+          "type": "text",
+          "id": "heading",
+          "label": "Heading",
+          "default": "Our Story"
+        }, {
+          "type": "select",
+          "id": "heading_tag",
+          "label": "Heading tag",
+          "options": [
+            {
+              "value": "h1",
+              "label": "H1"
+            }, {
+              "value": "h2",
+              "label": "H2"
+            }, {
+              "value": "h3",
+              "label": "H3"
+            }
+          ],
+          "default": "h2"
+        }, {
+          "type": "richtext",
+          "id": "text",
+          "label": "Text",
+          "default": "<p>Discover the perfect harmony of wellness and calm with our carefully curated collection. Each product is designed to transform your space into a sanctuary of peace and tranquility.</p>"
+        }, {
+          "type": "select",
+          "id": "content_alignment",
+          "label": "Content alignment",
+          "options": [
+            {
+              "value": "left",
+              "label": "Left"
+            }, {
+              "value": "center",
+              "label": "Center"
+            }, {
+              "value": "right",
+              "label": "Right"
+            }
+          ],
+          "default": "left"
+        }, {
+          "type": "header",
+          "content": "Button"
+        }, {
+          "type": "text",
+          "id": "button_text",
+          "label": "Button text"
+        }, {
+          "type": "url",
+          "id": "button_url",
+          "label": "Button URL"
+        }, {
+          "type": "select",
+          "id": "button_style",
+          "label": "Button style",
+          "options": [
+            {
+              "value": "primary",
+              "label": "Primary"
+            }, {
+              "value": "secondary",
+              "label": "Secondary"
+            }
+          ],
+          "default": "primary"
+        }, {
+          "type": "header",
+          "content": "Layout"
+        }, {
+          "type": "select",
+          "id": "section_layout",
+          "label": "Section layout",
+          "options": [
+            {
+              "value": "contained",
+              "label": "Contained"
+            }, {
+              "value": "full-width",
+              "label": "Full width"
+            }
+          ],
+          "default": "contained"
+        }, {
+          "type": "range",
+          "id": "content_gap",
+          "label": "Content gap",
+          "min": 20,
+          "max": 100,
+          "step": 10,
+          "unit": "px",
+          "default": 60
+        }, {
+          "type": "header",
+          "content": "Colors"
+        }, {
+          "type": "color",
+          "id": "background_color",
+          "label": "Background color"
+        }, {
+          "type": "color",
+          "id": "text_color",
+          "label": "Text color"
+        }, {
+          "type": "header",
+          "content": "Padding"
+        }, {
+          "type": "range",
+          "id": "padding_top",
+          "label": "Top",
+          "min": 0,
+          "max": 120,
+          "step": 10,
+          "unit": "px",
+          "default": 60
+        }, {
+          "type": "range",
+          "id": "padding_bottom",
+          "label": "Bottom",
+          "min": 0,
+          "max": 120,
+          "step": 10,
+          "unit": "px",
+          "default": 60
+        }
+      ],
+      "presets": [
+        {
+          "name": "Story",
+          "settings": {
+            "heading": "Wellness & Calm",
+            "text": "<p>Transform your daily routine into a mindful ritual. Our diffusers create the perfect ambiance for relaxation, meditation, and peaceful moments in your home.</p><p>Experience the therapeutic benefits of aromatherapy and discover how scent can enhance your well-being and create lasting memories.</p>",
+            "button_text": "Explore Collection",
+            "eyebrow": "Our Philosophy"
+          }
+        }
+      ]
+    }
+  {% endschema %}
