@@ -297,7 +297,7 @@
         "padding_bottom": 64,
         "content_gap": 48,
         "testimonial_padding": 40,
-        "color_scheme": "background-2"
+        "color_scheme": "inverse"
       }
     },
     "blog_preview": {
