@@ -331,6 +331,7 @@
         "lifestyle_1": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/feature-v3.png",
             "alt_text": "Wellness lifestyle moment",
             "link_url": "",
             "caption": "Living our best life"
@@ -339,6 +340,7 @@
         "lifestyle_2": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/oil-bergamont_0c5f5f5a-62a5-4b4f-ab11-9f893eb4353b.png",
             "alt_text": "Aromatherapy in action",
             "link_url": "",
             "caption": "Find your zen"
@@ -347,6 +349,7 @@
         "lifestyle_3": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/story-defuser.png",
             "alt_text": "Mindful living space",
             "link_url": "",
             "caption": "Create your sanctuary"
@@ -355,6 +358,7 @@
         "lifestyle_4": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/defuser-p4.png",
             "alt_text": "Natural wellness routine",
             "link_url": "",
             "caption": "Embrace nature"
@@ -363,6 +367,7 @@
         "lifestyle_5": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/defuser-p1.png",
             "alt_text": "Relaxation and self-care",
             "link_url": "",
             "caption": "Self-care Sunday"
@@ -371,6 +376,7 @@
         "lifestyle_6": {
           "type": "image",
           "settings": {
+            "image": "shopify://shop_images/oil-lavender.png",
             "alt_text": "Healthy lifestyle inspiration",
             "link_url": "",
             "caption": "Inspire your journey"
@@ -418,12 +424,13 @@
         "success_message": "Thanks for subscribing! Check your email for your discount code.",
         "privacy_text": "<p>We respect your privacy. Unsubscribe at any time.</p>",
         "layout_style": "centered",
-        "content_alignment": "center",
+        "content_alignment": "left",
         "form_width": 100,
         "input_style": "inline",
-        "button_style": "solid",
-        "enable_background_image": false,
-        "overlay_opacity": 50,
+        "button_style": "gradient",
+        "enable_background_image": true,
+        "background_image": "shopify://shop_images/blog-wellness-v2.png",
+        "overlay_opacity": 30,
         "padding_top": 4,
         "padding_bottom": 4,
         "content_width": 80,
