@@ -193,7 +193,7 @@
         "button_url": "/collections/all",
         "button_style": "primary",
         "section_layout": "contained",
-        "content_gap": 60,
+        "content_gap": 80,
         "background_color": "",
         "text_color": "",
         "padding_top": 60,
