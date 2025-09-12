@@ -14,8 +14,24 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "menu": "",
-        "show_payment_icons": true
+        "show_newsletter": true,
+        "newsletter_heading": "Stay in the loop",
+        "newsletter_text": "Subscribe to our newsletter for the latest updates, exclusive offers, and wellness tips.",
+        "show_social_icons": true,
+        "show_payment_icons": true,
+        "copyright_text": "",
+        "enable_country_selector": true,
+        "enable_language_selector": true,
+        "color_scheme": "background-1",
+        "layout_style": "centered",
+        "padding_top": 4,
+        "padding_bottom": 3,
+        "content_spacing": 3,
+        "block_spacing": 2,
+        "heading_size": "medium",
+        "text_size": "medium",
+        "mobile_center_content": true,
+        "mobile_stack_layout": true
       }
     }
   },
