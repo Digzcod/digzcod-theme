@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "main": {
@@ -79,33 +88,61 @@
         "diffusers": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/feature-v3.png",
             "title": "Diffusers",
             "description": "Transform your space with our premium diffusers",
-            "button_text": "Shop Diffusers"
+            "link_url": "",
+            "button_text": "Shop Diffusers",
+            "card_bg_color": "#ffffff",
+            "text_color": "#ffffff",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30
           }
         },
         "essential_oils": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/feature-v2.png",
             "title": "Essential Oils",
             "description": "Pure, therapeutic-grade essential oils",
-            "button_text": "Shop Oils"
+            "link_url": "",
+            "button_text": "Shop Oils",
+            "card_bg_color": "#ffffff",
+            "text_color": "#ffffff",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30
           }
         },
         "gift_sets": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/defuser-p3.png",
             "title": "Gift Sets",
             "description": "Curated collections for every occasion",
-            "button_text": "Shop Gifts"
+            "link_url": "",
+            "button_text": "Shop Gifts",
+            "card_bg_color": "#ffffff",
+            "text_color": "#ffffff",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30
           }
         },
         "accessories": {
           "type": "category",
           "settings": {
+            "image": "shopify://shop_images/feature-v4.png",
             "title": "Accessories",
             "description": "Everything you need for aromatherapy",
-            "button_text": "Shop Accessories"
+            "link_url": "",
+            "button_text": "Shop Accessories",
+            "card_bg_color": "#ffffff",
+            "text_color": "#ffffff",
+            "show_overlay": true,
+            "overlay_color": "#000000",
+            "overlay_opacity": 30
           }
         }
       },
@@ -117,28 +154,49 @@
       ],
       "settings": {
         "heading": "Featured Categories",
-        "subheading": "Discover our most popular product categories"
+        "heading_tag": "h2",
+        "subheading": "Discover our most popular product categories",
+        "grid_gap": 24,
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     },
     "best_sellers": {
       "type": "best-sellers",
       "settings": {
         "heading": "Best Sellers",
+        "heading_tag": "h2",
         "subheading": "Shop our most popular products",
+        "collection": "",
         "products_to_show": 4,
-        "show_view_all": true
+        "add_to_cart_text": "Add to Cart",
+        "show_vendor": false,
+        "show_rating": false,
+        "show_view_all": true,
+        "view_all_text": "View All Products",
+        "grid_gap": 24,
+        "padding_top": 80,
+        "padding_bottom": 80
       }
     },
     "story": {
       "type": "story",
       "settings": {
+        "image_position": "left",
+        "eyebrow": "Our Philosophy",
         "heading": "Wellness & Calm",
+        "heading_tag": "h2",
         "text": "<p>Transform your daily routine into a mindful environment. Our diffusers create the perfect ambiance for relaxation, meditation, and peaceful moments in your home.</p><p>Experience the therapeutic benefits of aromatherapy and discover how scent can enhance your well-being and create lasting memories.</p>",
+        "content_alignment": "left",
         "button_text": "Explore Collection",
         "button_url": "/collections/all",
-        "eyebrow": "Our Philosophy",
-        "image_position": "left",
-        "content_alignment": "left"
+        "button_style": "primary",
+        "section_layout": "contained",
+        "content_gap": 60,
+        "background_color": "",
+        "text_color": "",
+        "padding_top": 60,
+        "padding_bottom": 60
       }
     },
     "trust_icons": {
@@ -255,6 +313,7 @@
         "show_tags": true,
         "read_more_text": "Read More",
         "button_text": "View All Posts",
+        "button_url": "",
         "content_alignment": "center",
         "image_aspect_ratio": "16/9",
         "mobile_layout": "stack",
@@ -272,6 +331,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Wellness lifestyle moment",
+            "link_url": "",
             "caption": "Living our best life"
           }
         },
@@ -279,6 +339,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Aromatherapy in action",
+            "link_url": "",
             "caption": "Find your zen"
           }
         },
@@ -286,6 +347,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Mindful living space",
+            "link_url": "",
             "caption": "Create your sanctuary"
           }
         },
@@ -293,6 +355,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Natural wellness routine",
+            "link_url": "",
             "caption": "Embrace nature"
           }
         },
@@ -300,6 +363,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Relaxation and self-care",
+            "link_url": "",
             "caption": "Self-care Sunday"
           }
         },
@@ -307,6 +371,7 @@
           "type": "image",
           "settings": {
             "alt_text": "Healthy lifestyle inspiration",
+            "link_url": "",
             "caption": "Inspire your journey"
           }
         }
