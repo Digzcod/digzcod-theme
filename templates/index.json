@@ -193,7 +193,7 @@
         "button_url": "/collections/all",
         "button_style": "primary",
         "section_layout": "contained",
-        "content_gap": 80,
+        "content_gap": 70,
         "background_color": "",
         "text_color": "",
         "padding_top": 60,
@@ -246,7 +246,7 @@
         "heading": "Why Choose Us",
         "subheading": "We're committed to providing you with the best experience",
         "icon_size": 48,
-        "layout": "columns",
+        "layout": "row",
         "color_scheme": "background-1"
       }
     },
