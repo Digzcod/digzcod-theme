@@ -290,7 +290,7 @@
         "heading": "What Our Customers Say",
         "subheading": "Don't just take our word for it - hear from our satisfied customers",
         "autoplay": true,
-        "autoplay_speed": 5000,
+        "autoplay_speed": 3000,
         "show_navigation": true,
         "show_pagination": true,
         "padding_top": 64,
@@ -303,7 +303,7 @@
     "blog_preview": {
       "type": "blog-preview",
       "settings": {
-        "blog": "news",
+        "blog": "wellness",
         "heading": "Wellness Tips",
         "subheading": "<p>Discover expert insights and practical tips for a healthier, more balanced lifestyle.</p>",
         "articles_to_show": 2,
