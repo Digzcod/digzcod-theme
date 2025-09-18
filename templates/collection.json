@@ -1,20 +1,42 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
-      "type": "collection",
-      "settings": {}
+      "type": "collection_list-hero",
+      "settings": {
+        "hero_title": "",
+        "hero_subtitle": "",
+        "hero_button_label": "",
+        "hero_button_link": "",
+        "content_alignment": "center",
+        "text_color": "light",
+        "overlay_opacity": 35,
+        "hero_height": 520,
+        "heading_font_size": 56,
+        "heading_font_weight": "700",
+        "heading_font_style": "normal",
+        "subtitle_font_size": 18,
+        "subtitle_font_weight": "400",
+        "button_style": "filled",
+        "button_bg_color": "#ffffff",
+        "button_text_color": "#000000",
+        "button_font_size": 16,
+        "button_font_weight": "600",
+        "button_border_radius": 12
+      }
+    },
+  "collection_products": {
+      "type": "collection-landing-grid",
+      "settings": {
+        "products_per_page": 24,
+        "columns_desktop": 4,
+        "columns_mobile": 2,
+        "enable_filtering": true,
+        "enable_sorting": true,
+        "show_collection_description": true,
+        "padding_top": 60,
+        "padding_bottom": 60
+      }
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main", "collection_products"]
 }
