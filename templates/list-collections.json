@@ -36,23 +36,11 @@
     "collection_filters_highlights_row": {
       "type": "collection-landing-grid",
       "settings": {
-        "filters_title": "Filter Products",
-        "show_filters_title": true,
-        "show_clear_all": true,
-        "show_price_filter": true,
-        "show_active_filters": true,
         "highlights_title": "Featured Collections",
-        "highlights_subtitle": "Discover our most popular categories",
-        "highlights_columns": "2",
-        "filter_width": 300,
-        "row_gap": 32,
-        "highlights_gap": 24,
-        "image_height": 160,
-        "image_height_mobile": 120,
+        "show_price_filter": true,
         "padding_top": 32,
         "padding_bottom": 32,
-        "margin_top": 0,
-        "margin_bottom": 0
+        "filter_width": 300
       }
     },
     "story": {
