@@ -58,8 +58,8 @@
             "title": "Diffusers",
             "description": "Premium ultrasonic and nebulizing diffusers for every space.",
             "image": "shopify://shop_images/feature-v3.png",
-            "collection_handle": "diffusers",
-            "custom_url": "",
+            "collection_handle": "best-selling-oil-diffusers",
+            "custom_url": "shopify://collections/best-selling-oil-diffusers",
             "button_text": "Shop Diffusers"
           }
         },
