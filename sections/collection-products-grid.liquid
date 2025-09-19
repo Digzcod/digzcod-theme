@@ -8,9 +8,6 @@ Features: Product cards, price display, quick add to cart, responsive design
   assign section_id = 'CollectionProductsGrid-' | append: section.id
   assign products_per_row = section.settings.products_per_row | default: 4
   assign products_limit = section.settings.products_limit | default: 12
-  assign enable_quick_add = section.settings.enable_quick_add | default: true
-  assign show_vendor = section.settings.show_vendor | default: false
-  assign show_product_rating = section.settings.show_product_rating | default: false
   
   # Collection context
   if template.name == 'collection' and collection
@@ -66,7 +63,7 @@ Features: Product cards, price display, quick add to cart, responsive design
         {% for product in current_collection.products limit: products_limit %}
           <div class="product-card" data-product-id="{{ product.id }}">
             <div class="product-card__inner">
-              {% comment %} Product Image {% endcomment %}
+              {% comment %} Product Image Only {% endcomment %}
               <div class="product-card__image-wrapper">
                 <a href="{{ product.url }}" class="product-card__image-link" aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
                   {% if product.featured_image %}
@@ -102,96 +99,6 @@ Features: Product cards, price display, quick add to cart, responsive design
                     </div>
                   {% endif %}
                 </a>
-
-                {% comment %} Sale Badge {% endcomment %}
-                {% if product.compare_at_price > product.price %}
-                  <div class="product-card__badge product-card__badge--sale">
-                    {% assign savings = product.compare_at_price | minus: product.price %}
-                    {% assign savings_percent = savings | times: 100 | divided_by: product.compare_at_price %}
-                    {{ savings_percent }}% {{ 'products.product.on_sale' | t }}
-                  </div>
-                {% endif %}
-
-                {% comment %} Sold Out Badge {% endcomment %}
-                {% unless product.available %}
-                  <div class="product-card__badge product-card__badge--sold-out">
-                    {{ 'products.product.sold_out' | t }}
-                  </div>
-                {% endunless %}
-              </div>
-
-              {% comment %} Product Details {% endcomment %}
-              <div class="product-card__content">
-                {% if show_vendor and product.vendor != blank %}
-                  <div class="product-card__vendor">{{ product.vendor }}</div>
-                {% endif %}
-
-                <h3 class="product-card__title">
-                  <a href="{{ product.url }}" class="product-card__title-link">
-                    {{ product.title }}
-                  </a>
-                </h3>
-
-                {% if show_product_rating and product.metafields.reviews.rating.value != blank %}
-                  <div class="product-card__rating">
-                    <div class="product-rating">
-                      {% assign rating_value = product.metafields.reviews.rating.value %}
-                      {% assign rating_stars = rating_value | round %}
-                      <div class="product-rating__stars" aria-label="Product rating: {{ rating_value }} out of 5 stars">>
-                        {% for i in (1..5) %}
-                          <span class="product-rating__star{% if i <= rating_stars %} product-rating__star--filled{% endif %}">★</span>
-                        {% endfor %}
-                      </div>
-                      <span class="product-rating__value">{{ rating_value }}</span>
-                    </div>
-                  </div>
-                {% endif %}
-
-                <div class="product-card__price">
-                  {% if product.compare_at_price > product.price %}
-                    <span class="product-card__price-compare">
-                      {{ product.compare_at_price | money }}
-                    </span>
-                  {% endif %}
-                  <span class="product-card__price-current">
-                    {% if product.price_varies %}
-                      From {{ product.price_min | money }}
-                    {% else %}
-                      {{ product.price | money }}
-                    {% endif %}
-                  </span>
-                </div>
-
-                {% comment %} Quick Add Button {% endcomment %}
-                {% if enable_quick_add and product.available %}
-                  <div class="product-card__add-to-cart">
-                    {% if product.variants.size == 1 %}
-                      <form class="product-card__cart-form" data-product-form>
-                        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
-                        <button
-                          type="submit"
-                          class="add-to-cart-button"
-                          data-quick-add-button
-                          {% unless product.variants.first.available %}disabled{% endunless %}>
-                          <span class="add-to-cart-text">{{ 'products.product.add_to_cart' | t }}</span>
-                          <span class="add-to-cart-loading hidden">{{ 'products.product.adding' | t }}</span>
-                        </button>
-                      </form>
-                    {% else %}
-                      <a
-                        href="{{ product.url }}"
-                        class="add-to-cart-button add-to-cart-button--variants">
-                        {{ 'products.product.choose_options' | t }}
-                      </a>
-                    {% endif %}
-                  </div>
-                {% endif %}
-
-                {% if section.settings.show_product_description and product.description != blank %}
-                  <div class="product-card__description">
-                    {{ product.description | strip_html | truncatewords: 15 }}
-                  </div>
-                {% endif %}
               </div>
             </div>
           </div>
@@ -281,12 +188,10 @@ Features: Product cards, price display, quick add to cart, responsive design
     font-weight: 600;
     line-height: 1.2;
     margin: 0 0 16px 0;
-    /* color: var(--color-foreground, #1a1a1a); */
   }
 
   .section-subtitle {
     font-size: 1.125rem;
-    /* color: var(--color-foreground-75, #666); */
     margin: 0;
     max-width: 600px;
     margin-left: auto;
@@ -301,21 +206,20 @@ Features: Product cards, price display, quick add to cart, responsive design
     margin-bottom: 48px;
   }
 
-/* Card */
-.product-card {
-  background: #ffffff;                 /* white card */
-  border: none !important;             /* remove card border line */
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 6px 18px rgba(0,0,0,0.06); /* subtle depth */
-}
+  /* Image-only Card Styles */
+  .product-card {
+    background: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
 
-.product-card:hover {
-  background: #ffffff;                 /* keep white on hover */
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgba(0,0,0,0.10);
-}
+  .product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+  }
 
   .product-card__inner {
     display: flex;
@@ -323,13 +227,12 @@ Features: Product cards, price display, quick add to cart, responsive design
     height: 100%;
   }
 
-/* Optional: light image area backdrop for consistency */
-.product-card__image-wrapper {
-  position: relative;
-  aspect-ratio: 1;
-  overflow: hidden;
-  background: #f7f7f7;                 /* remove if you prefer none */
-}
+  .product-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #f7f7f7;
+  }
 
   .product-card__image-link {
     display: block;
@@ -366,180 +269,6 @@ Features: Product cards, price display, quick add to cart, responsive design
     display: flex;
     align-items: center;
     justify-content: center;
-  }
-
-  .product-card__badge {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    z-index: 2;
-  }
-
-  .product-card__badge--sale {
-    background: var(--color-sale-text, #ff4444);
-    color: var(--color-background, white);
-  }
-
-  .product-card__badge--sold-out {
-    background: var(--color-foreground, #666);
-    color: var(--color-background, white);
-  }
-
-  .product-card__content {
-    padding: 20px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-  }
-
-  .product-card__vendor {
-    font-size: 0.875rem;
-    color: var(--color-foreground-75, #888);
-    margin: 0 0 12px 0;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    font-weight: 500;
-  }
-
-  .product-card__title {
-    margin: 0 0 8px 0;
-    font-size: 1rem;
-    font-weight: 500;
-    line-height: 1.3;
-  }
-
-  .product-card__title-link {
-    color: #1a1a1a !important;         /* force dark color for title visibility */
-    text-decoration: none;
-    transition: color 0.3s ease;
-  }
-
-  .product-card__title-link:hover {
-    color: #666 !important;            /* force gray on hover */
-  }
-
-  .product-card__rating {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-
-  .product-rating {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .product-rating__stars {
-    display: flex;
-    gap: 2px;
-  }
-
-  .product-rating__star {
-    color: #ddd;
-    font-size: 14px;
-  }
-
-  .product-rating__star--filled {
-    color: #ffc107;
-  }
-
-  .product-card__price {
-    margin-bottom: 16px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    flex-wrap: wrap;
-  }
-
-  .product-card__price-compare {
-    font-size: 0.875rem;
-    color: #666 !important;             /* force gray color for visibility */
-    text-decoration: line-through;
-  }
-
-/* Price emphasis to match sample */
-.product-card__price-current {
-  font-size: 1.125rem;
-  font-weight: 700;                    /* stronger like the screenshot */
-  color: #1a1a1a !important;          /* force dark color for visibility */
-}
-
-  .product-card__add-to-cart {
-    margin-top: auto;
-    padding-top: 4px;
-  }
-
-  .product-card__cart-form {
-    margin: 0;
-    width: 100%;
-  }
-
-  .add-to-cart-button {
-    width: 100%;
-    height: 44px;
-    border: none;
-    border-radius: 6px;
-    font-size: 0.875rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    position: relative;
-    background: var(--color-button, #1a1a1a);
-    color: var(--color-button-text, white);
-  }
-
-  .add-to-cart-button:hover:not(:disabled) {
-    background: var(--color-button-hover, #333);
-    transform: translateY(-2px);
-  }
-
-  .add-to-cart-button--variants {
-    background: transparent;
-    color: var(--color-foreground, #1a1a1a);
-    border: 2px solid var(--color-border, #e0e0e0);
-  }
-
-  .add-to-cart-button--variants:hover {
-    background: var(--color-foreground, #1a1a1a);
-    color: var(--color-background, white);
-    border-color: var(--color-foreground, #1a1a1a);
-  }
-
-  .add-to-cart-button:disabled {
-    background: var(--color-background-2, #f0f0f0);
-    color: var(--color-foreground-75, #ccc);
-    cursor: not-allowed;
-    transform: none;
-  }
-
-  .add-to-cart-text,
-  .add-to-cart-loading {
-    display: inline;
-  }
-
-  .add-to-cart-loading {
-    display: none;
-  }
-
-  .product-card__description {
-    font-size: 0.875rem;
-    color: var(--color-foreground-75, #666);
-    line-height: 1.4;
-    margin-top: 12px;
   }
 
   .collection-empty {
@@ -607,17 +336,6 @@ Features: Product cards, price display, quick add to cart, responsive design
       gap: 16px;
     }
 
-   .product-card__content {
-  padding: 24px;                       /* a bit roomier */
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  border-top: 1px solid rgba(0,0,0,0.06); /* thin divider */
-}
-    .product-card__title {
-      font-size: 0.9rem;
-    }
-
     .collection-products-grid__container {
       padding: 0 16px;
     }
@@ -627,19 +345,6 @@ Features: Product cards, price display, quick add to cart, responsive design
     .products-grid {
       grid-template-columns: 1fr 1fr;
       gap: 12px;
-    }
-
-    .product-card__content {
-      padding: 12px;
-    }
-
-    .product-card__title {
-      font-size: 0.85rem;
-    }
-
-    .add-to-cart-button {
-      height: 40px;
-      font-size: 0.75rem;
     }
   }
 {% endstylesheet %}
@@ -709,36 +414,12 @@ Features: Product cards, price display, quick add to cart, responsive design
     },
     {
       "type": "header",
-      "content": "Product Cards"
+      "content": "Image Display"
     },
     {
       "type": "checkbox",
       "id": "show_hover_image",
       "label": "Show second image on hover",
-      "default": true
-    },
-    {
-      "type": "checkbox",
-      "id": "show_vendor",
-      "label": "Show product vendor",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_product_rating",
-      "label": "Show product rating",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "show_product_description",
-      "label": "Show product description",
-      "default": false
-    },
-    {
-      "type": "checkbox",
-      "id": "enable_quick_add",
-      "label": "Enable quick add to cart",
       "default": true
     },
     {
