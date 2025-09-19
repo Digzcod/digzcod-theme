@@ -20,6 +20,7 @@
         "text_color": "light",
         "overlay_opacity": 35,
         "hero_height": 520,
+        "image_position": "center",
         "heading_font_size": 56,
         "heading_font_weight": "700",
         "heading_font_style": "normal",

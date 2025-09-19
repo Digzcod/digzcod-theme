@@ -1,6 +1,6 @@
 {% comment %} 
-      Dynamic Hero Banner for Collection Pages
-      Supports theme editor settings with metafield fallbacks 
+          Dynamic Hero Banner for Collection Pages
+          Supports theme editor settings with metafield fallbacks 
 {% endcomment %}
 
 {%- liquid
@@ -55,6 +55,7 @@
   assign section_id = 'CollectionHero-' | append: section.id
   assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
   assign hero_height = section.settings.hero_height | append: 'px'
+  assign image_position = section.settings.image_position | default: 'center'
 
   # Typography variables
   assign heading_font_size = section.settings.heading_font_size | append: 'px'
@@ -78,16 +79,13 @@
 <section
   id="{{ section_id }}"
   class="collection-hero collection-hero--{{ section.settings.content_alignment }} collection-hero--{{ section.settings.text_color }}"
-  style="--hero-height: {{ hero_height }}; --overlay-opacity: {{ overlay_opacity }};">
+  style="--hero-height: {{ hero_height }}; --overlay-opacity: {{ overlay_opacity }}; --image-position: {{ image_position }};">
   {%- if hero_image != blank -%}
-    <div class="collection-hero__image">
-      {{- hero_image | image_url: width: 1920 | image_tag:
- loading: 'eager',
- sizes: '100vw',
- widths: '375, 550, 750, 1100, 1500, 1780, 2000, 3000, 3840',
- alt: hero_image.alt | default: hero_title
-      -}}
-    </div>
+    <div
+      class="collection-hero__image"
+      style="background-image: url('{{ hero_image | image_url: width: 1920 }}');"
+      role="img"
+      aria-label="{{ hero_image.alt | default: hero_title }}"></div>
   {%- endif -%}
 
   {%- if section.settings.overlay_opacity > 0 -%}
@@ -103,7 +101,7 @@
           {%- if heading_font_style != blank -%}font-style: {{ heading_font_style }};{%- endif -%}
           {%- if heading_color != blank -%}color: {{ heading_color }} !important;{%- endif -%}
         ">
-{{ hero_title }}</h1>
+          {{ hero_title }}</h1>
       {%- endif -%}
 
       {%- if hero_subtitle != blank -%}
@@ -112,7 +110,7 @@
           {%- if subtitle_font_weight != blank -%}font-weight: {{ subtitle_font_weight }};{%- endif -%}
           {%- if subtitle_color != blank -%}color: {{ subtitle_color }} !important;{%- endif -%}
         ">
-{{ hero_subtitle }}</div>
+          {{ hero_subtitle }}</div>
       {%- endif -%}
 
       {%- if hero_button_label != blank and hero_button_link != blank -%}
@@ -223,6 +221,24 @@
         "unit": "px",
         "label": "Section height",
         "default": 480
+      }, {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ],
+        "default": "center",
+        "info": "Control the vertical position of the background image"
       }, {
         "type": "header",
         "content": "Typography"
@@ -453,13 +469,9 @@
     width: 100%;
     height: 100%;
     z-index: 1;
-  }
-
-  .collection-hero__image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    object-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: var(--image-position, center);
   }
 
   .collection-hero__overlay {
