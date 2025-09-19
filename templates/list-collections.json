@@ -34,14 +34,47 @@
       }
     },
     "collection_filters_highlights_row": {
-      "type": "collection-landing-grid",
+      "type": "collection-cards",
       "settings": {
-        "highlights_title": "Featured Collections",
-        "show_price_filter": true,
+        "title": "Featured Collections",
+        "subtitle": "<p>Discover our curated collection of premium products</p>",
         "padding_top": 32,
-        "padding_bottom": 32,
-        "filter_width": 300
-      }
+        "padding_bottom": 32
+      },
+      "blocks": {
+        "collection_card_1": {
+          "type": "collection_card",
+          "settings": {
+            "title": "Essential Oils",
+            "description": "Pure, therapeutic-grade essential oils for aromatherapy and wellness.",
+            "collection_handle": "essential-oils",
+            "button_text": "Explore Oils"
+          }
+        },
+        "collection_card_2": {
+          "type": "collection_card",
+          "settings": {
+            "title": "Diffusers",
+            "description": "Premium ultrasonic and nebulizing diffusers for every space.",
+            "collection_handle": "diffusers",
+            "button_text": "Shop Diffusers"
+          }
+        },
+        "collection_card_3": {
+          "type": "collection_card",
+          "settings": {
+            "title": "Gift Sets",
+            "description": "Thoughtfully curated gift sets perfect for any occasion.",
+            "collection_handle": "gift-sets",
+            "button_text": "View Gifts"
+          }
+        }
+      },
+      "block_order": [
+        "collection_card_1",
+        "collection_card_2",
+        "collection_card_3"
+      ]
     },
     "story": {
       "type": "story",
