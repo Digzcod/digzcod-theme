@@ -1,20 +1,11 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
 {
   "sections": {
     "main": {
-      "type": "collection_list-hero",
+      "type": "dynamic-collection-hero",
       "settings": {
-        "hero_image": "shopify://shop_images/story-defuser.png",
-        "hero_title": "Defusers Collection",
-        "hero_subtitle": "<p>Discover our best-selling oil diffusers designed to transform your space into a calming oasis.<br/><br/></p>",
+        "hero_image": "",
+        "hero_title": "",
+        "hero_subtitle": "",
         "hero_button_label": "",
         "hero_button_link": "",
         "content_alignment": "center",
@@ -38,55 +29,26 @@
       }
     },
     "collection_products": {
-      "type": "collection-landing-grid",
+      "type": "collection-products-grid",
       "settings": {
-        "show_header": false,
-        "title": "Shop by Category",
-        "subtitle": "Discover our curated collection of premium aromatherapy products",
-        "background_color": "default",
-        "highlights_title": "Collection Highlights",
-        "show_essential_oils_tile": true,
-        "essential_oils_badge": "",
-        "essential_oils_category": "Essential Oils",
-        "essential_oils_title": "Pure Essential Oils",
-        "essential_oils_description": "Lavender, Peppermint, Eucalyptus",
-        "essential_oils_url": "",
-        "essential_oils_link_text": "Shop Essential Oils",
-        "show_diffusers_tile": true,
-        "diffusers_badge": "",
-        "diffusers_category": "Diffusers",
-        "diffusers_title": "Premium Diffusers",
-        "diffusers_description": "Ceramic, Ultrasonic, Portable",
-        "diffusers_url": "",
-        "diffusers_link_text": "Shop Diffusers",
-        "show_gift_sets_tile": true,
-        "gift_sets_badge": "",
-        "gift_sets_category": "Gift Sets",
-        "gift_sets_title": "Curated Gift Sets",
-        "gift_sets_description": "Starter Kits, Relaxation Bundles",
-        "gift_sets_url": "",
-        "gift_sets_link_text": "Shop Gift Sets",
-        "oil_type_title": "Oil Type",
-        "oil_filter_urls": "/collections/essential-oils?filter.p.tag=Lavender,/collections/essential-oils?filter.p.tag=Citrus,/collections/essential-oils?filter.p.tag=Floral,/collections/essential-oils?filter.p.tag=Herbal",
-        "oil_filter_counts": "12,8,15,6",
-        "diffuser_type_title": "Diffuser Type",
-        "diffuser_filter_urls": "/collections/diffusers?filter.p.tag=Ceramic,/collections/diffusers?filter.p.tag=Glass,/collections/diffusers?filter.p.tag=Portable",
-        "diffuser_filter_counts": "5,7,3",
-        "show_price_filter": true,
-        "price_range_title": "Price Range",
-        "min_price_placeholder": "Min",
-        "max_price_placeholder": "Max",
-        "show_clear_filters": true,
-        "clear_filters_text": "Clear All Filters",
-        "tile_corner_radius": "md",
-        "grid_gap": "sm",
-        "mobile_accordion": true,
-        "typography": "serif",
-        "filter_title": "Filter By",
-        "padding_top": 60,
-        "padding_bottom": 60,
-        "filter_width": 280,
-        "content_gap": 48
+        "collection": "",
+        "show_collection_header": false,
+        "custom_title": "",
+        "custom_subtitle": "",
+        "products_limit": 12,
+        "products_per_row": 4,
+        "products_per_row_mobile": 2,
+        "show_hover_image": true,
+        "show_vendor": false,
+        "show_product_rating": false,
+        "show_product_description": false,
+        "enable_quick_add": true,
+        "grid_gap": 24,
+        "card_border_radius": 12,
+        "padding_top": 64,
+        "padding_bottom": 64,
+        "show_load_more": false,
+        "show_view_all": false
       }
     }
   },

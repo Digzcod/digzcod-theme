@@ -137,7 +137,13 @@
     },
     "collection_hero": {
       "default_title": "Premium Oil Diffusers",
-      "default_button": "Shop Collection"
+      "default_button": "Shop Collection",
+      "diffusers_collection": "Premium Oil Diffusers",
+      "essential_oils_collection": "Pure Essential Oils",
+      "our_collection": "Our Collection",
+      "shop_diffusers": "Shop Diffusers",
+      "shop_essential_oils": "Shop Essential Oils",
+      "shop_now": "Shop Now"
     },
     "close": "Close"
   },
@@ -146,13 +152,27 @@
     "star_reviews_info": "{{ rating_value }} out of {{ rating_max }} stars"
   },
   "collections": {
-    "title": "Collections"
+    "title": "Collections",
+    "general": {
+      "products_count": {
+        "one": "{{ count }} product",
+        "other": "{{ count }} products"
+      },
+      "no_products": "No products found",
+      "no_products_description": "This collection is empty. Check back soon for new products.",
+      "browse_collections": "Browse Collections",
+      "load_more": "Load More",
+      "view_all": "View all {{ collection_title }} products"
+    }
   },
   "products": {
     "product": {
       "on_sale": "Sale",
       "sold_out": "Sold out",
       "choose_options": "Choose options",
+      "add_to_cart": "Add to cart",
+      "adding": "Adding...",
+      "view_product": "View {{ title }}",
       "price": {
         "from_price_html": "From {{ price }}"
       }
