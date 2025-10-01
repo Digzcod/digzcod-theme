@@ -1,0 +1,186 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Header Width Test</title>
+    <style>
+        /* Simulate the Shopify grid system */
+        .shopify-section {
+            --page-width: 1200px;
+            --page-margin: 20px;
+            --content-width: min(
+                calc(var(--page-width) - var(--page-margin) * 2),
+                calc(100% - var(--page-margin) * 2)
+            );
+            --content-margin: minmax(var(--page-margin), 1fr);
+            --content-grid: var(--content-margin) var(--content-width) var(--content-margin);
+            
+            position: relative;
+            grid-template-columns: var(--content-grid);
+            display: grid;
+            width: 100%;
+        }
+        
+        .shopify-section > * {
+            grid-column: 2;
+        }
+        
+        .shopify-section > .full-width {
+            grid-column: 1 / -1;
+        }
+        
+        /* Header styles from our updated header.liquid */
+        .site-header {
+            width: 100%;
+            background: #333;
+            color: white;
+            border-bottom: none;
+            position: relative;
+            top: 0;
+            z-index: 1000;
+            margin-bottom: 20px;
+        }
+        
+        .header-container {
+            width: 100%;
+            padding: 0 20px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-container.constrained {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .store-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 20px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+        }
+        
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .cart-link {
+            color: white;
+            text-decoration: none;
+        }
+        
+        /* Demo content styles */
+        .demo-content {
+            background: #f0f0f0;
+            padding: 40px 20px;
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .color-indicator {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: red;
+            color: white;
+            padding: 5px 10px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Header Width Test - Before & After</h1>
+    
+    <section class="shopify-section">
+        <h2>1. Original Header (Constrained)</h2>
+        <header class="site-header">
+            <div class="color-indicator">CONSTRAINED</div>
+            <div class="header-container constrained">
+                <div class="store-logo">
+                    <h1 class="store-name">SM STORE</h1>
+                </div>
+                <nav class="desktop-nav">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link">Home</a>
+                        <a href="#" class="nav-link">Shop</a>
+                        <a href="#" class="nav-link">About</a>
+                        <a href="#" class="nav-link">Contact</a>
+                    </div>
+                </nav>
+                <div class="header-actions">
+                    <a href="#" class="cart-link">Cart (0)</a>
+                </div>
+            </div>
+        </header>
+    </section>
+    
+    <section class="shopify-section">
+        <h2>2. New Full-Width Header</h2>
+        <header class="site-header full-width">
+            <div class="color-indicator">FULL WIDTH</div>
+            <div class="header-container">
+                <div class="store-logo">
+                    <h1 class="store-name">SM STORE</h1>
+                </div>
+                <nav class="desktop-nav">
+                    <div class="nav-links">
+                        <a href="#" class="nav-link">Home</a>
+                        <a href="#" class="nav-link">Shop</a>
+                        <a href="#" class="nav-link">About</a>
+                        <a href="#" class="nav-link">Contact</a>
+                    </div>
+                </nav>
+                <div class="header-actions">
+                    <a href="#" class="cart-link">Cart (0)</a>
+                </div>
+            </div>
+        </header>
+    </section>
+    
+    <section class="shopify-section">
+        <div class="demo-content">
+            <h3>Regular Section Content</h3>
+            <p>This content is constrained by the grid system and won't extend to full width.</p>
+        </div>
+    </section>
+    
+    <section class="shopify-section">
+        <div class="demo-content full-width" style="background: #e0e0e0;">
+            <h3>Full-Width Section Content</h3>
+            <p>This content uses the 'full-width' class and spans the entire viewport.</p>
+        </div>
+    </section>
+    
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: white;
+        }
+        
+        h1, h2 {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        h1 {
+            background: #f8f8f8;
+            padding: 20px;
+        }
+    </style>
+</body>
+</html> -->

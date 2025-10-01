@@ -1,5 +1,5 @@
-<header class="site-header">
-  <div class="header-container">
+<header class="site-header{% if section.settings.full_width_header %} full-width{% endif %}">
+  <div class="header-container{% unless section.settings.full_width_header %} constrained{% endunless %}">
     <!-- STORE NAME / STORE LOGO -->
     <div class="store-logo">
       <h1 class="store-name">{{ section.settings.header_title_digz | default: 'SM STORE' }}</h1>
@@ -324,27 +324,79 @@
       }
     }));
   };
+
+// Header Scroll Effect
+  class HeaderScrollEffect {
+    constructor() {
+      this.header = document.querySelector('.site-header');
+      this.init();
+    }
+
+    init() {
+      if (!this.header) return;
+      
+
+
+      this.handleScroll();
+      window.addEventListener('scroll', () => this.handleScroll());
+    }
+
+    handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > 50) {
+        this.header.classList.add('scrolled');
+      } else {
+        this.header.classList.remove('scrolled');
+      }
+    }
+  }
+
+// Initialize header scroll effect when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new HeaderScrollEffect();
+  });
 {% endjavascript %}
 
 {% stylesheet %}
   /* Header Styles */
   .site-header {
     width: 100%;
-    background: var(--color-background, #fff);
-    border-bottom: 1px solid var(--color-border, #e5e5e5);
-    position: sticky;
+    background: transparent;
+    border-bottom: none;
+    position: fixed;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    transition: background-color 0.3s ease
+    , backdrop-filter 0.3s ease;
+  }
+
+  /* Utility class for breaking out of the grid constraint */
+  .break-out-of-grid {
+    grid-column: 1 / -1;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .site-header.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.3);
   }
 
   .header-container {
-    max-width: 1400px;
-    margin: 0 auto;
+    width: 100%;
     padding: 0 20px;
     height: 70px;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: space-center;
+  }
+
+  /* Add class for constrained header when needed */
+  .header-container.constrained {
+    max-width: 1400px;
+    margin: 0 auto;
   }
 
   /* Store Logo */
@@ -355,10 +407,18 @@
   .store-name {
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-foreground, #333);
+    color: white;
     margin: 0;
     text-transform: uppercase;
     letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease
+    , text-shadow 0.3s ease;
+  }
+
+  .site-header.scrolled .store-name {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
   }
 
   /* Desktop Navigation */
@@ -376,7 +436,7 @@
   }
 
   .nav-link {
-    color: var(--color-foreground, #333);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     font-size: 1rem;
@@ -384,10 +444,23 @@
     border-radius: 6px;
     transition: all 0.3s ease;
     position: relative;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .nav-link:hover,
   .nav-link.active {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-link {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-link:hover,
+  .site-header.scrolled .nav-link.active {
     color: var(--color-link, #0066cc);
     background-color: var(--color-background-2, #f5f5f5);
   }
@@ -398,7 +471,7 @@
   }
 
   .nav-dropdown__trigger {
-    color: var(--color-foreground, #333);
+    color: white;
     background: none;
     border: none;
     font-weight: 500;
@@ -410,10 +483,23 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .nav-dropdown__trigger:hover,
   .nav-dropdown__trigger.active {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-dropdown__trigger {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-dropdown__trigger:hover,
+  .site-header.scrolled .nav-dropdown__trigger.active {
     color: var(--color-link, #0066cc);
     background-color: var(--color-background-2, #f5f5f5);
   }
@@ -476,7 +562,7 @@
   .login-link,
   .register-link,
   .logout-link {
-    color: var(--color-foreground, #333);
+    color: white;
     text-decoration: none;
     font-weight: 500;
     font-size: 0.95rem;
@@ -487,6 +573,7 @@
     align-items: center;
     gap: 6px;
     position: relative;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
   }
 
   .cart-link:hover,
@@ -494,6 +581,25 @@
   .login-link:hover,
   .register-link:hover,
   .logout-link:hover {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .cart-link,
+  .site-header.scrolled .account-link,
+  .site-header.scrolled .login-link,
+  .site-header.scrolled .register-link,
+  .site-header.scrolled .logout-link {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .cart-link:hover,
+  .site-header.scrolled .account-link:hover,
+  .site-header.scrolled .login-link:hover,
+  .site-header.scrolled .register-link:hover,
+  .site-header.scrolled .logout-link:hover {
     color: var(--color-link, #0066cc);
     background-color: var(--color-background-2, #f5f5f5);
   }
@@ -559,11 +665,21 @@
     padding: 8px;
     border-radius: 6px;
     cursor: pointer;
-    color: var(--color-foreground, #333);
-    transition: background-color 0.3s ease;
+    color: white;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
   }
 
   .mobile-menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .site-header.scrolled .mobile-menu-button {
+    color: var(--color-foreground, #333);
+    filter: none;
+  }
+
+  .site-header.scrolled .mobile-menu-button:hover {
     background-color: var(--color-background-2, #f5f5f5);
   }
 
@@ -625,6 +741,12 @@
         "label": "Link List Step",
         "default": "main-menu",
         "info": "Select the link list to be used for the header navigation menu."
+      }, {
+        "type": "checkbox",
+        "id": "full_width_header",
+        "label": "Full width header",
+        "default": true,
+        "info": "When enabled, header content spans the full viewport width"
       }
 
     ]
