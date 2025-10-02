@@ -1,16 +1,18 @@
 {% comment %} 
-                                        Section: Benefit / Trust Bar (benefit-bar) 
-                                        - Displays small badges like Free Shipping, 30-Day Returns, 24/7 Support inside a rounded pill. 
-                                        - Files: benefit-bar.css, benefit-bar.js 
+                                            Section: Benefit / Trust Bar (benefit-bar) 
+                                            - Displays small badges like Free Shipping, 30-Day Returns, 24/7 Support inside a rounded pill. 
+                                            - Files: benefit-bar.css, benefit-bar.js 
 {% endcomment %}
 
 {{ 'benefit-bar.css' | asset_url | stylesheet_tag }}
 <script src="{{ 'benefit-bar.js' | asset_url }}" defer></script>
 
-<section
-  class="benefit-bar"
-  data-section-id="{{ section.id }}"
-  style="
+{% comment %} Only show the benefit bar if homepage_only is false OR we're on the homepage {% endcomment %}
+{% unless section.settings.homepage_only and request.page_type != 'index' %}
+  <section
+    class="benefit-bar{% unless section.settings.visible_on_mobile %} benefit-bar--hidden-mobile{% endunless %}"
+    data-section-id="{{ section.id }}"
+    style="
     --bb-text: {{ section.settings.text_color }};
     --bb-bg: {% assign bg_opacity_decimal = section.settings.bg_opacity | divided_by: 100.0 %}{% if section.settings.bg_opacity == 100 %}{{ section.settings.bg_color }}{% else %}{{ section.settings.bg_color | color_modify: 'alpha', bg_opacity_decimal }}{% endif %};
     --bb-border: {% assign border_opacity_decimal = section.settings.border_opacity | divided_by: 100.0 %}{% if section.settings.border_opacity == 100 %}{{ section.settings.border_color }}{% else %}{{ section.settings.border_color | color_modify: 'alpha', border_opacity_decimal }}{% endif %};
@@ -28,42 +30,43 @@
     --bb-position-top: {{ section.settings.position_top }}px;
     --bb-z-index: {{ section.settings.z_index }};
   ">
-  <div class="benefit-bar__wrap benefit-bar__wrap--{{ section.settings.align }}">
-    <div class="benefit-bar__pill{% if section.settings.scroll_on_mobile %} benefit-bar__pill--scroll{% endif %}">
-      {% for block in section.blocks %}
-        {% if block.type == 'item' %}
-          {% if block.settings.link != blank %}
-            <a
-              href="{{ block.settings.link }}"
-              class="bb-item"
-              {{ block.shopify_attributes }}>
-              {% if block.settings.icon != 'none' %}
-                <span
-                  class="bb-item__icon"
-                  data-icon="{{ block.settings.icon }}"
-                  aria-hidden="true"></span>
-              {% endif %}
-              <span class="bb-item__text">{{ block.settings.text | escape }}</span>
-            </a>
-          {% else %}
-            <div class="bb-item" {{ block.shopify_attributes }}>
-              {% if block.settings.icon != 'none' %}
-                <span
-                  class="bb-item__icon"
-                  data-icon="{{ block.settings.icon }}"
-                  aria-hidden="true"></span>
-              {% endif %}
-              <span class="bb-item__text">{{ block.settings.text | escape }}</span>
-            </div>
+    <div class="benefit-bar__wrap benefit-bar__wrap--{{ section.settings.align }}">
+      <div class="benefit-bar__pill{% if section.settings.scroll_on_mobile %} benefit-bar__pill--scroll{% endif %}">
+        {% for block in section.blocks %}
+          {% if block.type == 'item' %}
+            {% if block.settings.link != blank %}
+              <a
+                href="{{ block.settings.link }}"
+                class="bb-item"
+                {{ block.shopify_attributes }}>
+                {% if block.settings.icon != 'none' %}
+                  <span
+                    class="bb-item__icon"
+                    data-icon="{{ block.settings.icon }}"
+                    aria-hidden="true"></span>
+                {% endif %}
+                <span class="bb-item__text">{{ block.settings.text | escape }}</span>
+              </a>
+            {% else %}
+              <div class="bb-item" {{ block.shopify_attributes }}>
+                {% if block.settings.icon != 'none' %}
+                  <span
+                    class="bb-item__icon"
+                    data-icon="{{ block.settings.icon }}"
+                    aria-hidden="true"></span>
+                {% endif %}
+                <span class="bb-item__text">{{ block.settings.text | escape }}</span>
+              </div>
+            {% endif %}
+            {% if forloop.index < section.blocks.size and section.settings.show_separators %}
+              <span class="bb-sep" aria-hidden="true"></span>
+            {% endif %}
           {% endif %}
-          {% if forloop.index < section.blocks.size and section.settings.show_separators %}
-            <span class="bb-sep" aria-hidden="true"></span>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
+        {% endfor %}
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+{% endunless %}
 
 {% schema %}
   {
@@ -139,6 +142,16 @@
         "id": "scroll_on_mobile",
         "label": "Allow horizontal scroll on mobile",
         "default": true
+      }, {
+        "type": "checkbox",
+        "id": "visible_on_mobile",
+        "label": "Visible on mobile",
+        "default": true
+      }, {
+        "type": "checkbox",
+        "id": "homepage_only",
+        "label": "Show only on homepage",
+        "default": false
       }, {
         "type": "checkbox",
         "id": "show_separators",

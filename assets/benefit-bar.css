@@ -135,4 +135,11 @@
   }
 }
 
+/* Mobile visibility control */
+@media (max-width: 640px) {
+  .benefit-bar--hidden-mobile {
+    display: none;
+  }
+}
+
 /* Note: Sticky behavior is built into absolute positioning when top is set */
