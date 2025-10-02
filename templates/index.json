@@ -9,77 +9,98 @@
  */
 {
   "sections": {
-    "main": {
-      "type": "section-carousel",
+    "hero_banner_rzGkxe": {
+      "type": "hero-banner",
       "blocks": {
-        "slide_DaMwEp": {
-          "type": "slide",
+        "badge_HtrbxT": {
+          "type": "badge",
+          "disabled": true,
           "settings": {
-            "image": "shopify://shop_images/defuser-v3.png",
-            "alt": "Wellness Starts at Home",
-            "subheading": "Create a spa-like atmosphere with our premium diffusers.",
-            "heading": "Wellness Starts at Home",
-            "text_align": "left",
-            "btn_label": "View Products",
-            "btn_link": "shopify://collections/all"
+            "text": "Limited",
+            "variation": "soft"
           }
         },
-        "slide_wQKmpR": {
-          "type": "slide",
+        "button_mHMCgj": {
+          "type": "button",
           "settings": {
-            "image": "shopify://shop_images/defuser-v1.png",
-            "alt": "Relax with Aromatherapy",
-            "subheading": "Discover calming diffusers and natural oils for your home.",
-            "heading": "Relax with Aromatherapy",
-            "text_align": "left",
-            "btn_label": "Shop Now",
-            "btn_link": "shopify://collections/all"
+            "label": "Shop now",
+            "url": "shopify://collections/all",
+            "style": "custom",
+            "button_bg_color": "#25593d",
+            "button_text_color": "#ffffff",
+            "button_border_color": "#000000",
+            "button_border_width": 2,
+            "button_border_radius": 6,
+            "outline": false,
+            "open_new_tab": false
           }
         },
-        "slide_iJhqib": {
-          "type": "slide",
+        "button_AP8iK3": {
+          "type": "button",
           "settings": {
-            "image": "shopify://shop_images/defuser-v4.png",
-            "alt": "The Perfect Gift of Wellness",
-            "subheading": "Surprise someone special with our diffuser and essential oil gift set, crafted for relaxation",
-            "heading": "The Perfect Gift of Wellness",
-            "text_align": "left",
-            "btn_label": "Shop Gift Sets",
-            "btn_link": "shopify://collections/all"
-          }
-        },
-        "slide_EGTp4g": {
-          "type": "slide",
-          "settings": {
-            "image": "shopify://shop_images/defuser-v2.png",
-            "alt": "Breathe Easy, Live Fresh",
-            "subheading": "Refresh your space with eucalyptus and peppermint blends.",
-            "heading": "Breathe Easy, Live Fresh",
-            "text_align": "left",
-            "btn_label": "Explore Collection",
-            "btn_link": "shopify://collections/all"
+            "label": "Learn More",
+            "url": "shopify://collections",
+            "style": "custom",
+            "button_bg_color": "#ffffff",
+            "button_text_color": "#000000",
+            "button_border_color": "#000000",
+            "button_border_width": 2,
+            "button_border_radius": 6,
+            "outline": false,
+            "open_new_tab": false
           }
         }
       },
       "block_order": [
-        "slide_DaMwEp",
-        "slide_wQKmpR",
-        "slide_iJhqib",
-        "slide_EGTp4g"
+        "badge_HtrbxT",
+        "button_mHMCgj",
+        "button_AP8iK3"
       ],
+      "name": "Hero Banner",
       "settings": {
-        "aria_label": "Homepage promotional carousel",
-        "hero_height": 60,
-        "hero_height_mobile": 50,
+        "kicker": "New Arrival",
+        "heading": "Transform Your Home Into a Spa with Calming Aromatherapy",
+        "subheading": "Discover calming diffuser and natural oils for your home",
+        "body": "",
+        "heading_size": 3,
+        "subheading_size": 1.2,
+        "tablet_heading_size": 2.8,
+        "tablet_subheading_size": 1.1,
+        "tablet_padding_y": 48,
+        "tablet_padding_x": 20,
+        "mobile_heading_size": 2.2,
+        "mobile_subheading_size": 1.1,
+        "mobile_align": "start",
+        "mobile_padding_y": 80,
+        "mobile_padding_x": 20,
+        "section_height": 75,
+        "tablet_section_height": 60,
+        "mobile_section_height": 65,
+        "bg_image": "shopify://shop_images/banner-v1.png",
+        "mobile_bg_image": "shopify://shop_images/banner-v1.png",
+        "bg_video": "",
+        "desktop_image_position": "bottom",
+        "mobile_image_position": "center",
+        "layout": "full",
+        "align": "start",
         "text_color": "#ffffff",
-        "overlay_opacity": 20,
-        "btn_bg": "#111827",
-        "btn_text": "#ffffff",
-        "show_arrows": true,
-        "show_dots": true,
-        "autoplay": true,
-        "autoplay_ms": 5000,
-        "pause_on_hover": true
+        "heading_color": "",
+        "subheading_color": "",
+        "body_color": "",
+        "tablet_heading_color": "",
+        "tablet_subheading_color": "",
+        "tablet_body_color": "",
+        "mobile_heading_color": "",
+        "mobile_subheading_color": "",
+        "mobile_body_color": "",
+        "accent_color": "#ffffff",
+        "overlay_color": "#000000",
+        "overlay_opacity": 25,
+        "content_max_width": 760,
+        "padding_y": 72,
+        "padding_x": 16,
+        "corner_radius": 0,
+        "enable_scroll_hint": true
       }
     },
     "category-cards": {
@@ -439,7 +460,7 @@
     }
   },
   "order": [
-    "main",
+    "hero_banner_rzGkxe",
     "category-cards",
     "best_sellers",
     "story",
