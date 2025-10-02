@@ -82,8 +82,8 @@
         "pause_on_hover": true
       }
     },
-    "featured_categories": {
-      "type": "featured-categories",
+    "category-cards": {
+      "type": "category-cards",
       "blocks": {
         "diffusers": {
           "type": "category",
@@ -440,7 +440,7 @@
   },
   "order": [
     "main",
-    "featured_categories",
+    "category-cards",
     "best_sellers",
     "story",
     "trust_icons",
