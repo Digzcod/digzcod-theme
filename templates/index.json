@@ -24,7 +24,7 @@
           "type": "button",
           "settings": {
             "label": "Shop now",
-            "url": "shopify://collections/all",
+            "url": "shopify://collections",
             "style": "custom",
             "button_bg_color": "#25593d",
             "button_text_color": "#ffffff",
