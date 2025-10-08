@@ -16,7 +16,7 @@
         "hero_title": "Premium Oil Diffusers Collection",
         "hero_subtitle": "<p> Browse all our collections in one place.</p>",
         "hero_button_label": "Shop Collections",
-        "hero_button_link": "/collections",
+        "hero_button_link": "shopify://collections",
         "content_alignment": "center",
         "text_color": "light",
         "overlay_opacity": 35,
