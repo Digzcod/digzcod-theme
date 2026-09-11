@@ -1,0 +1,145 @@
+/* Benefit / Trust Bar (benefit-bar) */
+
+.benefit-bar {
+  position: absolute;
+  top: var(--bb-position-top);
+  left: 0;
+  right: 0;
+  z-index: var(--bb-z-index, 100);
+  color: var(--bb-text);
+  pointer-events: none; /* Allow clicking through the container */
+  overflow-x: hidden; /* Prevent horizontal scroll */
+}
+
+.benefit-bar__wrap {
+  max-width: min(var(--bb-maxw), calc(100vw - 32px)); /* Better mobile constraint */
+  margin-inline: auto;
+  padding: var(--bb-margin-top) 16px var(--bb-margin-bottom); /* Add side padding */
+  pointer-events: auto; /* Re-enable clicking on the actual content */
+}
+
+.benefit-bar__wrap--left  { text-align: left; }
+.benefit-bar__wrap--right { text-align: right; }
+.benefit-bar__wrap--center{ text-align: center; }
+
+.benefit-bar__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bb-gap);
+  padding: var(--bb-pad-y) var(--bb-pad-x);
+  border-radius: var(--bb-radius);
+  background: var(--bb-bg);
+  border: 1px solid var(--bb-border);
+  box-shadow: var(--bb-shadow);
+  -webkit-backdrop-filter: blur(var(--bb-blur));
+  backdrop-filter: blur(var(--bb-blur));
+  position: relative;
+  /* Ensure background is visible */
+  isolation: isolate;
+  max-width: 100%; /* Prevent pill from exceeding container */
+}
+
+/* Mobile horizontal scroll (optional) */
+.benefit-bar__pill--scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  max-width: 100%;
+  /* Smooth scrolling on mobile */
+  -webkit-overflow-scrolling: touch;
+}
+.benefit-bar__pill--scroll::-webkit-scrollbar { 
+  display: none; 
+  width: 0;
+  height: 0;
+}
+
+.bb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  white-space: nowrap;
+  font-size: 14px;
+  line-height: 1.2;
+  text-decoration: none;
+  color: inherit;
+  transition: transform .12s ease, opacity .2s ease;
+}
+.bb-item:hover { transform: translateY(-1px); }
+
+.bb-item__icon::before {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background: var(--bb-accent);
+  mask-size: cover; -webkit-mask-size: cover;
+}
+
+/* SVG masks for crisp icons (no external assets) */
+.bb-item__icon[data-icon="shipping"] { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M3 7h11v7h-1.18A3 3 0 0 0 10 16a3 3 0 0 0-2.82-2H5V7zm12 0h3l3 3v4h-2.18A3 3 0 0 0 17 16a3 3 0 0 0-2-2.83V7zM8 19a2 2 0 1 1 0-4 2 2 0 0 1 0 4m9 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M3 7h11v7h-1.18A3 3 0 0 0 10 16a3 3 0 0 0-2.82-2H5V7zm12 0h3l3 3v4h-2.18A3 3 0 0 0 17 16a3 3 0 0 0-2-2.83V7zM8 19a2 2 0 1 1 0-4 2 2 0 0 1 0 4m9 0a2 2 0 1 1 0-4 2 2 0 0 1 0 4%22/></svg>'); }
+.bb-item__icon[data-icon="returns"]  { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 5V2L8 6l4 4V7a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5H6v2h6a7 7 0 0 0 0-14"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M12 5V2L8 6l4 4V7a5 5 0 0 1 5 5c0 2.76-2.24 5-5 5H6v2h6a7 7 0 0 0 0-14%22/></svg>'); }
+.bb-item__icon[data-icon="support"]  { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 2a9 9 0 0 0-9 9v3a3 3 0 0 0 3 3h1v-6H6a6 6 0 0 1 12 0h-1v6h1a3 3 0 0 0 3-3v-3a9 9 0 0 0-9-9Z"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M12 2a9 9 0 0 0-9 9v3a3 3 0 0 0 3 3h1v-6H6a6 6 0 0 1 12 0h-1v6h1a3 3 0 0 0 3-3v-3a9 9 0 0 0-9-9Z%22/></svg>'); }
+.bb-item__icon[data-icon="secure"]   { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 2l7 3v6c0 5-3.05 9.74-7 11C8.05 20.74 5 16 5 11V5l7-3Zm0 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M12 2l7 3v6c0 5-3.05 9.74-7 11C8.05 20.74 5 16 5 11V5l7-3Zm0 6a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z%22/></svg>'); }
+.bb-item__icon[data-icon="leaf"]     { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M19.5 3c-12 0-16.5 7-16.5 14 6.5-.5 14-4.5 14-11 0 6.5-5.5 10.5-12 12 2 1.5 4.5 3 8 3 7 0 9-7 9-18Z"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M19.5 3c-12 0-16.5 7-16.5 14 6.5-.5 14-4.5 14-11 0 6.5-5.5 10.5-12 12 2 1.5 4.5 3 8 3 7 0 9-7 9-18Z%22/></svg>'); }
+.bb-item__icon[data-icon="star"]     { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="m12 17.27 6.18 3.73-1.64-7.03L21.9 9.5l-7.19-.61L12 2 9.29 8.89 2.1 9.5l5.36 4.47-1.64 7.03L12 17.27Z"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22m12 17.27 6.18 3.73-1.64-7.03L21.9 9.5l-7.19-.61L12 2 9.29 8.89 2.1 9.5l5.36 4.47-1.64 7.03L12 17.27Z%22/></svg>'); }
+.bb-item__icon[data-icon="time"]     { mask: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path fill="black" d="M12 1a11 11 0 1 0 11 11A11 11 0 0 0 12 1m.5 6h-1v6l5 3 .5-.86-4.5-2.64z"/></svg>'); -webkit-mask: url('data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 24 24%22><path fill=%22black%22 d=%22M12 1a11 11 0 1 0 11 11A11 11 0 0 0 12 1m.5 6h-1v6l5 3 .5-.86-4.5-2.64z%22/></svg>'); }
+
+.bb-sep {
+  width: 1px;
+  height: 16px;
+  background: var(--bb-sep);
+}
+
+/* Responsive improvements */
+@media screen and (max-width: 640px) {
+  .benefit-bar__wrap {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+  
+  .benefit-bar__pill {
+    gap: calc(var(--bb-gap) * 0.75); /* Reduce gap on mobile */
+    padding: var(--bb-pad-y) calc(var(--bb-pad-x) * 0.75);
+  }
+  
+  .bb-item {
+    font-size: 13px; /* Slightly smaller text on mobile */
+    gap: 8px;
+  }
+  
+  .bb-item__icon::before {
+    width: 14px;
+    height: 14px;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .benefit-bar__pill {
+    gap: calc(var(--bb-gap) * 0.6);
+    padding: calc(var(--bb-pad-y) * 0.8) calc(var(--bb-pad-x) * 0.6);
+  }
+  
+  .bb-item {
+    font-size: 12px;
+    gap: 6px;
+  }
+  
+  .bb-item__icon::before {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .bb-sep {
+    height: 12px;
+  }
+}
+
+/* Mobile visibility control */
+@media (max-width: 640px) {
+  .benefit-bar--hidden-mobile {
+    display: none;
+  }
+}
+
+/* Note: Sticky behavior is built into absolute positioning when top is set */

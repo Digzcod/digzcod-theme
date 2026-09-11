@@ -10,8 +10,95 @@
 {
   "sections": {
     "main": {
-      "type": "product",
-      "settings": {}
+      "type": "main-product",
+      "settings": {
+        "enable_sticky_summary": true,
+        "enable_breadcrumbs": true,
+        "enable_zoom": true,
+        "enable_video_autoplay": false,
+        "enable_video_loop": false,
+        "show_vendor": false,
+        "show_sku": true,
+        "show_inventory": true,
+        "show_pickup_availability": true,
+        "show_share": true,
+        "show_dynamic_checkout": true
+      },
+      "blocks": {
+        "title": {
+          "type": "title",
+          "settings": {
+            "heading_size": "h1"
+          }
+        },
+        "price": {
+          "type": "price",
+          "settings": {
+            "show_badges": true,
+            "show_tax_note": false
+          }
+        },
+        "rating": {
+          "type": "rating",
+          "settings": {
+            "metafield": "reviews.rating"
+          }
+        },
+        "variant_picker": {
+          "type": "variant_picker",
+          "settings": {
+            "picker_style": "pills"
+          }
+        },
+        "quantity_selector": {
+          "type": "quantity_selector",
+          "settings": {}
+        },
+        "buy_buttons": {
+          "type": "buy_buttons",
+          "settings": {}
+        },
+        "description": {
+          "type": "description",
+          "settings": {}
+        },
+        "specifications": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Specifications",
+            "content_source": "metafield",
+            "metafield_ns_key": "product.specifications"
+          }
+        },
+        "features": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Features",
+            "content_source": "metafield",
+            "metafield_ns_key": "product.features"
+          }
+        },
+        "care_instructions": {
+          "type": "collapsible_row",
+          "settings": {
+            "heading": "Care Instructions",
+            "content_source": "text",
+            "content": "<p>• Machine wash cold with like colors<br>• Do not bleach<br>• Tumble dry low<br>• Iron on low heat if needed</p>"
+          }
+        }
+      },
+      "block_order": [
+        "title",
+        "price",
+        "rating",
+        "variant_picker",
+        "quantity_selector",
+        "buy_buttons",
+        "description",
+        "specifications",
+        "features",
+        "care_instructions"
+      ]
     }
   },
   "order": [

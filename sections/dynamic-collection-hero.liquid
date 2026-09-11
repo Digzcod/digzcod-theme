@@ -1,0 +1,852 @@
+{% comment %}
+Dynamic Collection Hero - Shopify Theme
+Enterprise-level hero section that adapts content and images based on collection handle
+Features: Dynamic content mapping, automatic image selection, metafield support, responsive design
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'DynamicCollectionHero-' | append: section.id
+  
+  # Collection-specific content mapping
+  assign dynamic_content = null
+  
+  if collection and collection.handle
+    case collection.handle
+      when 'best-selling-oil-diffusers'
+        assign dynamic_content = 'diffusers'
+      when 'essential-oils-for-aromatherapy-wellness'
+        assign dynamic_content = 'essential-oils'
+      else
+        assign dynamic_content = 'default'
+    endcase
+  endif
+
+  # Set default values based on collection type
+  assign hero_image = section.settings.hero_image
+  assign hero_title = section.settings.hero_title
+  assign hero_subtitle = section.settings.hero_subtitle
+  assign hero_button_label = section.settings.hero_button_label
+  assign hero_button_link = section.settings.hero_button_link
+
+  # Dynamic content overrides
+  if dynamic_content == 'diffusers'
+    if hero_image == blank
+      assign hero_image = section.settings.diffusers_default_image
+    endif
+    if hero_title == blank
+      assign hero_title = 'general.collection_hero.diffusers_collection' | t
+    endif
+    if hero_subtitle == blank
+      assign hero_subtitle = '<p>Transform your space with our elegant collection of premium oil diffusers. From ultrasonic to ceramic designs, create the perfect ambiance for relaxation and wellness.</p>'
+    endif
+    if hero_button_label == blank
+      assign hero_button_label = 'general.collection_hero.shop_diffusers' | t
+    endif
+  elsif dynamic_content == 'essential-oils'
+    if hero_image == blank
+      assign hero_image = section.settings.essential_oils_default_image
+    endif
+    if hero_title == blank
+      assign hero_title = 'general.collection_hero.essential_oils_collection' | t
+    endif
+    if hero_subtitle == blank
+      assign hero_subtitle = '<p>Discover our curated selection of 100% pure essential oils for aromatherapy, wellness, and natural living. Sourced from the finest botanical ingredients.</p>'
+    endif
+    if hero_button_label == blank
+      assign hero_button_label = 'general.collection_hero.shop_essential_oils' | t
+    endif
+  else
+    # Default fallbacks
+    if hero_image == blank
+      assign hero_image = section.settings.default_fallback_image
+    endif
+    if hero_title == blank and collection
+      assign hero_title = collection.title
+    elsif hero_title == blank
+      assign hero_title = 'general.collection_hero.our_collection' | t
+    endif
+    if hero_subtitle == blank and collection
+      assign hero_subtitle = collection.description
+    endif
+    if hero_button_label == blank
+      assign hero_button_label = 'general.collection_hero.shop_now' | t
+    endif
+  endif
+
+  # Use collection URL as button link if not set
+  if hero_button_link == blank and collection
+    assign hero_button_link = collection.url
+  endif
+
+  # Metafield overrides (highest priority)
+  if collection and collection.metafields.custom.hero_image != blank
+    assign hero_image = collection.metafields.custom.hero_image
+  endif
+  if collection and collection.metafields.custom.hero_title != blank
+    assign hero_title = collection.metafields.custom.hero_title
+  endif
+  if collection and collection.metafields.custom.hero_subtitle != blank
+    assign hero_subtitle = collection.metafields.custom.hero_subtitle
+  endif
+-%}
+
+{% style %}
+  #{{ section_id }} {
+    --hero-height: {{ section.settings.hero_height | default: 520 }}px;
+    --hero-overlay-opacity: {{ section.settings.overlay_opacity | default: 15 }}%;
+    --heading-font-size: {{ section.settings.heading_font_size | default: 56 }}px;
+    --heading-font-weight: {{ section.settings.heading_font_weight | default: '700' }};
+    --heading-font-style: {{ section.settings.heading_font_style | default: 'normal' }};
+    --subtitle-font-size: {{ section.settings.subtitle_font_size | default: 18 }}px;
+    --subtitle-font-weight: {{ section.settings.subtitle_font_weight | default: '400' }};
+    --button-font-size: {{ section.settings.button_font_size | default: 16 }}px;
+    --button-font-weight: {{ section.settings.button_font_weight | default: '600' }};
+    --button-border-radius: {{ section.settings.button_border_radius | default: 12 }}px;
+    --button-bg-color: {{ section.settings.button_bg_color | default: '#ffffff' }};
+    --button-text-color: {{ section.settings.button_text_color | default: '#333333' }};
+    --button-border-color: {{ section.settings.button_border_color | default: '#ffffff' }};
+  }
+
+  #{{ section_id }} .hero-content {
+    text-align: {{ section.settings.content_alignment | default: 'center' }};
+  }
+
+  {% if section.settings.text_color == 'light' %}
+    #{{ section_id }} .hero-title,
+    #{{ section_id }} .hero-subtitle {
+      color: #ffffff;
+    }
+  {% else %}
+    #{{ section_id }} .hero-title,
+    #{{ section_id }} .hero-subtitle {
+      color: #333333;
+    }
+  {% endif %}
+
+  {% if section.settings.heading_color_custom != blank %}
+    #{{ section_id }} .hero-title {
+      color: {{ section.settings.heading_color_custom }} !important;
+    }
+  {% endif %}
+
+  {% if section.settings.subtitle_color_custom != blank %}
+    #{{ section_id }} .hero-subtitle {
+      color: {{ section.settings.subtitle_color_custom }} !important;
+    }
+  {% endif %}
+{% endstyle %}
+
+<dynamic-collection-hero-cart>
+  <section class="dynamic-collection-hero" id="{{ section_id }}">
+  <div class="hero-container">
+    {% if hero_image != blank %}
+      <div class="hero-image-wrapper">
+        {%- liquid
+          assign image_height = section.settings.hero_height | default: 520
+          assign image_sizes = '(min-width: 1200px) 1200px, (min-width: 750px) 750px, 100vw'
+          assign image_position_class = 'hero-image hero-image--' | append: section.settings.image_position | default: 'center'
+        -%}
+        {{
+          hero_image
+          | image_url: width: 1920, height: image_height, crop: 'center'
+          | image_tag:
+            loading: 'lazy',
+            sizes: image_sizes,
+            widths: '375, 550, 750, 1100, 1500, 1920',
+            class: image_position_class,
+            alt: hero_image.alt | escape
+        }}
+        <div class="hero-overlay"></div>
+      </div>
+    {% endif %}
+
+    <div class="hero-content">
+      <div class="hero-content-inner">
+        {% if hero_title != blank %}
+          <h1 class="hero-title">{{ hero_title }}</h1>
+        {% endif %}
+
+        {% if hero_subtitle != blank %}
+          <div class="hero-subtitle">{{ hero_subtitle }}</div>
+        {% endif %}
+
+        {% if hero_button_label != blank and hero_button_link != blank %}
+          <div class="hero-button-wrapper">
+            <a
+              href="{{ hero_button_link }}"
+              class="hero-button hero-button--{{ section.settings.button_style | default: 'filled' }}"
+              role="button"
+              aria-label="{{ hero_button_label | escape }}">
+              {{ hero_button_label }}
+            </a>
+          </div>
+        {% endif %}
+
+        {% comment %} Add to Cart Button for Featured Product {% endcomment %}
+        {% if section.settings.featured_product != blank and section.settings.show_add_to_cart %}
+          {% assign featured_product = all_products[section.settings.featured_product] %}
+          {% if featured_product and featured_product.available %}
+            <div class="hero-add-to-cart-wrapper">
+              {% if featured_product.variants.size == 1 %}
+                <form class="hero-cart-form" data-product-form>
+                  <input type="hidden" name="id" value="{{ featured_product.variants.first.id }}">
+                  <button
+                    type="submit"
+                    class="hero-add-to-cart-button"
+                    data-quick-add-button
+                    {% unless featured_product.variants.first.available %}disabled{% endunless %}>
+                    <span class="add-to-cart-text">{{ section.settings.add_to_cart_label | default: 'Add to Cart' }}</span>
+                    <span class="add-to-cart-loading hidden">{{ 'products.product.adding' | t }}</span>
+                  </button>
+                </form>
+              {% else %}
+                <a
+                  href="{{ featured_product.url }}"
+                  class="hero-add-to-cart-button hero-add-to-cart-button--variants">
+                  {{ section.settings.add_to_cart_label | default: 'Choose Options' }}
+                </a>
+              {% endif %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</section>
+</dynamic-collection-hero-cart>
+
+<link rel="stylesheet" href="{{ 'collection-enhanced.css' | asset_url }}">
+
+<script>
+  // Dynamic Collection Hero Cart Functionality
+  class DynamicCollectionHeroCart extends HTMLElement {
+    constructor() {
+      super();
+      this.init();
+    }
+
+    init() {
+      this.addEventListener('submit', this.handleQuickAdd.bind(this));
+    }
+
+    async handleQuickAdd(event) {
+      if (!event.target.matches('[data-product-form]')) return;
+
+      event.preventDefault();
+
+      const form = event.target;
+      const submitButton = form.querySelector('[data-quick-add-button]');
+
+      if (!submitButton) return;
+
+      try {
+        this.setLoadingState(submitButton, true);
+
+        const formData = new FormData(form);
+        const response = await this.addToCart(formData);
+
+        if (response.ok) {
+          const result = await response.json();
+          await this.handleAddToCartSuccess(result, submitButton);
+        } else {
+          const error = await response.json();
+          this.handleAddToCartError(error, submitButton);
+        }
+      } catch (error) {
+        console.error('Add to cart failed:', error);
+        this.handleAddToCartError(
+          { message: 'Network error occurred' },
+          submitButton
+        );
+      } finally {
+        this.setLoadingState(submitButton, false);
+      }
+    }
+
+    async addToCart(formData) {
+      return fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: new URLSearchParams(formData),
+      });
+    }
+
+    async handleAddToCartSuccess(result, submitButton) {
+      // Show success feedback
+      this.showSuccessFeedback(submitButton);
+
+      // Dispatch custom event for cart drawer or other components
+      this.dispatchEvent(
+        new CustomEvent('product:added-to-cart', {
+          detail: {
+            product: result,
+          },
+          bubbles: true,
+        })
+      );
+    }
+
+    handleAddToCartError(error, submitButton) {
+      console.error('Add to cart error:', error);
+      
+      // Show error message
+      this.showErrorFeedback(
+        submitButton,
+        error.message || 'Failed to add item to cart'
+      );
+    }
+
+    setLoadingState(button, isLoading) {
+      const textElement = button.querySelector('.add-to-cart-text');
+      const loadingElement = button.querySelector('.add-to-cart-loading');
+
+      if (isLoading) {
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        if (textElement) textElement.classList.add('hidden');
+        if (loadingElement) loadingElement.classList.remove('hidden');
+      } else {
+        button.disabled = false;
+        button.removeAttribute('aria-busy');
+        if (textElement) textElement.classList.remove('hidden');
+        if (loadingElement) loadingElement.classList.add('hidden');
+      }
+    }
+
+    showSuccessFeedback(button) {
+      // Create and show success indicator
+      const originalText = button.querySelector('.add-to-cart-text').textContent;
+      const textElement = button.querySelector('.add-to-cart-text');
+      
+      textElement.textContent = 'Added!';
+      button.classList.add('success');
+      
+      // Reset after delay
+      setTimeout(() => {
+        textElement.textContent = originalText;
+        button.classList.remove('success');
+      }, 2000);
+    }
+
+    showErrorFeedback(button, message) {
+      const textElement = button.querySelector('.add-to-cart-text');
+      const originalText = textElement.textContent;
+      
+      textElement.textContent = 'Error';
+      button.classList.add('error');
+      
+      // Reset after delay
+      setTimeout(() => {
+        textElement.textContent = originalText;
+        button.classList.remove('error');
+      }, 3000);
+    }
+  }
+
+  customElements.define('dynamic-collection-hero-cart', DynamicCollectionHeroCart);
+</script>
+
+{% stylesheet %}
+  .dynamic-collection-hero {
+    position: relative;
+    width: 100%;
+    height: var(--hero-height);
+    overflow: hidden;
+    background-color: #f8f9fa;
+  }
+
+  .hero-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-image-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+  }
+
+  .hero-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center; /* default */
+  }
+
+  .hero-image--top {
+    object-position: center top;
+  }
+
+  .hero-image--center {
+    object-position: center center;
+  }
+
+  .hero-image--bottom {
+    object-position: center bottom;
+  }
+
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, var(--hero-overlay-opacity));
+    z-index: 2;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 20px;
+  }
+
+  .hero-content-inner {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .hero-title {
+    font-size: var(--heading-font-size);
+    font-weight: var(--heading-font-weight);
+    font-style: var(--heading-font-style);
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .hero-subtitle {
+    font-size: var(--subtitle-font-size);
+    font-weight: var(--subtitle-font-weight);
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  }
+
+  .hero-subtitle p {
+    margin: 0;
+  }
+
+  .hero-button-wrapper {
+    margin-top: 32px;
+  }
+
+  .hero-add-to-cart-wrapper {
+    margin-top: 16px;
+  }
+
+  .hero-button,
+  .hero-add-to-cart-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--button-font-size);
+    font-weight: var(--button-font-weight);
+    text-decoration: none;
+    border-radius: var(--button-border-radius);
+    padding: 16px 32px;
+    min-height: 48px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+
+  .hero-add-to-cart-button {
+    background-color: var(--button-text-color);
+    color: var(--button-bg-color);
+    border-color: var(--button-text-color);
+  }
+
+  .hero-button--filled {
+    background-color: var(--button-bg-color);
+    color: var(--button-text-color);
+    border-color: var(--button-border-color);
+  }
+
+  .hero-button--outlined {
+    background-color: transparent;
+    color: var(--button-text-color);
+    border-color: var(--button-border-color);
+  }
+
+  .hero-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0.9;
+  }
+
+  .hero-add-to-cart-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    opacity: 0.9;
+  }
+
+  .hero-button:focus,
+  .hero-add-to-cart-button:focus {
+    outline: 2px solid rgba(255, 255, 255, 0.5);
+    outline-offset: 2px;
+  }
+
+  .hero-add-to-cart-button:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .hero-add-to-cart-button .hidden {
+    display: none;
+  }
+
+  .hero-add-to-cart-button.success {
+    background-color: #22c55e;
+    border-color: #22c55e;
+  }
+
+  .hero-add-to-cart-button.error {
+    background-color: #ef4444;
+    border-color: #ef4444;
+  }
+
+  /* Responsive Design */
+  @media screen and (max-width: 768px) {
+    .dynamic-collection-hero {
+      height: calc(var(--hero-height) * 0.8);
+    }
+
+    .hero-title {
+      font-size: calc(var(--heading-font-size) * 0.7);
+    }
+
+    .hero-subtitle {
+      font-size: calc(var(--subtitle-font-size) * 0.9);
+    }
+
+    .hero-button {
+      padding: 14px 24px;
+      font-size: calc(var(--button-font-size) * 0.9);
+    }
+
+    .hero-content {
+      padding: 0 16px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .dynamic-collection-hero {
+      height: calc(var(--hero-height) * 0.6);
+    }
+
+    .hero-title {
+      font-size: calc(var(--heading-font-size) * 0.5);
+    }
+
+    .hero-subtitle {
+      font-size: calc(var(--subtitle-font-size) * 0.8);
+      margin-bottom: 24px;
+    }
+
+    .hero-button {
+      padding: 12px 20px;
+      width: 100%;
+      max-width: 280px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Dynamic Collection Hero",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Image"
+    },
+    {
+      "type": "image_picker",
+      "id": "hero_image",
+      "label": "Hero image",
+      "info": "Will use collection metafield if available"
+    },
+    {
+      "type": "image_picker",
+      "id": "diffusers_default_image",
+      "label": "Default diffusers image",
+      "info": "Used automatically for diffuser collections when no hero image is set"
+    },
+    {
+      "type": "image_picker",
+      "id": "essential_oils_default_image",
+      "label": "Default essential oils image",
+      "info": "Used automatically for essential oil collections when no hero image is set"
+    },
+    {
+      "type": "image_picker",
+      "id": "default_fallback_image",
+      "label": "Default fallback image",
+      "info": "Used for other collections when no specific image is set"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay opacity",
+      "min": 0,
+      "max": 100,
+      "step": 5,
+      "unit": "%",
+      "default": 15
+    },
+    {
+      "type": "select",
+      "id": "image_position",
+      "label": "Image position",
+      "options": [
+        { "value": "top", "label": "Top" },
+        { "value": "center", "label": "Center" },
+        { "value": "bottom", "label": "Bottom" }
+      ],
+      "default": "center",
+      "info": "Controls how the image is positioned within the hero container"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "hero_title",
+      "label": "Heading",
+      "info": "Leave blank to use dynamic content based on collection"
+    },
+    {
+      "type": "richtext",
+      "id": "hero_subtitle",
+      "label": "Subtitle",
+      "info": "Leave blank to use dynamic content based on collection"
+    },
+    {
+      "type": "text",
+      "id": "hero_button_label",
+      "label": "Button label",
+      "info": "Leave blank to use dynamic content"
+    },
+    {
+      "type": "url",
+      "id": "hero_button_link",
+      "label": "Button link",
+      "info": "Leave blank to use collection URL"
+    },
+    {
+      "type": "header",
+      "content": "Add to Cart"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_add_to_cart",
+      "label": "Show add to cart button",
+      "default": false,
+      "info": "Display an add to cart button for a featured product"
+    },
+    {
+      "type": "product",
+      "id": "featured_product",
+      "label": "Featured product",
+      "info": "Select a product to add to cart from the hero section"
+    },
+    {
+      "type": "text",
+      "id": "add_to_cart_label",
+      "label": "Add to cart button label",
+      "default": "Add to Cart",
+      "info": "Text displayed on the add to cart button"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "range",
+      "id": "hero_height",
+      "label": "Hero height",
+      "min": 300,
+      "max": 800,
+      "step": 20,
+      "unit": "px",
+      "default": 520
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "select",
+      "id": "text_color",
+      "label": "Text color",
+      "options": [
+        { "value": "light", "label": "Light" },
+        { "value": "dark", "label": "Dark" }
+      ],
+      "default": "light"
+    },
+    {
+      "type": "range",
+      "id": "heading_font_size",
+      "label": "Heading font size",
+      "min": 24,
+      "max": 80,
+      "step": 2,
+      "unit": "px",
+      "default": 56
+    },
+    {
+      "type": "select",
+      "id": "heading_font_weight",
+      "label": "Heading font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" },
+        { "value": "800", "label": "Extra Bold" }
+      ],
+      "default": "700"
+    },
+    {
+      "type": "select",
+      "id": "heading_font_style",
+      "label": "Heading font style",
+      "options": [
+        { "value": "normal", "label": "Normal" },
+        { "value": "italic", "label": "Italic" }
+      ],
+      "default": "normal"
+    },
+    {
+      "type": "color",
+      "id": "heading_color_custom",
+      "label": "Custom heading color",
+      "info": "Overrides text color setting"
+    },
+    {
+      "type": "range",
+      "id": "subtitle_font_size",
+      "label": "Subtitle font size",
+      "min": 14,
+      "max": 32,
+      "step": 1,
+      "unit": "px",
+      "default": 18
+    },
+    {
+      "type": "select",
+      "id": "subtitle_font_weight",
+      "label": "Subtitle font weight",
+      "options": [
+        { "value": "300", "label": "Light" },
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" }
+      ],
+      "default": "400"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color_custom",
+      "label": "Custom subtitle color",
+      "info": "Overrides text color setting"
+    },
+    {
+      "type": "header",
+      "content": "Button"
+    },
+    {
+      "type": "select",
+      "id": "button_style",
+      "label": "Button style",
+      "options": [
+        { "value": "filled", "label": "Filled" },
+        { "value": "outlined", "label": "Outlined" }
+      ],
+      "default": "filled"
+    },
+    {
+      "type": "color",
+      "id": "button_bg_color",
+      "label": "Button background color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Button text color",
+      "default": "#333333"
+    },
+    {
+      "type": "color",
+      "id": "button_border_color",
+      "label": "Button border color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "button_font_size",
+      "label": "Button font size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "select",
+      "id": "button_font_weight",
+      "label": "Button font weight",
+      "options": [
+        { "value": "400", "label": "Normal" },
+        { "value": "500", "label": "Medium" },
+        { "value": "600", "label": "Semi Bold" },
+        { "value": "700", "label": "Bold" }
+      ],
+      "default": "600"
+    },
+    {
+      "type": "range",
+      "id": "button_border_radius",
+      "label": "Button border radius",
+      "min": 0,
+      "max": 50,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Dynamic Collection Hero"
+    }
+  ]
+}
+{% endschema %}

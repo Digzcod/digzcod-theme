@@ -1,0 +1,585 @@
+/* Hero Promo – Enhanced with Responsive Controls */
+/* Optimized for mobile-first responsive design */
+
+.hero-promo {
+  position: relative;
+  color: var(--hp-text);
+  border-radius: var(--hp-radius);
+  isolation: isolate;
+  overflow: hidden;
+  min-height: var(--hp-mobile-section-height);
+  height: var(--hp-mobile-section-height);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-promo__media {
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  border-radius: var(--hp-radius);
+  overflow: hidden;
+}
+
+.hero-promo__image,
+.hero-promo__video,
+.hero-promo__background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--hp-radius);
+}
+
+.hero-promo__background {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+.hero-promo__placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+}
+
+.hero-promo__overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--hp-overlay);
+  opacity: var(--hp-overlay-opacity);
+  z-index: -1;
+}
+
+.hero-promo__container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  padding: var(--hp-mobile-padding-y) var(--hp-mobile-padding-x);
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: inherit;
+}
+
+.hero-promo__container--boxed {
+  max-width: min(92vw, var(--hp-content-max));
+}
+
+.hero-promo__container--full {
+  max-width: 100%;
+}
+
+.hero-promo__content {
+  position: relative;
+  z-index: 1;
+  max-width: var(--hp-content-max);
+  width: 100%;
+}
+
+.hero-promo__content--start { 
+  text-align: left; 
+}
+
+.hero-promo__content--center { 
+  text-align: center; 
+}
+
+.hero-promo__content--end { 
+  text-align: right; 
+}
+
+.hero-promo__kicker {
+  font-size: clamp(12px, 1.2vw, 14px);
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  opacity: .9;
+  margin: 0 0 8px;
+  color: var(--hp-mobile-heading-color, var(--hp-heading-color, var(--hp-text)));
+}
+
+.hero-promo__heading {
+  font-size: var(--hp-mobile-heading-size);
+  line-height: 1.05;
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: var(--hp-mobile-heading-color, var(--hp-heading-color, var(--hp-text)));
+}
+
+.hero-promo__subheading {
+  font-size: var(--hp-mobile-subheading-size);
+  opacity: .95;
+  margin: 0 0 18px;
+  color: var(--hp-mobile-subheading-color, var(--hp-subheading-color, var(--hp-text)));
+}
+
+.hero-promo__richtext {
+  margin: 0 0 24px;
+  color: var(--hp-mobile-body-color, var(--hp-body-color, var(--hp-text)));
+}
+
+.hero-promo__richtext p {
+  margin: 0 0 1em;
+}
+
+.hero-promo__richtext p:last-child {
+  margin-bottom: 0;
+}
+
+/* Content extras (badges and features) */
+.hero-promo__extras {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin: 0 0 24px;
+}
+
+/* Align extras with content alignment */
+.hero-promo__content--start .hero-promo__extras {
+  justify-content: flex-start;
+}
+
+.hero-promo__content--center .hero-promo__extras {
+  justify-content: center;
+}
+
+.hero-promo__content--end .hero-promo__extras {
+  justify-content: flex-end;
+}
+
+/* Buttons as part of content flow */
+.hero-promo__buttons {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+/* Mobile: Stack buttons vertically for better UX */
+@media (max-width: 767px) {
+  .hero-promo__buttons {
+    flex-direction: column;
+    gap: 16px;
+  }
+  
+  .hero-promo__buttons .hp-btn {
+    width: 100%;
+    max-width: 280px;
+  }
+}
+
+/* Align buttons with content alignment */
+.hero-promo__content--start .hero-promo__buttons {
+  justify-content: flex-start;
+}
+
+.hero-promo__content--center .hero-promo__buttons {
+  justify-content: center;
+}
+
+.hero-promo__content--end .hero-promo__buttons {
+  justify-content: flex-end;
+}
+
+.hero-promo__actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  align-items: center;
+  flex-direction: column;
+}
+
+.hp-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all .2s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 16px;
+  text-align: center;
+  min-width: 140px;
+  white-space: nowrap;
+}
+
+.hp-btn--primary {
+  background: var(--hp-accent);
+  color: var(--hp-text);
+  box-shadow: 0 4px 14px rgba(0,0,0,.15);
+}
+
+.hp-btn--primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(0,0,0,.2);
+}
+
+.hp-btn--secondary {
+  background: rgba(255,255,255,.1);
+  color: var(--hp-text);
+  border: 1px solid rgba(255,255,255,.3);
+}
+
+.hp-btn--secondary:hover {
+  background: rgba(255,255,255,.2);
+}
+
+.hp-btn--outline {
+  background: transparent;
+  border: 2px solid var(--hp-accent);
+  color: var(--hp-accent);
+}
+
+.hp-btn--outline:hover {
+  background: var(--hp-accent);
+  color: var(--hp-text);
+}
+
+.hp-btn--custom {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  border-color: var(--btn-border);
+  border-width: var(--btn-border-width);
+  border-radius: var(--btn-border-radius);
+}
+
+.hp-btn--custom:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  filter: brightness(1.05);
+}
+
+.hp-btn--custom:focus {
+  outline: 2px solid var(--btn-border);
+  outline-offset: 2px;
+}
+
+.hp-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  margin-bottom: 8px;
+}
+
+.hp-badge--soft {
+  background: rgba(255,255,255,.15);
+  color: var(--hp-text);
+}
+
+.hp-badge--solid {
+  background: var(--hp-accent);
+  color: var(--hp-text);
+}
+
+.hp-feature {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.hp-feature__icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+}
+
+.hp-feature__text {
+  flex: 1;
+}
+
+.hp-feature__title {
+  font-weight: 600;
+  margin-bottom: 2px;
+  color: var(--hp-mobile-heading-color, var(--hp-heading-color, var(--hp-text)));
+}
+
+.hp-feature__caption {
+  font-size: 14px;
+  opacity: .8;
+  color: var(--hp-mobile-body-color, var(--hp-body-color, var(--hp-text)));
+}
+
+.hero-promo__scroll {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: none;
+  border: none;
+  color: var(--hp-text);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all .2s ease;
+}
+
+.hero-promo__scroll:hover {
+  background: rgba(255,255,255,.1);
+}
+
+.hero-promo__scroll-dot {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: currentColor;
+  border-radius: 50%;
+  animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+}
+
+/* Tablet Styles (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-promo {
+    min-height: var(--hp-tablet-section-height);
+    height: var(--hp-tablet-section-height);
+  }
+  
+  .hero-promo__container {
+    padding: var(--hp-tablet-padding-y) var(--hp-tablet-padding-x);
+  }
+  
+  .hero-promo__heading {
+    font-size: var(--hp-tablet-heading-size);
+    color: var(--hp-tablet-heading-color, var(--hp-heading-color, var(--hp-text)));
+  }
+  
+  .hero-promo__subheading {
+    font-size: var(--hp-tablet-subheading-size);
+    color: var(--hp-tablet-subheading-color, var(--hp-subheading-color, var(--hp-text)));
+  }
+  
+  .hero-promo__richtext {
+    color: var(--hp-tablet-body-color, var(--hp-body-color, var(--hp-text)));
+  }
+  
+  .hero-promo__kicker {
+    color: var(--hp-tablet-heading-color, var(--hp-heading-color, var(--hp-text)));
+  }
+  
+  .hp-feature__title {
+    color: var(--hp-tablet-heading-color, var(--hp-heading-color, var(--hp-text)));
+  }
+  
+  .hp-feature__caption {
+    color: var(--hp-tablet-body-color, var(--hp-body-color, var(--hp-text)));
+  }
+  
+  .hero-promo__actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .hero-promo__buttons {
+    flex-direction: row;
+    margin-top: 32px;
+  }
+  
+  .hero-promo__extras {
+    margin-bottom: 32px;
+  }
+  
+  .hp-btn {
+    width: auto;
+    min-width: 140px;
+  }
+}
+
+/* Desktop Styles (1025px and up) */
+@media (min-width: 1025px) {
+  .hero-promo {
+    min-height: var(--hp-section-height);
+    height: var(--hp-section-height);
+  }
+  
+  .hero-promo__container {
+    padding: var(--hp-padding-y) var(--hp-padding-x);
+  }
+  
+  .hero-promo__heading {
+    font-size: var(--hp-heading-size);
+    color: var(--hp-heading-color, var(--hp-text));
+  }
+  
+  .hero-promo__subheading {
+    font-size: var(--hp-subheading-size);
+    color: var(--hp-subheading-color, var(--hp-text));
+  }
+  
+  .hero-promo__richtext {
+    color: var(--hp-body-color, var(--hp-text));
+  }
+  
+  .hero-promo__kicker {
+    color: var(--hp-heading-color, var(--hp-text));
+  }
+  
+  .hp-feature__title {
+    color: var(--hp-heading-color, var(--hp-text));
+  }
+  
+  .hp-feature__caption {
+    color: var(--hp-body-color, var(--hp-text));
+  }
+  
+  .hero-promo__actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+  
+  .hero-promo__buttons {
+    flex-direction: row;
+    margin-top: 40px;
+  }
+  
+  .hero-promo__extras {
+    margin-bottom: 40px;
+  }
+  
+  .hp-btn {
+    width: auto;
+    min-width: 140px;
+  }
+}
+
+/* Desktop Image positioning (1025px and up) */
+@media (min-width: 1025px) {
+  .hero-promo--desktop-position-top .hero-promo__background {
+    background-position: center top;
+  }
+  
+  .hero-promo--desktop-position-center .hero-promo__background {
+    background-position: center center;
+  }
+  
+  .hero-promo--desktop-position-bottom .hero-promo__background {
+    background-position: center bottom;
+  }
+  
+  /* Legacy support for img elements if still in use */
+  .hero-promo--desktop-position-top .hero-promo__image {
+    object-position: center top;
+  }
+  
+  .hero-promo--desktop-position-center .hero-promo__image {
+    object-position: center center;
+  }
+  
+  .hero-promo--desktop-position-bottom .hero-promo__image {
+    object-position: center bottom;
+  }
+}
+
+/* Mobile background image handling */
+@media (max-width: 767px) {
+  .hero-promo__background--mobile {
+    display: block;
+  }
+  
+  .hero-promo__background:not(.hero-promo__background--mobile) {
+    display: none;
+  }
+  
+  /* Mobile image positioning */
+  .hero-promo--mobile-position-top .hero-promo__background {
+    background-position: center top;
+  }
+  
+  .hero-promo--mobile-position-center .hero-promo__background {
+    background-position: center center;
+  }
+  
+  .hero-promo--mobile-position-bottom .hero-promo__background {
+    background-position: center bottom;
+  }
+}
+
+@media (min-width: 768px) {
+  .hero-promo__background--mobile {
+    display: none;
+  }
+  
+  .hero-promo__background:not(.hero-promo__background--mobile) {
+    display: block;
+  }
+}
+
+/* Tablet image positioning (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .hero-promo--desktop-position-top .hero-promo__background {
+    background-position: center top;
+  }
+  
+  .hero-promo--desktop-position-center .hero-promo__background {
+    background-position: center center;
+  }
+  
+  .hero-promo--desktop-position-bottom .hero-promo__background {
+    background-position: center bottom;
+  }
+}
+
+/* Mobile content alignment classes */
+@media (max-width: 767px) {
+  .hero-promo__content--mobile-start {
+    text-align: left;
+  }
+
+  .hero-promo__content--mobile-center {
+    text-align: center;
+  }
+
+  .hero-promo__content--mobile-end {
+    text-align: right;
+  }
+  
+  /* Mobile button alignment */
+  .hero-promo__content--mobile-start .hero-promo__buttons {
+    justify-content: flex-start;
+  }
+
+  .hero-promo__content--mobile-center .hero-promo__buttons {
+    justify-content: center;
+  }
+
+  .hero-promo__content--mobile-end .hero-promo__buttons {
+    justify-content: flex-end;
+  }
+  
+  /* Mobile extras alignment */
+  .hero-promo__content--mobile-start .hero-promo__extras {
+    justify-content: flex-start;
+  }
+
+  .hero-promo__content--mobile-center .hero-promo__extras {
+    justify-content: center;
+  }
+
+  .hero-promo__content--mobile-end .hero-promo__extras {
+    justify-content: flex-end;
+  }
+}

@@ -2,33 +2,42 @@
 <html lang="{{ request.locale.iso_code }}">
   <head>
     {% # Inlined CSS Variables %}
-    {% render 'css-variables' %}
+  {% render 'css-variables' %}
 
     {% # Load and preload the critical CSS %}
-    {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
-    
-    
+  {{ 'critical.css' | asset_url | stylesheet_tag: preload: true }}
+
+
     {% # Load Tailwind CSS %}
-    {{ 'output.css' | asset_url | stylesheet_tag }}
+  {{ 'output.css' | asset_url | stylesheet_tag }}
 
     {% # Load Header Dropdown Styles %}
-    {{ 'header-dropdown.css' | asset_url | stylesheet_tag }}
+  {{ 'header-dropdown.css' | asset_url | stylesheet_tag }}
 
     {% # Social, title, etc. %}
     {% render 'meta-tags' %}
 
     {{ content_for_header }}
-   
+
   </head>
 
   <body class="">
-    {% sections 'header-group' %}
+    {% sections 'header-step' %}
+    <div class="main_body">
 
-    {{ content_for_layout }}
+      {{ content_for_layout }}
+    </div>
 
-    {% sections 'footer-group' %}
+  {% sections 'footer-group' %}
 
-    {% # Load Header Dropdown JavaScript %}
-    <script src="{{ 'header-dropdown.js' | asset_url }}" defer></script>
+    {% comment %} Cart count helper for global cart functionality {% endcomment %}
+    {% render 'cart-count-helper' %}
   </body>
 </html>
+
+{% style %}
+  .main_body {
+    width: 100%;
+    min-height: 100vh;
+  }
+{% endstyle %}

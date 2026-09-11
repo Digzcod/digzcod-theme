@@ -1,0 +1,492 @@
+{% comment %}
+Collection Products Grid - Shopify Theme
+Enterprise-level collection products display with AJAX add to cart
+Features: Product cards, price display, quick add to cart, responsive design
+{% endcomment %}
+
+{%- liquid
+  assign section_id = 'CollectionProductsGrid-' | append: section.id
+  assign products_per_row = section.settings.products_per_row | default: 4
+  assign products_limit = section.settings.products_limit | default: 12
+  
+  # Collection context
+  if template.name == 'collection' and collection
+    assign current_collection = collection
+  else
+    assign current_collection = collections[section.settings.collection] | default: collections.first
+  endif
+-%}
+
+{% style %}
+  #{{ section_id }} {
+    --products-per-row: {{ products_per_row }};
+    --product-card-gap: {{ section.settings.grid_gap | default: 24 }}px;
+    --section-padding-top: {{ section.settings.padding_top | default: 64 }}px;
+    --section-padding-bottom: {{ section.settings.padding_bottom | default: 64 }}px;
+    --border-radius: {{ section.settings.card_border_radius | default: 12 }}px;
+  }
+
+  @media screen and (max-width: 768px) {
+    #{{ section_id }} {
+      --products-per-row: {{ section.settings.products_per_row_mobile | default: 2 }};
+    }
+  }
+{% endstyle %}
+
+<collection-products-grid class="collection-products-grid" id="{{ section_id }}" data-section-id="{{ section.id }}">
+  <div class="collection-products-grid__container">
+    {% if section.settings.show_collection_header and current_collection %}
+      <div class="collection-products-grid__header">
+        <div class="collection-info">
+          <h2 class="collection-title">{{ current_collection.title }}</h2>
+          {% if current_collection.description != blank %}
+            <div class="collection-description">{{ current_collection.description }}</div>
+          {% endif %}
+          <div class="collection-product-count">
+            {{ 'collections.general.products_count' | t: count: current_collection.products_count }}
+          </div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if section.settings.custom_title != blank %}
+      <div class="section-header">
+        <h2 class="section-title">{{ section.settings.custom_title }}</h2>
+        {% if section.settings.custom_subtitle != blank %}
+          <p class="section-subtitle">{{ section.settings.custom_subtitle }}</p>
+        {% endif %}
+      </div>
+    {% endif %}
+
+    <div class="products-grid">
+      {% if current_collection and current_collection.products.size > 0 %}
+        {% for product in current_collection.products limit: products_limit %}
+          <div class="product-card" data-product-id="{{ product.id }}">
+            <div class="product-card__inner">
+              {% comment %} Product Image Only {% endcomment %}
+              <div class="product-card__image-wrapper">
+                <a href="{{ product.url }}" class="product-card__image-link" aria-label="{{ 'products.product.view_product' | t: title: product.title }}">
+                  {% if product.featured_image %}
+                    {%- liquid
+                      assign image_alt = product.featured_image.alt | default: product.title
+                      assign image_sizes = '(min-width: 1200px) 300px, (min-width: 750px) 250px, 200px'
+                    -%}
+                    {{
+                      product.featured_image
+                      | image_url: width: 600, height: 600, crop: 'center'
+                      | image_tag:
+                        loading: 'lazy',
+                        sizes: image_sizes,
+                        widths: '200, 300, 400, 500, 600',
+                        class: 'product-card__image',
+                        alt: image_alt
+                    }}
+                    
+                    {% comment %} Hover Image {% endcomment %}
+                    {% if product.images.size > 1 and section.settings.show_hover_image %}
+                      {{
+                        product.images[1]
+                        | image_url: width: 600, height: 600, crop: 'center'
+                        | image_tag:
+                          loading: 'lazy',
+                          class: 'product-card__image product-card__image--hover',
+                          alt: product.images[1].alt | default: product.title
+                      }}
+                    {% endif %}
+                  {% else %}
+                    <div class="product-card__image-placeholder">
+                      {{ 'product-1' | placeholder_svg_tag: 'product-card__image' }}
+                    </div>
+                  {% endif %}
+                </a>
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      {% else %}
+        <div class="collection-empty">
+          <div class="collection-empty__content">
+            <h3>{{ 'collections.general.no_products' | t }}</h3>
+            <p>{{ 'collections.general.no_products_description' | t }}</p>
+            <a href="{{ routes.collections_url }}" class="button button--primary">
+              {{ 'collections.general.browse_collections' | t }}
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    {% comment %} Load More Button {% endcomment %}
+    {% if current_collection.products.size > products_limit and section.settings.show_load_more %}
+      <div class="collection-products-grid__load-more">
+        <button class="load-more-button" data-load-more>
+          {{ 'collections.general.load_more' | t }}
+        </button>
+      </div>
+    {% endif %}
+
+    {% comment %} View All Link {% endcomment %}
+    {% if section.settings.show_view_all and current_collection %}
+      <div class="collection-products-grid__view-all">
+        <a href="{{ current_collection.url }}" class="view-all-link">
+          {{ 'collections.general.view_all' | t: collection_title: current_collection.title }}
+        </a>
+      </div>
+    {% endif %}
+  </div>
+</collection-products-grid>
+
+<link rel="stylesheet" href="{{ 'collection-enhanced.css' | asset_url }}">
+<script src="{{ 'collection-products-grid.js' | asset_url }}" defer></script>
+
+{% stylesheet %}
+  .collection-products-grid {
+    padding: var(--section-padding-top) 0 var(--section-padding-bottom);
+  }
+
+  .collection-products-grid__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+  }
+
+  .collection-products-grid__header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .collection-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+    color: var(--color-foreground, #1a1a1a);
+  }
+
+  .collection-description {
+    font-size: 1.125rem;
+    color: var(--color-foreground-75, #666);
+    margin-bottom: 12px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+
+  .collection-product-count {
+    font-size: 0.875rem;
+    color: var(--color-foreground-75, #888);
+  }
+
+  .section-header {
+    margin-bottom: 48px;
+    text-align: center;
+  }
+
+  .section-title {
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1.2;
+    margin: 0 0 16px 0;
+  }
+
+  .section-subtitle {
+    font-size: 1.125rem;
+    margin: 0;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.5;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(var(--products-per-row), 1fr);
+    gap: var(--product-card-gap);
+    margin-bottom: 48px;
+  }
+
+  /* Image-only Card Styles */
+  .product-card {
+    background: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+  }
+
+  .product-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 28px rgba(0,0,0,0.10);
+  }
+
+  .product-card__inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .product-card__image-wrapper {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: #f7f7f7;
+  }
+
+  .product-card__image-link {
+    display: block;
+    height: 100%;
+    width: 100%;
+  }
+
+  .product-card__image,
+  .product-card__image-placeholder {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .product-card:hover .product-card__image {
+    transform: scale(1.05);
+  }
+
+  .product-card__image--hover {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .product-card:hover .product-card__image--hover {
+    opacity: 1;
+  }
+
+  .product-card__image-placeholder {
+    background: var(--color-background-2, #f8f9fa);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .collection-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 80px 20px;
+  }
+
+  .collection-empty__content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+    color: var(--color-foreground, #1a1a1a);
+  }
+
+  .collection-empty__content p {
+    font-size: 1rem;
+    color: var(--color-foreground-75, #666);
+    margin-bottom: 32px;
+  }
+
+  .collection-products-grid__load-more,
+  .collection-products-grid__view-all {
+    text-align: center;
+    margin-top: 32px;
+  }
+
+  .load-more-button,
+  .view-all-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-button, #1a1a1a);
+    color: var(--color-button-text, white);
+    text-decoration: none;
+    padding: 14px 28px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+  }
+
+  .load-more-button:hover,
+  .view-all-link:hover {
+    background: var(--color-button-hover, #333);
+    transform: translateY(-2px);
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Mobile Responsive */
+  @media screen and (max-width: 768px) {
+    .collection-title {
+      font-size: 2rem;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+    }
+
+    .products-grid {
+      gap: 16px;
+    }
+
+    .collection-products-grid__container {
+      padding: 0 16px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .products-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection Products Grid",
+  "class": "section",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Collection"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Leave blank to use current collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_collection_header",
+      "label": "Show collection header",
+      "default": false
+    },
+    {
+      "type": "text",
+      "id": "custom_title",
+      "label": "Custom section title",
+      "info": "Overrides collection title"
+    },
+    {
+      "type": "textarea",
+      "id": "custom_subtitle",
+      "label": "Custom section subtitle"
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "range",
+      "id": "products_limit",
+      "label": "Products to show",
+      "min": 4,
+      "max": 24,
+      "step": 4,
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "products_per_row",
+      "label": "Products per row (desktop)",
+      "min": 2,
+      "max": 5,
+      "step": 1,
+      "default": 4
+    },
+    {
+      "type": "range",
+      "id": "products_per_row_mobile",
+      "label": "Products per row (mobile)",
+      "min": 1,
+      "max": 3,
+      "step": 1,
+      "default": 2
+    },
+    {
+      "type": "header",
+      "content": "Image Display"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_hover_image",
+      "label": "Show second image on hover",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "grid_gap",
+      "label": "Grid gap",
+      "min": 12,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "default": 24
+    },
+    {
+      "type": "range",
+      "id": "card_border_radius",
+      "label": "Card border radius",
+      "min": 0,
+      "max": 24,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Top padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 120,
+      "step": 8,
+      "unit": "px",
+      "default": 64
+    },
+    {
+      "type": "header",
+      "content": "Navigation"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_load_more",
+      "label": "Show load more button",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_view_all",
+      "label": "Show view all link",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Collection Products Grid"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,533 @@
+<section class="hc-wrapper" aria-label="{{ section.settings.aria_label | escape }}" aria-roledescription="carousel">
+
+  <!-- Carousel Status for Screen Readers -->
+  <div class="hc-sr-only" aria-live="polite" aria-atomic="true" id="carousel-status-{{ section.id }}"
+    data-status-template="{{ 'sections.carousel.slide_status' | t: current: 'CURRENT_PLACEHOLDER', total: 'TOTAL_PLACEHOLDER' }}">
+    {{ 'sections.carousel.slide_status' | t: current: 1, total: section.blocks.size }}
+  </div>
+
+  <div class="hc-viewport" id="hc-{{ section.id }}" role="region" aria-labelledby="carousel-status-{{ section.id }}"
+    tabindex="0" data-autoplay="{{ section.settings.autoplay }}"
+    data-autoplay-ms="{{ section.settings.autoplay_ms | default: 5000 }}">
+    {%- for block in section.blocks -%}
+    {%- liquid
+    assign img = block.settings.image
+    assign has_content = false
+    if block.settings.heading != blank or block.settings.subheading != blank or block.settings.btn_label != blank
+    assign has_content = true
+    endif
+    -%}
+
+    <article class="hc-slide" role="group" aria-roledescription="slide"
+      aria-label="{{ 'sections.carousel.slide_label' | t: current: forloop.index, total: section.blocks.size }}" {{
+      block.shopify_attributes }}>
+      {%- if img -%}
+      <img class="hc-img" src="{{ img | image_url: width: 1920 }}" srcset="
+              {{ img | image_url: width: 768 }} 768w,
+              {{ img | image_url: width: 1280 }} 1280w,
+              {{ img | image_url: width: 1920 }} 1920w" sizes="100vw" width="{{ img.width }}" height="{{ img.height }}"
+        alt="{{ block.settings.alt | default: 'Carousel image' | escape }}"
+        loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+        fetchpriority="{% if forloop.first %}high{% else %}auto{% endif %}">
+      {%- endif -%}
+
+      {%- if has_content -%}
+      <div class="hc-overlay hc-{{ block.settings.text_align }}">
+        {%- if block.settings.subheading != blank -%}
+        <p class="hc-sub">{{ block.settings.subheading | escape }}</p>
+        {%- endif -%}
+
+        {%- if block.settings.heading != blank -%}
+        <h2 class="hc-title">{{ block.settings.heading | escape }}</h2>
+        {%- endif -%}
+
+        {%- if block.settings.btn_label != blank and block.settings.btn_link != blank -%}
+        <a class="hc-btn" href="{{ block.settings.btn_link | escape }}" {% if block.settings.btn_link contains 'http' %}
+          target="_blank" rel="noopener noreferrer" {% endif %}>
+          {{ block.settings.btn_label | escape }}
+          {%- if block.settings.btn_link contains 'http' -%}
+          <span class="hc-sr-only">{{ 'sections.carousel.opens_new_window' | t }}</span>
+          {%- endif -%}
+        </a>
+        {%- endif -%}
+      </div>
+      {%- endif -%}
+    </article>
+    {%- endfor -%}
+  </div>
+
+  {%- if section.settings.show_arrows -%}
+  <div class="hc-arrows">
+    <button type="button" class="hc-prev" aria-label="{{ 'sections.carousel.previous_slide' | t }}"
+      aria-controls="hc-{{ section.id }}" {% if section.blocks.size <=1 %}disabled{% endif %}>
+      <span aria-hidden="true">‹</span>
+    </button>
+    <button type="button" class="hc-next" aria-label="{{ 'sections.carousel.next_slide' | t }}"
+      aria-controls="hc-{{ section.id }}" {% if section.blocks.size <=1 %}disabled{% endif %}>
+      <span aria-hidden="true">›</span>
+    </button>
+  </div>
+  {%- endif -%}
+
+  {%- if section.settings.show_dots and section.blocks.size > 1 -%}
+  <div class="hc-dots" role="tablist" aria-label="{{ 'sections.carousel.slide_dots' | t }}"></div>
+  {%- endif -%}
+</section>
+
+
+{% style %}
+.hc-sr-only {
+position: absolute;
+width: 1px;
+height: 1px;
+padding: 0;
+margin: -1px;
+overflow: hidden;
+clip: rect(0, 0, 0, 0);
+white-space: nowrap;
+border: 0;
+}
+
+.hc-wrapper {
+position: relative;
+overflow: hidden;
+--hero-height: {{ section.settings.hero_height }}vh;
+--hero-height-mobile: {{ section.settings.hero_height_mobile }}vh;
+--text-color: {{ section.settings.text_color }};
+--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};
+--btn-bg: {{ section.settings.btn_bg }};
+--btn-text: {{ section.settings.btn_text }};
+}
+
+/* Viewport */
+.hc-viewport {
+display: grid;
+grid-auto-flow: column;
+grid-auto-columns: 100%;
+overflow-x: auto;
+scroll-snap-type: x mandatory;
+scroll-behavior: auto; /* Changed from smooth to auto for custom control */
+scrollbar-width: none;
+}
+
+.hc-viewport::-webkit-scrollbar {
+display: none;
+}
+
+/* Focus Management */
+.hc-viewport:focus {
+outline: 2px solid #0066cc;
+outline-offset: 2px;
+}
+
+.hc-viewport:focus-visible {
+outline: 2px solid #0066cc;
+outline-offset: 2px;
+}
+
+/* Slides */
+.hc-slide {
+position: relative;
+height: var(--hero-height);
+min-height: 360px;
+scroll-snap-align: start;
+}
+
+/* Hide clone slides from screen readers */
+.hc-clone {
+user-select: none;
+pointer-events: none;
+}
+
+.hc-img {
+width: 100%;
+height: 100%;
+object-fit: cover;
+display: block;
+}
+
+/* Text Overlay */
+.hc-overlay {
+position: absolute;
+inset: 0;
+display: grid;
+align-content: center;
+gap: 0.5rem;
+padding: clamp(12px, 3vw, 48px);
+color: var(--text-color);
+background: linear-gradient(
+0deg,
+rgba(0, 0, 0, var(--overlay-opacity)),
+rgba(0, 0, 0, var(--overlay-opacity))
+);
+}
+
+/* Text Alignment */
+.hc-left {
+justify-items: start;
+text-align: left;
+}
+
+.hc-center {
+justify-items: center;
+text-align: center;
+}
+
+.hc-right {
+justify-items: end;
+text-align: right;
+}
+
+/* Typography */
+.hc-title {
+font-size: clamp(22px, 4vw, 44px);
+font-weight: 700;
+margin: 0;
+}
+
+.hc-sub {
+font-size: clamp(14px, 2vw, 18px);
+opacity: 0.9;
+margin: 0;
+}
+
+/* Button */
+.hc-btn {
+display: inline-block;
+margin-top: 0.5rem;
+padding: 0.75rem 1.25rem;
+background: var(--btn-bg);
+color: var(--btn-text);
+border-radius: 8px;
+text-decoration: none;
+transition: all 0.3s ease;
+transform: translateY(0);
+}
+
+.hc-btn:hover {
+opacity: 0.9;
+transform: translateY(-2px);
+box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation Arrows */
+.hc-arrows {
+position: absolute;
+inset: 0;
+pointer-events: none;
+}
+
+.hc-prev,
+.hc-next {
+pointer-events: auto;
+position: absolute;
+top: 50%;
+transform: translateY(-50%);
+width: 44px;
+height: 44px;
+border-radius: 50%;
+border: 0;
+background: rgba(0, 0, 0, 0.35);
+color: #fff;
+font-size: 28px;
+line-height: 44px;
+cursor: pointer;
+transition: all 0.3s ease;
+backdrop-filter: blur(4px);
+z-index: 2;
+}
+
+.hc-prev:hover,
+.hc-next:hover {
+background: rgba(0, 0, 0, 0.6);
+transform: translateY(-50%) scale(1.1);
+}
+
+.hc-prev:focus,
+.hc-next:focus {
+outline: 2px solid #0066cc;
+outline-offset: 2px;
+}
+
+.hc-prev:disabled,
+.hc-next:disabled {
+opacity: 0.3;
+cursor: not-allowed;
+pointer-events: none;
+}
+
+.hc-prev {
+left: 8px;
+}
+
+.hc-next {
+right: 8px;
+}
+
+/* Dot Navigation */
+.hc-dots {
+position: absolute;
+left: 0;
+right: 0;
+bottom: 8px;
+display: flex;
+gap: 8px;
+justify-content: center;
+}
+
+.hc-dots button {
+width: 10px;
+height: 10px;
+border-radius: 50%;
+border: 0;
+background: rgba(255, 255, 255, 0.5);
+cursor: pointer;
+transition: all 0.3s ease;
+transform: scale(1);
+position: relative;
+}
+
+.hc-dots button:hover {
+background: rgba(255, 255, 255, 0.8);
+transform: scale(1.2);
+}
+
+.hc-dots button:focus {
+outline: 2px solid #0066cc;
+outline-offset: 2px;
+}
+
+.hc-dots button[aria-current="true"] {
+background: #fff;
+transform: scale(1.3);
+}
+
+.hc-dots button[aria-selected="true"] {
+background: #fff;
+transform: scale(1.3);
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+.hc-viewport {
+scroll-behavior: auto;
+}
+
+.hc-btn,
+.hc-prev,
+.hc-next,
+.hc-dots button {
+transition: none;
+}
+
+.hc-prev:hover,
+.hc-next:hover {
+transform: none;
+}
+
+.hc-dots button:hover,
+.hc-dots button[aria-current="true"] {
+transform: none;
+}
+}
+
+/* Mobile Styles */
+@media screen and (max-width: 768px) {
+.hc-slide {
+height: var(--hero-height-mobile);
+}
+}
+{% endstyle %}
+<script src="{{ 'carousel.js' | asset_url }}" defer></script>
+
+
+{% schema %}
+{
+"name": "Home Carousel",
+"tag": "section",
+"class": "section-carousel",
+"settings": [
+{
+"type": "text",
+"id": "aria_label",
+"label": "Aria label",
+"default": "Homepage promotional carousel",
+"info": "Describes the carousel for screen readers"
+},
+{
+"type": "header",
+"content": "Layout"
+},
+{
+"type": "range",
+"id": "hero_height",
+"label": "Desktop height (vh)",
+"min": 40,
+"max": 90,
+"step": 5,
+"default": 60,
+"unit": "vh"
+},
+{
+"type": "range",
+"id": "hero_height_mobile",
+"label": "Mobile height (vh)",
+"min": 30,
+"max": 80,
+"step": 5,
+"default": 50,
+"unit": "vh"
+},
+{
+"type": "header",
+"content": "Colors"
+},
+{
+"type": "color",
+"id": "text_color",
+"label": "Text",
+"default": "#ffffff"
+},
+{
+"type": "range",
+"id": "overlay_opacity",
+"label": "Dark overlay",
+"min": 0,
+"max": 80,
+"step": 5,
+"default": 20,
+"unit": "%"
+},
+{
+"type": "color",
+"id": "btn_bg",
+"label": "Button background",
+"default": "#111827"
+},
+{
+"type": "color",
+"id": "btn_text",
+"label": "Button text",
+"default": "#ffffff"
+},
+{
+"type": "header",
+"content": "Navigation"
+},
+{
+"type": "checkbox",
+"id": "show_arrows",
+"label": "Arrows",
+"default": true
+},
+{
+"type": "checkbox",
+"id": "show_dots",
+"label": "Dots",
+"default": true
+},
+{
+"type": "checkbox",
+"id": "autoplay",
+"label": "Autoplay",
+"default": true
+},
+{
+"type": "number",
+"id": "autoplay_ms",
+"label": "Autoplay interval (ms)",
+"default": 5000,
+"info": "Time between automatic slide transitions"
+},
+{
+"type": "checkbox",
+"id": "pause_on_hover",
+"label": "Pause on hover",
+"default": true,
+"info": "Pause autoplay when users hover over the carousel"
+}
+],
+"blocks": [
+{
+"type": "slide",
+"name": "Slide",
+"settings": [
+{
+"type": "image_picker",
+"id": "image",
+"label": "Image"
+},
+{
+"type": "text",
+"id": "alt",
+"label": "Alt text",
+"default": "Carousel image",
+"info": "Describes the image for screen readers"
+},
+{
+"type": "header",
+"content": "Content"
+},
+{
+"type": "text",
+"id": "subheading",
+"label": "Subheading"
+},
+{
+"type": "text",
+"id": "heading",
+"label": "Heading"
+},
+{
+"type": "select",
+"id": "text_align",
+"label": "Text alignment",
+"default": "center",
+"options": [
+{
+"value": "left",
+"label": "Left"
+},
+{
+"value": "center",
+"label": "Center"
+},
+{
+"value": "right",
+"label": "Right"
+}
+]
+},
+{
+"type": "text",
+"id": "btn_label",
+"label": "Button label"
+},
+{
+"type": "url",
+"id": "btn_link",
+"label": "Button link"
+}
+]
+}
+],
+"max_blocks": 8,
+"presets": [
+{
+"name": "Home Carousel",
+"category": "Media",
+"blocks": [
+{
+"type": "slide",
+"settings": {
+"heading": "Welcome to our store",
+"subheading": "Discover our amazing products",
+"btn_label": "Shop now",
+"text_align": "center"
+}
+}
+]
+}
+]
+}
+{% endschema %}

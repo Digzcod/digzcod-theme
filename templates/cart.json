@@ -10,11 +10,68 @@
 {
   "sections": {
     "main": {
-      "type": "cart",
-      "settings": {}
+      "type": "cart-clean",
+      "settings": {
+        "title": "Your Cart",
+        "contained": true,
+        "max_width": 1200,
+        "fs_heading": 1.6,
+        "fs_body": 1,
+        "gap": 16,
+        "radius": 12,
+
+        "clr_bg": "#ffffff",
+        "clr_card": "#ffffff",
+        "clr_text": "#1b1b1b",
+        "clr_muted": "#6b7280",
+        "clr_primary": "#2f855a",
+        "clr_primary_contrast": "#ffffff",
+        "clr_accent": "#b7791f",
+        "clr_danger": "#dc2626",
+        "clr_success": "#059669",
+        "clr_border": "#e5e7eb",
+
+        "update_label": "Update cart",
+        "checkout_label": "Checkout",
+        "continue_url": "/collections/all",
+        "continue_label": "Continue shopping",
+        "empty_title": "Your cart is empty",
+        "empty_text": "Discover calming blends, gift sets, and diffusers tailored for you."
+      },
+      "blocks": {
+        "cart_items": { 
+          "type": "cart_items", 
+          "settings": { 
+            "show_vendor": false 
+          } 
+        },
+        "cart_note": { 
+          "type": "cart_note", 
+          "settings": { 
+            "label": "Order note", 
+            "placeholder": "Add preferences or delivery notes…" 
+          } 
+        },
+        "discount": { 
+          "type": "discount_code", 
+          "settings": { 
+            "label": "Discount code", 
+            "placeholder": "Enter code", 
+            "apply_label": "Apply", 
+            "help": "Applied discounts appear in the summary." 
+          } 
+        },
+        "freeship": { 
+          "type": "free_shipping", 
+          "settings": { 
+            "label": "Free shipping progress", 
+            "threshold": 5000 
+          } 
+        }
+      },
+      "block_order": ["cart_items", "cart_note", "discount", "freeship"]
     }
   },
-  "order": [
-    "main"
-  ]
+  "order": ["main"]
 }
+

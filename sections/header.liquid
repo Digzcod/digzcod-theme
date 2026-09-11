@@ -1,79 +1,755 @@
-<div class="relative drop-shadow-lg rounded-md shadow-lg overflow-visible">
-  <div class="mx-auto px-4 sm:px-6 overflow-visible">
-    <div class="flex justify-center items-center py-6 md:justify-start md:space-x-10 relative overflow-visible">
-      <!-- STORE NAME / STORE LOGO -->
-      <div class="flex justify-start lg:flex-1 truncate">
-        <h1 class="text-xl font-bold truncate">SM STORE</h1>
+<header class="site-header{% if section.settings.full_width_header %} full-width{% endif %}">
+  <div class="header-container{% unless section.settings.full_width_header %} constrained{% endunless %}">
+    <!-- STORE NAME / STORE LOGO -->
+    <div class="store-logo">
+      <h1 class="store-name">{{ section.settings.header_title_digz | default: 'SM STORE' }}</h1>
+    </div>
+
+    {% assign main_menu_linklist = linklists[section.settings.step_linklist].links %}
+
+    <!-- DESKTOP NAVIGATION MENU -->
+    <nav class="desktop-nav">
+      <div class="nav-links">
+        {% comment %} Use main-menu by default or fall back to any available menu {% endcomment %}
+        {% if main_menu_linklist.size > 0 %}
+          {% for link in main_menu_linklist %}
+            {% if link.links != blank %}
+              <header-dropdown class="nav-dropdown" data-dropdown>
+                <button
+                  type="button"
+                  class="nav-dropdown__trigger {% if link.active %}active{% endif %}"
+                  aria-expanded="false"
+                  aria-haspopup="true">
+                  {{ link.title }}
+                  {% render 'icon-dropdown-menu' %}
+                </button>
+
+                <div
+                  class="nav-dropdown__menu"
+                  role="menu"
+                  aria-orientation="vertical">
+                  <div class="dropdown-content" role="none">
+                    {% for sublink in link.links %}
+                      <a
+                        href="{{ sublink.url }}"
+                        class="dropdown-link {% if sublink.active %}active{% endif %}"
+                        role="menuitem">
+                        {{ sublink.title }}
+                      </a>
+                    {% endfor %}
+                  </div>
+                </div>
+              </header-dropdown>
+            {% else %}
+              <a href="{{ link.url }}" class="nav-link {% if link.active %}active{% endif %}">
+                {{ link.title }}
+              </a>
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <!-- Sample navigation links when no menu is configured -->
+          <a href="{{ routes.root_url }}" class="nav-link">Home</a>
+          <a href="{{ routes.collections_url }}" class="nav-link">Shop</a>
+          <a href="/pages/about" class="nav-link">About</a>
+          <a href="/pages/contact" class="nav-link">Contact</a>
+        {% endif %}
       </div>
+    </nav>
 
-      <!-- NAVIGATION MENU -->
-      <nav class="flex items-center gap-x-2 static overflow-visible" role="navigation" aria-label="Main navigation">
-        {% for link in linklists['main-menu'].links %}
-          {% if link.links != blank %}
-            <!-- Dropdown Menu Item -->
-            <div class="dropdown-container" data-dropdown-container>
-              <button 
-                class="dropdown-toggle {% if link.active %} text-blue-500{% endif %}" 
-                data-dropdown-toggle="dropdown-{{ forloop.index }}"
-                id="dropdown-toggle-{{ forloop.index }}"
-                type="button"
-                aria-expanded="false"
-                aria-haspopup="true"
-              >
-                <span>{{ link.title }}</span>
-                <svg class="dropdown-arrow" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                </svg>
-              </button>
+    <!-- RIGHT SIDE ACTIONS -->
+    <div class="header-actions">
+      <div class="action-links">
+        <a
+          href="{{ routes.cart_url }}"
+          class="cart-link"
+          data-cart-link>
+          {% render 'icon-shopping-bag' %}
+          <span class="cart-text">{{ 'general.cart.title' | t }}</span>
+          {% if cart.item_count > 0 %}
+            <span class="cart-badge" data-cart-count>{{ cart.item_count }}</span>
+          {% else %}
+            <span class="cart-badge hidden" data-cart-count>0</span>
+          {% endif %}
+        </a>
 
-              <!-- Dropdown Menu -->
-              <div 
-                class="dropdown-menu dropdown-hidden" 
-                data-dropdown="dropdown-{{ forloop.index }}"
-                role="menu"
-                aria-labelledby="dropdown-toggle-{{ forloop.index }}"
-              >
-                <div class="dropdown-items">
-                  {% for childlink in link.links %}
-                    <a 
-                      href="{{ childlink.url }}" 
-                      class="dropdown-item {% if childlink.active %} font-semibold text-blue-600{% endif %}"
+        {% if customer %}
+          <a href="{{ routes.account_url }}" class="account-link">
+            {{ 'customers.account.title' | t }}
+          </a>
+          <a href="{{ routes.account_logout_url }}" class="logout-link">
+            {{ 'customers.log_out' | t }}
+          </a>
+        {% else %}
+          {% if shop.customer_accounts_enabled %}
+            <a href="{{ routes.account_login_url }}" class="login-link">
+              {{ 'customers.login.title' | t }}
+            </a>
+            <a href="{{ routes.account_register_url }}" class="register-link">
+              {{ 'customers.register.title' | t }}
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- MOBILE MENU BUTTON -->
+    <div class="mobile-menu-button-container">
+      <button
+        type="button"
+        class="mobile-menu-button"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        aria-label="{{ 'general.mobile_menu.toggle' | t }}"
+        id="mobile-menu-button">
+        <span class="mobile-menu-button__icon">
+          {% render 'icon-menu' %}
+        </span>
+        <span class="mobile-menu-button__close hidden">
+          {% render 'icon-close' %}
+        </span>
+      </button>
+    </div>
+  </div>
+</header>
+<!-- MOBILE MENU MODAL -->
+<div
+  class="mobile-menu-overlay"
+  id="mobile-menu"
+  role="dialog"
+  aria-modal="true"
+  aria-label="{{ 'general.mobile_menu.toggle' | t }}">
+  <!-- Backdrop -->
+  <div class="mobile-menu-backdrop" aria-hidden="true"></div>
+
+  <!-- Modal Panel -->
+  <div class="mobile-menu-panel">
+    <!-- Header -->
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-logo">
+        <h2>{{ section.settings.header_title_digz | default: 'SM Store' }}</h2>
+      </div>
+      <button
+        type="button"
+        class="mobile-menu-close"
+        aria-label="{{ 'general.close' | t | default: 'Close' }}">
+        {% render 'icon-close' %}
+      </button>
+    </div>
+
+    <!-- Navigation Content -->
+    <div class="mobile-menu-content">
+      <nav
+        class="mobile-menu-nav"
+        role="navigation"
+        aria-label="{{ 'general.mobile_menu.toggle' | t }}">
+        {% comment %} Use main-menu for mobile navigation {% endcomment %}
+        {% if main_menu_linklist.size > 0 %}
+          {% for link in main_menu_linklist %}
+            {% if link.links != blank %}
+              <div class="mobile-dropdown" data-mobile-dropdown>
+                <button
+                  type="button"
+                  class="mobile-dropdown__trigger {% if link.active %}active{% endif %}"
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  aria-label="{{ 'general.navigation.expand_menu' | t | default: 'Expand menu' }}: {{ link.title }}">
+                  <span>{{ link.title }}</span>
+                  <span class="mobile-dropdown__icon" aria-hidden="true">{% render 'icon-dropdown-menu' %}</span>
+                </button>
+                <div
+                  class="mobile-dropdown__menu"
+                  role="menu"
+                  aria-hidden="true">
+                  {% for sublink in link.links %}
+                    <a
+                      href="{{ sublink.url }}"
+                      class="mobile-dropdown__link {% if sublink.active %}active{% endif %}"
                       role="menuitem"
-                      tabindex="-1"
-                    >
-                      {{ childlink.title }}
+                      tabindex="-1">
+                      {{ sublink.title }}
                     </a>
                   {% endfor %}
                 </div>
               </div>
-            </div>
-
-          {% else %}
-            <!-- Regular Menu Item -->
-            <div class="nav-item">
-              <a 
-                href="{{ link.url }}" 
-                class="dropdown-toggle {% if link.active %} text-blue-500 font-medium{% endif %}"
-              >
+            {% else %}
+              <a href="{{ link.url }}" class="mobile-menu-link {% if link.active %}active{% endif %}">
                 {{ link.title }}
               </a>
-            </div>
-          {% endif %}
-        {% endfor %}
+            {% endif %}
+          {% endfor %}
+        {% else %}
+          <!-- Sample mobile navigation links when no menu is configured -->
+          <a href="{{ routes.root_url }}" class="mobile-menu-link">Home</a>
+          <a href="{{ routes.collections_url }}" class="mobile-menu-link">Shop</a>
+          <a href="/pages/about" class="mobile-menu-link">About</a>
+          <a href="/pages/contact" class="mobile-menu-link">Contact</a>
+        {% endif %}
       </nav>
 
-      <div class="hidden gap-x-5 md:flex items-center justify-end md:flex-1 space-x-5 cursor-default">
-        <a href="{{routes.cart_url}}" class="whitespace-nowrap text-base text-gray-500 hover:text-gray-900 ">
-          <div class="flex items-center ">{% render 'icon-shopping-bag' %} Cart</div>
-        </a>
-        {% if customer %}
-          <a href="{{ routes.account_url }}">Account</a>
-          <form method="post" action="{{ routes.account_logout_url }}"><button>Log out</button></form>
-        {% else %}
-          <a href="{{ routes.account_login_url }}">Sign in</a>
-          <a href="{{ routes.account_register_url }}">Create account</a>
-        {% endif %}
+      <!-- User Actions -->
+      <div class="mobile-menu-actions">
+        <div class="mobile-menu-actions-group">
+          {% if customer %}
+            <a href="{{ routes.account_url }}" class="mobile-action-link">
+              <span class="mobile-action-icon">👤</span>
+              <span>{{ 'customers.account.title' | t }}</span>
+            </a>
+            <a href="{{ routes.account_logout_url }}" class="mobile-action-link">
+              <span class="mobile-action-icon">🚪</span>
+              <span>{{ 'customers.log_out' | t }}</span>
+            </a>
+          {% else %}
+            {% if shop.customer_accounts_enabled %}
+              <a href="{{ routes.account_login_url }}" class="mobile-action-link">
+                <span class="mobile-action-icon">🔑</span>
+                <span>{{ 'customers.login.title' | t }}</span>
+              </a>
+              <a href="{{ routes.account_register_url }}" class="mobile-action-link">
+                <span class="mobile-action-icon">📝</span>
+                <span>{{ 'customers.register.title' | t }}</span>
+              </a>
+            {% endif %}
+          {% endif %}
+          <a
+            href="{{ routes.cart_url }}"
+            class="mobile-action-link cart-link"
+            data-cart-link-mobile>
+            <span class="mobile-action-icon">{% render 'icon-shopping-bag' %}</span>
+            <span>{{ 'general.cart.title' | t }}</span>
+            {% if cart.item_count > 0 %}
+              <span class="cart-badge mobile-cart-badge" data-cart-count-mobile>{{ cart.item_count }}</span>
+            {% else %}
+              <span class="cart-badge mobile-cart-badge hidden" data-cart-count-mobile>0</span>
+            {% endif %}
+          </a>
+        </div>
       </div>
     </div>
   </div>
 </div>
+
+{{ 'header-dropdown.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'mobile-menu.js' | asset_url }}" defer></script>
+<script src="{{ 'mobile-dropdown.js' | asset_url }}" defer></script>
+{{ 'mobile-menu.css' | asset_url | stylesheet_tag }}
+{{ 'mobile-dropdown-enhancements.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'header-dropdown.js' | asset_url }}" defer></script>
+
+{% javascript %}
+  // Cart Count Manager
+  class CartCountManager {
+    constructor() {
+      this.cartCountElements = document.querySelectorAll('[data-cart-count], [data-cart-count-mobile]');
+      this.init();
+    }
+
+    init() {
+      this.updateCartCount();
+      this.setupCartListeners();
+    }
+
+    updateCartCount(count = null) {
+      if (count === null) { // Fetch current cart count from Shopify
+        this.fetchCartCount();
+        return;
+      }
+
+      this.cartCountElements.forEach(element => {
+        element.textContent = count;
+
+        if (count > 0) {
+          element.classList.remove('hidden');
+          element.classList.add('updated');
+
+// Remove animation class after animation completes
+          setTimeout(() => {
+            element.classList.remove('updated');
+          }, 300);
+        } else {
+          element.classList.add('hidden');
+        }
+      });
+    }
+
+    async fetchCartCount() {
+      try {
+        const response = await fetch('/cart.json');
+        const cart = await response.json();
+        this.updateCartCount(cart.item_count);
+      } catch (error) {
+        console.error('Failed to fetch cart count:', error);
+      }
+    }
+
+    setupCartListeners() {
+
+// Listen for cart updates from other parts of the theme
+      document.addEventListener('cart:updated', (event) => {
+        if (event.detail && typeof event.detail.item_count !== 'undefined') {
+          this.updateCartCount(event.detail.item_count);
+        } else {
+          this.fetchCartCount();
+        }
+      });
+
+// Listen for add to cart events
+      document.addEventListener('cart:added', () => {
+        this.fetchCartCount();
+      });
+
+// Listen for cart item removal
+      document.addEventListener('cart:removed', () => {
+        this.fetchCartCount();
+      });
+
+// Refresh cart count when page becomes visible (in case cart was updated in another tab)
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) {
+          this.fetchCartCount();
+        }
+      });
+    }
+  }
+
+// Initialize cart count manager when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new CartCountManager();
+  });
+
+// Make cart count manager globally available
+  window.updateCartCount = (count) => {
+    document.dispatchEvent(new CustomEvent('cart:updated', {
+      detail: {
+        item_count: count
+      }
+    }));
+  };
+
+// Header Scroll Effect
+  class HeaderScrollEffect {
+    constructor() {
+      this.header = document.querySelector('.site-header');
+      this.init();
+    }
+
+    init() {
+      if (!this.header) return;
+      
+
+
+      this.handleScroll();
+      window.addEventListener('scroll', () => this.handleScroll());
+    }
+
+    handleScroll() {
+      const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+      if (scrollTop > 50) {
+        this.header.classList.add('scrolled');
+      } else {
+        this.header.classList.remove('scrolled');
+      }
+    }
+  }
+
+// Initialize header scroll effect when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    new HeaderScrollEffect();
+  });
+{% endjavascript %}
+
+{% stylesheet %}
+  /* Header Styles */
+  .site-header {
+    width: 100%;
+    background: transparent;
+    border-bottom: none;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    transition: background-color 0.3s ease
+    , backdrop-filter 0.3s ease;
+  }
+
+  /* Utility class for breaking out of the grid constraint */
+  .break-out-of-grid {
+    grid-column: 1 / -1;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+  }
+
+  .site-header.scrolled {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(229, 229, 229, 0.3);
+  }
+
+  .header-container {
+    width: 100%;
+    padding: 0 20px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-center;
+  }
+
+  /* Add class for constrained header when needed */
+  .header-container.constrained {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  /* Store Logo */
+  .store-logo {
+    flex-shrink: 0;
+  }
+
+  .store-name {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    transition: color 0.3s ease
+    , text-shadow 0.3s ease;
+  }
+
+  .site-header.scrolled .store-name {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  /* Desktop Navigation */
+  .desktop-nav {
+    display: none;
+    flex: 1;
+    justify-content: center;
+    margin: 0 40px;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .nav-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    position: relative;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-link {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-link:hover,
+  .site-header.scrolled .nav-link.active {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  /* Dropdown Styles */
+  .nav-dropdown {
+    position: relative;
+  }
+
+  .nav-dropdown__trigger {
+    color: white;
+    background: none;
+    border: none;
+    font-weight: 500;
+    font-size: 1rem;
+    padding: 8px 16px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .nav-dropdown__trigger:hover,
+  .nav-dropdown__trigger.active {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-dropdown__trigger {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .nav-dropdown__trigger:hover,
+  .site-header.scrolled .nav-dropdown__trigger.active {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .nav-dropdown__menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: var(--color-background, #fff);
+    border: 1px solid var(--color-border, #e5e5e5);
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 1000;
+  }
+
+  .nav-dropdown.active .nav-dropdown__menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .dropdown-content {
+    padding: 8px 0;
+  }
+
+  .dropdown-link {
+    display: block;
+    color: var(--color-foreground, #333);
+    text-decoration: none;
+    padding: 12px 20px;
+    font-size: 0.95rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .dropdown-link:hover,
+  .dropdown-link.active {
+    background-color: var(--color-background-2, #f5f5f5);
+    color: var(--color-link, #0066cc);
+  }
+
+  /* Header Actions */
+  .header-actions {
+    display: none;
+    flex-shrink: 0;
+  }
+
+  .action-links {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cart-link,
+  .account-link,
+  .login-link,
+  .register-link,
+  .logout-link {
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  }
+
+  .cart-link:hover,
+  .account-link:hover,
+  .login-link:hover,
+  .register-link:hover,
+  .logout-link:hover {
+    color: var(--color-link, #0066cc);
+    background-color: rgba(255, 255, 255, 0.9);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .cart-link,
+  .site-header.scrolled .account-link,
+  .site-header.scrolled .login-link,
+  .site-header.scrolled .register-link,
+  .site-header.scrolled .logout-link {
+    color: var(--color-foreground, #333);
+    text-shadow: none;
+  }
+
+  .site-header.scrolled .cart-link:hover,
+  .site-header.scrolled .account-link:hover,
+  .site-header.scrolled .login-link:hover,
+  .site-header.scrolled .register-link:hover,
+  .site-header.scrolled .logout-link:hover {
+    color: var(--color-link, #0066cc);
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .cart-text {
+    font-weight: 500;
+  }
+
+  /* Cart Badge Styles */
+  .cart-badge {
+    background: var(--color-accent, #dc2626);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 2px;
+    right: 2px;
+    line-height: 1;
+    z-index: 1;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+  }
+
+  .cart-badge.updated {
+    transform: scale(1.2);
+    animation: cartBadgePulse 0.3s ease;
+  }
+
+  .mobile-cart-badge {
+    position: relative;
+    top: auto;
+    right: auto;
+    margin-left: auto;
+  }
+
+  @keyframes cartBadgePulse {
+    0% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.3);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Mobile Menu Button */
+  .mobile-menu-button-container {
+    display: flex;
+    align-items: center;
+  }
+
+  .mobile-menu-button {
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 6px;
+    cursor: pointer;
+    color: white;
+    transition: all 0.3s ease;
+    filter: drop-shadow(0 1px 3px rgba(0, 0, 0, 0.3));
+  }
+
+  .mobile-menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .site-header.scrolled .mobile-menu-button {
+    color: var(--color-foreground, #333);
+    filter: none;
+  }
+
+  .site-header.scrolled .mobile-menu-button:hover {
+    background-color: var(--color-background-2, #f5f5f5);
+  }
+
+  .mobile-menu-button__icon,
+  .mobile-menu-button__close {
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  /* Desktop Media Query */
+  @media (min-width: 768px) {
+    .desktop-nav {
+      display: flex;
+    }
+
+    .header-actions {
+      display: flex;
+    }
+
+    .mobile-menu-button-container {
+      display: none;
+    }
+  }
+
+  /* Mobile styles */
+  @media (max-width: 767px) {
+    .header-container {
+      padding: 0 16px;
+      height: 60px;
+    }
+
+    .store-name {
+      font-size: 1.25rem;
+    }
+  }
+{% endstylesheet %}
+
+
+{% schema %}
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "text",
+        "id": "header_title_digz",
+        "label": "Title",
+        "default": "SM Store",
+        "info": "The title displayed in the header menu digzcod."
+      }, {
+        "type": "link_list",
+        "id": "step_linklist",
+        "label": "Link List Step",
+        "default": "main-menu",
+        "info": "Select the link list to be used for the header navigation menu."
+      }, {
+        "type": "checkbox",
+        "id": "full_width_header",
+        "label": "Full width header",
+        "default": true,
+        "info": "When enabled, header content spans the full viewport width"
+      }
+
+    ]
+
+  }
+{% endschema %}

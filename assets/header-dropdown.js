@@ -1,174 +1,258 @@
 /**
- * Header Dropdown Menu JavaScript
- *
- * This script handles the interactive dropdown menu functionality for the header navigation.
- * Features:
- * - Smooth animations with CSS transitions
- * - Click and hover interactions
- * - Keyboard accessibility (ESC key, arrow keys)
- * - Mobile-responsive behavior
- * - Auto-close when clicking outside
- * - Support for multiple dropdowns
- *
- * @version 1.0.0
- * @author Your Name
+ * Header Dropdown Navigation Component
+ * Handles dropdown menu interactions with keyboard navigation and accessibility
  */
-
-class HeaderDropdown {
+class HeaderDropdown extends HTMLElement {
   constructor() {
-    this.dropdowns = document.querySelectorAll("[data-dropdown-toggle]");
-    this.activeDropdown = null;
-    this.init();
+    super();
+    this.dropdown = this.querySelector("[data-dropdown]");
+    this.trigger = this.querySelector(".nav-dropdown__trigger");
+    this.menu = this.querySelector(".nav-dropdown__menu");
+    this.menuItems = this.querySelectorAll('[role="menuitem"]');
+    this.isOpen = false;
+    this.currentIndex = -1;
+
+    this.#init();
   }
 
-  /**
-   * Initialize the dropdown functionality
-   */
-  init() {
-    if (!this.dropdowns.length) return;
+  #init() {
+    if (!this.trigger || !this.menu) return;
 
-    this.bindEvents();
-    this.setupAccessibility();
+    this.#bindEvents();
+    this.#setupAccessibility();
   }
 
-  /**
-   * Bind all event listeners
-   */
-  bindEvents() {
-    // Toggle dropdown on click
-    this.dropdowns.forEach((toggle) => {
-      toggle.addEventListener("click", (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        this.toggleDropdown(toggle);
-      });
+  #bindEvents() {
+    // Click events
+    this.trigger.addEventListener("click", this.#handleTriggerClick.bind(this));
+    document.addEventListener("click", this.#handleDocumentClick.bind(this));
 
-      // Show dropdown on hover (desktop only) - NO AUTO HIDE
-      const dropdownContainer = toggle.closest("[data-dropdown-container]");
-      if (dropdownContainer) {
-        dropdownContainer.addEventListener("mouseenter", () => {
-          if (window.innerWidth >= 768) {
-            this.showDropdown(toggle);
-          }
-        });
+    // Keyboard events
+    this.trigger.addEventListener(
+      "keydown",
+      this.#handleTriggerKeydown.bind(this)
+    );
+    this.menu.addEventListener("keydown", this.#handleMenuKeydown.bind(this));
 
-        // Removed mouseleave auto-hide to keep dropdown visible
-      }
-    });
-
-    // Removed auto-hide behaviors:
-    // - Click outside
-    // - ESC key
-    // - Window resize
-    // Dropdown will only hide when manually toggled
+    // Focus events for better UX
+    this.addEventListener("focusout", this.#handleFocusOut.bind(this));
   }
 
-  /**
-   * Setup accessibility attributes
-   */
-  setupAccessibility() {
-    this.dropdowns.forEach((toggle) => {
-      const dropdownId = toggle.getAttribute("data-dropdown-toggle");
-      const dropdown = document.querySelector(
-        `[data-dropdown="${dropdownId}"]`
-      );
+  #setupAccessibility() {
+    // Generate unique IDs for ARIA relationships
+    const menuId = `dropdown-menu-${Math.random().toString(36).substr(2, 9)}`;
+    this.menu.id = menuId;
+    this.trigger.setAttribute("aria-controls", menuId);
 
-      if (dropdown) {
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.setAttribute("aria-haspopup", "true");
-        toggle.setAttribute("aria-controls", dropdownId);
-        dropdown.setAttribute(
-          "aria-labelledby",
-          toggle.id || "dropdown-toggle"
-        );
-      }
-    });
+    // Set initial ARIA states
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("aria-hidden", "true");
   }
 
-  /**
-   * Toggle dropdown visibility
-   * @param {HTMLElement} toggle - The dropdown toggle element
-   */
-  toggleDropdown(toggle) {
-    const dropdownId = toggle.getAttribute("data-dropdown-toggle");
-    const dropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
+  #handleTriggerClick(event) {
+    event.preventDefault();
+    event.stopPropagation();
 
-    if (!dropdown) return;
-
-    if (dropdown.classList.contains("dropdown-visible")) {
-      this.hideDropdown(toggle);
+    if (this.isOpen) {
+      this.#closeDropdown();
     } else {
-      this.hideAllDropdowns();
-      this.showDropdown(toggle);
+      this.#openDropdown();
     }
   }
 
-  /**
-   * Show dropdown
-   * @param {HTMLElement} toggle - The dropdown toggle element
-   */
-  showDropdown(toggle) {
-    const dropdownId = toggle.getAttribute("data-dropdown-toggle");
-    const dropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
+  #handleDocumentClick(event) {
+    if (!this.contains(event.target)) {
+      this.#closeDropdown();
+    }
+  }
 
-    if (!dropdown) return;
+  #handleTriggerKeydown(event) {
+    switch (event.key) {
+      case "Enter":
+      case " ":
+        event.preventDefault();
+        this.#openDropdown();
+        this.#focusFirstMenuItem();
+        break;
+      case "ArrowDown":
+        event.preventDefault();
+        this.#openDropdown();
+        this.#focusFirstMenuItem();
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        this.#openDropdown();
+        this.#focusLastMenuItem();
+        break;
+      case "Escape":
+        this.#closeDropdown();
+        break;
+    }
+  }
 
-    // Hide all other dropdowns first
-    this.hideAllDropdowns();
+  #handleMenuKeydown(event) {
+    switch (event.key) {
+      case "ArrowDown":
+        event.preventDefault();
+        this.#focusNextMenuItem();
+        break;
+      case "ArrowUp":
+        event.preventDefault();
+        this.#focusPreviousMenuItem();
+        break;
+      case "Home":
+        event.preventDefault();
+        this.#focusFirstMenuItem();
+        break;
+      case "End":
+        event.preventDefault();
+        this.#focusLastMenuItem();
+        break;
+      case "Escape":
+        event.preventDefault();
+        this.#closeDropdown();
+        this.trigger.focus();
+        break;
+      case "Tab":
+        // Let tab work naturally, but close dropdown
+        this.#closeDropdown();
+        break;
+    }
+  }
 
-    // Show current dropdown
-    dropdown.classList.remove("dropdown-hidden");
-    dropdown.classList.add("dropdown-visible");
-    toggle.setAttribute("aria-expanded", "true");
-    toggle.classList.add("dropdown-active");
-
-    this.activeDropdown = { toggle, dropdown };
-
-    // Focus management for accessibility
+  #handleFocusOut(event) {
+    // Small delay to check if focus moved to another element within dropdown
     setTimeout(() => {
-      const firstLink = dropdown.querySelector("a");
-      if (firstLink) {
-        firstLink.focus();
+      if (!this.contains(document.activeElement)) {
+        this.#closeDropdown();
       }
-    }, 150);
+    }, 10);
   }
 
-  /**
-   * Hide dropdown
-   * @param {HTMLElement} toggle - The dropdown toggle element
-   */
-  hideDropdown(toggle) {
-    const dropdownId = toggle.getAttribute("data-dropdown-toggle");
-    const dropdown = document.querySelector(`[data-dropdown="${dropdownId}"]`);
+  #openDropdown() {
+    if (this.isOpen) return;
 
-    if (!dropdown) return;
+    // Close other open dropdowns
+    document.querySelectorAll(".nav-dropdown").forEach((dropdown) => {
+      if (dropdown !== this && dropdown.isOpen) {
+        dropdown.closeDropdown();
+      }
+    });
 
-    dropdown.classList.remove("dropdown-visible");
-    dropdown.classList.add("dropdown-hidden");
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.classList.remove("dropdown-active");
+    this.isOpen = true;
+    this.currentIndex = -1;
 
-    if (this.activeDropdown && this.activeDropdown.toggle === toggle) {
-      this.activeDropdown = null;
+    // Update ARIA states
+    this.trigger.setAttribute("aria-expanded", "true");
+    this.menu.setAttribute("aria-hidden", "false");
+
+    // Show menu with animation
+    this.menu.classList.remove("opacity-0", "invisible", "scale-95");
+    this.menu.classList.add("opacity-100", "visible", "scale-100");
+
+    // Add open class for styling
+    this.classList.add("dropdown-open");
+  }
+
+  #closeDropdown() {
+    if (!this.isOpen) return;
+
+    this.isOpen = false;
+    this.currentIndex = -1;
+
+    // Update ARIA states
+    this.trigger.setAttribute("aria-expanded", "false");
+    this.menu.setAttribute("aria-hidden", "true");
+
+    // Hide menu with animation
+    this.menu.classList.remove("opacity-100", "visible", "scale-100");
+    this.menu.classList.add("opacity-0", "invisible", "scale-95");
+
+    // Remove open class
+    this.classList.remove("dropdown-open");
+  }
+
+  #focusFirstMenuItem() {
+    if (this.menuItems.length > 0) {
+      this.currentIndex = 0;
+      this.menuItems[0].focus();
     }
   }
 
-  /**
-   * Hide all dropdowns
-   */
-  hideAllDropdowns() {
-    this.dropdowns.forEach((toggle) => {
-      this.hideDropdown(toggle);
-    });
+  #focusLastMenuItem() {
+    if (this.menuItems.length > 0) {
+      this.currentIndex = this.menuItems.length - 1;
+      this.menuItems[this.currentIndex].focus();
+    }
+  }
+
+  #focusNextMenuItem() {
+    if (this.menuItems.length === 0) return;
+
+    this.currentIndex = (this.currentIndex + 1) % this.menuItems.length;
+    this.menuItems[this.currentIndex].focus();
+  }
+
+  #focusPreviousMenuItem() {
+    if (this.menuItems.length === 0) return;
+
+    this.currentIndex =
+      this.currentIndex <= 0
+        ? this.menuItems.length - 1
+        : this.currentIndex - 1;
+    this.menuItems[this.currentIndex].focus();
+  }
+
+  // Public method to close dropdown (for external use)
+  closeDropdown() {
+    this.#closeDropdown();
   }
 }
 
-// Initialize when DOM is loaded
+// Initialize functionality when DOM is ready
 document.addEventListener("DOMContentLoaded", () => {
-  new HeaderDropdown();
+  // Register custom element if not already defined
+  if (!customElements.get("header-dropdown")) {
+    customElements.define("header-dropdown", HeaderDropdown);
+  }
+
+  // Initialize existing dropdowns
+  document.querySelectorAll(".nav-dropdown").forEach((dropdown) => {
+    if (!dropdown.upgraded) {
+      Object.setPrototypeOf(dropdown, HeaderDropdown.prototype);
+      HeaderDropdown.call(dropdown);
+      dropdown.upgraded = true;
+    }
+  });
+
+  // Initialize mobile menu (now from separate file)
+  if (typeof MobileMenu !== "undefined") {
+    new MobileMenu();
+  }
 });
 
-// Handle theme editor updates
-document.addEventListener("shopify:section:load", () => {
-  new HeaderDropdown();
+// Handle dynamic content loading (for SPAs or AJAX)
+const observer = new MutationObserver((mutations) => {
+  mutations.forEach((mutation) => {
+    mutation.addedNodes.forEach((node) => {
+      if (node.nodeType === 1) {
+        // Element node
+        const dropdowns = node.querySelectorAll
+          ? node.querySelectorAll(".nav-dropdown")
+          : [];
+        dropdowns.forEach((dropdown) => {
+          if (!dropdown.upgraded) {
+            Object.setPrototypeOf(dropdown, HeaderDropdown.prototype);
+            HeaderDropdown.call(dropdown);
+            dropdown.upgraded = true;
+          }
+        });
+      }
+    });
+  });
+});
+
+observer.observe(document.body, {
+  childList: true,
+  subtree: true,
 });

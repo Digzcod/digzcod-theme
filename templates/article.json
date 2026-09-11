@@ -1,20 +1,64 @@
-/*
- * ------------------------------------------------------------
- * IMPORTANT: The contents of this file are auto-generated.
- *
- * This file may be updated by the Shopify admin theme editor
- * or related systems. Please exercise caution as any changes
- * made to this file may be overwritten.
- * ------------------------------------------------------------
- */
+
 {
   "sections": {
-    "main": {
-      "type": "article",
-      "settings": {}
+    "breadcrumbs": {
+      "type": "breadcrumbs"
+    },
+    "article": {
+      "type": "section-article",
+      "settings": {
+        "enable_author": true,
+        "enable_publish_date": true,
+        "enable_featured_image": true,
+        "enable_social_sharing": true,
+        "enable_tags": true
+      },
+      "blocks": {
+        "title": {
+          "type": "article_title",
+          "settings": {}
+        },
+        "meta": {
+          "type": "article_meta",
+          "settings": {}
+        },
+        "image": {
+          "type": "article_image",
+          "settings": {}
+        },
+        "content": {
+          "type": "article_content",
+          "settings": {}
+        },
+        "tags": {
+          "type": "article_tags",
+          "settings": {}
+        },
+        "social": {
+          "type": "article_social",
+          "settings": {}
+        }
+      },
+      "block_order": [
+        "title",
+        "meta", 
+        "image",
+        "content",
+        "tags",
+        "social"
+      ]
+    },
+    "related_articles": {
+      "type": "related-articles",
+      "settings": {
+        "heading": "Related Articles",
+        "articles_to_show": 3
+      }
     }
   },
   "order": [
-    "main"
+    "breadcrumbs",
+    "article",
+    "related_articles"
   ]
 }

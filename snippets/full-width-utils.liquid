@@ -1,0 +1,134 @@
+{% comment %}
+  Full Width Utils Snippet
+  
+  This snippet provides utilities for full-width sections with proper
+  background image positioning and height controls.
+  
+  Usage:
+  {% render 'full-width-utils', 
+    image: section.settings.bg_image,
+    height: section.settings.section_height,
+    position: section.settings.image_position,
+    overlay_color: section.settings.overlay_color,
+    overlay_opacity: section.settings.overlay_opacity
+  %}
+{% endcomment %}
+
+{%- liquid
+  # Default values
+  assign image = image | default: blank
+  assign height = height | default: '70vh'
+  assign position = position | default: 'center'
+  assign overlay_color = overlay_color | default: '#000000'
+  assign overlay_opacity = overlay_opacity | default: 0.3
+  
+  # Generate unique ID for this instance
+  assign section_id = section.id | default: 'default'
+  assign utils_id = 'fw-utils-' | append: section_id
+-%}
+
+{% style %}
+  #{{ utils_id }} {
+    --fw-height: {{ height }};
+    --fw-bg-position: {{ position }};
+    --fw-overlay-color: {{ overlay_color }};
+    --fw-overlay-opacity: {{ overlay_opacity }};
+    
+    position: relative;
+    min-height: var(--fw-height);
+    height: var(--fw-height);
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  #{{ utils_id }} .fw-utils__background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: var(--fw-bg-position);
+    {% if image != blank %}
+      background-image: url('{{ image | image_url: width: 1920 }}');
+    {% else %}
+      background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+    {% endif %}
+  }
+  
+  #{{ utils_id }} .fw-utils__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--fw-overlay-color);
+    opacity: var(--fw-overlay-opacity);
+    z-index: 2;
+  }
+  
+  #{{ utils_id }} .fw-utils__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Responsive height adjustments */
+  @media (max-width: 1024px) {
+    #{{ utils_id }} {
+      min-height: calc(var(--fw-height) * 0.85);
+      height: calc(var(--fw-height) * 0.85);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    #{{ utils_id }} {
+      min-height: calc(var(--fw-height) * 0.7);
+      height: calc(var(--fw-height) * 0.7);
+    }
+  }
+  
+  /* Position utilities for different background positions */
+  #{{ utils_id }}.fw-utils--position-top .fw-utils__background {
+    background-position: center top;
+  }
+  
+  #{{ utils_id }}.fw-utils--position-center .fw-utils__background {
+    background-position: center center;
+  }
+  
+  #{{ utils_id }}.fw-utils--position-bottom .fw-utils__background {
+    background-position: center bottom;
+  }
+  
+  #{{ utils_id }}.fw-utils--position-left .fw-utils__background {
+    background-position: left center;
+  }
+  
+  #{{ utils_id }}.fw-utils--position-right .fw-utils__background {
+    background-position: right center;
+  }
+{% endstyle %}
+
+<div id="{{ utils_id }}" class="fw-utils fw-utils--position-{{ position }}">
+  <div class="fw-utils__background" 
+       role="img" 
+       aria-label="{{ image.alt | escape | default: 'Background image' }}"></div>
+  
+  {% if overlay_opacity > 0 %}
+    <div class="fw-utils__overlay"></div>
+  {% endif %}
+  
+  <div class="fw-utils__content">
+    {{ content }}
+  </div>
+</div>

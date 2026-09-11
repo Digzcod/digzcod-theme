@@ -1,0 +1,691 @@
+{% comment %} 
+          Dynamic Hero Banner for Collection Pages
+          Supports theme editor settings with metafield fallbacks 
+{% endcomment %}
+
+{%- liquid
+  # Dynamic content logic with metafield fallbacks
+  assign hero_image = section.settings.hero_image
+  assign hero_title = section.settings.hero_title
+  assign hero_subtitle = section.settings.hero_subtitle
+  assign hero_button_label = section.settings.hero_button_label
+  assign hero_button_link = section.settings.hero_button_link
+
+  # Use collection metafields as fallbacks if settings are empty
+  if template.name == 'collection' and collection
+    if hero_image == blank and collection.metafields.custom.hero_image != blank
+      assign hero_image = collection.metafields.custom.hero_image
+    endif
+
+    if hero_title == blank and collection.metafields.custom.hero_title != blank
+      assign hero_title = collection.metafields.custom.hero_title
+    elsif hero_title == blank
+      assign hero_title = collection.title
+    endif
+
+    if hero_subtitle == blank and collection.metafields.custom.hero_subtitle != blank
+      assign hero_subtitle = collection.metafields.custom.hero_subtitle
+    elsif hero_subtitle == blank
+      assign hero_subtitle = collection.description
+    endif
+
+    if hero_button_label == blank and collection.metafields.custom.hero_button_label != blank
+      assign hero_button_label = collection.metafields.custom.hero_button_label
+    endif
+
+    if hero_button_link == blank and collection.metafields.custom.hero_button_link != blank
+      assign hero_button_link = collection.metafields.custom.hero_button_link
+    endif
+  endif
+
+  # Final fallbacks
+  if hero_title == blank
+    assign hero_title = 'general.collection_hero.default_title' | t
+  endif
+
+  if hero_button_label == blank
+    assign hero_button_label = 'general.collection_hero.default_button' | t
+  endif
+
+  if hero_button_link == blank
+    assign hero_button_link = routes.collections_url
+  endif
+
+  # CSS variables
+  assign section_id = 'CollectionHero-' | append: section.id
+  assign overlay_opacity = section.settings.overlay_opacity | divided_by: 100.0
+  assign hero_height = section.settings.hero_height | append: 'px'
+  assign image_position = section.settings.image_position | default: 'center'
+
+  # Typography variables
+  assign heading_font_size = section.settings.heading_font_size | append: 'px'
+  assign heading_font_weight = section.settings.heading_font_weight
+  assign heading_font_style = section.settings.heading_font_style
+  assign heading_color = section.settings.heading_color_custom
+  assign subtitle_font_size = section.settings.subtitle_font_size | append: 'px'
+  assign subtitle_font_weight = section.settings.subtitle_font_weight
+  assign subtitle_color = section.settings.subtitle_color_custom
+
+  # Button variables
+  assign button_style = section.settings.button_style
+  assign button_bg_color = section.settings.button_bg_color
+  assign button_text_color = section.settings.button_text_color
+  assign button_border_color = section.settings.button_border_color | default: button_bg_color
+  assign button_font_size = section.settings.button_font_size | append: 'px'
+  assign button_font_weight = section.settings.button_font_weight
+  assign button_border_radius = section.settings.button_border_radius | append: 'px'
+-%}
+
+<section
+  id="{{ section_id }}"
+  class="collection-hero collection-hero--{{ section.settings.content_alignment }} collection-hero--{{ section.settings.text_color }}"
+  style="--hero-height: {{ hero_height }}; --overlay-opacity: {{ overlay_opacity }}; --image-position: {{ image_position }};">
+  {%- if hero_image != blank -%}
+    <div
+      class="collection-hero__image"
+      style="background-image: url('{{ hero_image | image_url: width: 1920 }}');"
+      role="img"
+      aria-label="{{ hero_image.alt | default: hero_title }}"></div>
+  {%- endif -%}
+
+  {%- if section.settings.overlay_opacity > 0 -%}
+    <div class="collection-hero__overlay"></div>
+  {%- endif -%}
+
+  <div class="collection-hero__content">
+    <div class="collection-hero__container">
+      {%- if hero_title != blank -%}
+        <h1 class="collection-hero__title" style="
+          {%- if heading_font_size != blank -%}font-size: {{ heading_font_size }};{%- endif -%}
+          {%- if heading_font_weight != blank -%}font-weight: {{ heading_font_weight }};{%- endif -%}
+          {%- if heading_font_style != blank -%}font-style: {{ heading_font_style }};{%- endif -%}
+          {%- if heading_color != blank -%}color: {{ heading_color }} !important;{%- endif -%}
+        ">
+          {{ hero_title }}</h1>
+      {%- endif -%}
+
+      {%- if hero_subtitle != blank -%}
+        <div class="collection-hero__subtitle" style="
+          {%- if subtitle_font_size != blank -%}font-size: {{ subtitle_font_size }};{%- endif -%}
+          {%- if subtitle_font_weight != blank -%}font-weight: {{ subtitle_font_weight }};{%- endif -%}
+          {%- if subtitle_color != blank -%}color: {{ subtitle_color }} !important;{%- endif -%}
+        ">
+          {{ hero_subtitle }}</div>
+      {%- endif -%}
+
+      {%- if hero_button_label != blank and hero_button_link != blank -%}
+        <a
+          href="{{ hero_button_link }}"
+          class="collection-hero__button collection-hero__button--{{ button_style }}"
+          style="
+          {%- if button_bg_color != blank and button_style == 'filled' -%}background-color: {{ button_bg_color }};{%- endif -%}
+          {%- if button_text_color != blank -%}color: {{ button_text_color }};{%- endif -%}
+          {%- if button_border_color != blank and button_style == 'outlined' -%}border-color: {{ button_border_color }};{%- endif -%}
+          {%- if button_font_size != blank -%}font-size: {{ button_font_size }};{%- endif -%}
+          {%- if button_font_weight != blank -%}font-weight: {{ button_font_weight }};{%- endif -%}
+          {%- if button_border_radius != blank -%}border-radius: {{ button_border_radius }};{%- endif -%}
+        ">
+          {{ hero_button_label }}
+        </a>
+      {%- endif -%}
+    </div>
+  </div>
+</section>
+
+{% schema %}
+  {
+    "name": "Collection Hero",
+    "tag": "section",
+    "class": "section",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Content"
+      },
+      {
+        "type": "image_picker",
+        "id": "hero_image",
+        "label": "Background image",
+        "info": "If empty, will use collection metafield 'custom.hero_image'"
+      },
+      {
+        "type": "text",
+        "id": "hero_title",
+        "label": "Title",
+        "info": "If empty, will use collection metafield 'custom.hero_title' or collection title"
+      },
+      {
+        "type": "richtext",
+        "id": "hero_subtitle",
+        "label": "Subtitle",
+        "info": "If empty, will use collection metafield 'custom.hero_subtitle' or collection description"
+      }, {
+        "type": "text",
+        "id": "hero_button_label",
+        "label": "Button label",
+        "info": "If empty, will use collection metafield 'custom.hero_button_label'"
+      }, {
+        "type": "url",
+        "id": "hero_button_link",
+        "label": "Button link",
+        "info": "If empty, will use collection metafield 'custom.hero_button_link'"
+      }, {
+        "type": "header",
+        "content": "Layout"
+      }, {
+        "type": "select",
+        "id": "content_alignment",
+        "label": "Content alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "center"
+      }, {
+        "type": "select",
+        "id": "text_color",
+        "label": "Text color",
+        "options": [
+          {
+            "value": "light",
+            "label": "Light"
+          }, {
+            "value": "dark",
+            "label": "Dark"
+          }
+        ],
+        "default": "light"
+      }, {
+        "type": "range",
+        "id": "overlay_opacity",
+        "min": 0,
+        "max": 80,
+        "step": 5,
+        "unit": "%",
+        "label": "Overlay opacity",
+        "default": 30
+      }, {
+        "type": "range",
+        "id": "hero_height",
+        "min": 240,
+        "max": 720,
+        "step": 40,
+        "unit": "px",
+        "label": "Section height",
+        "default": 480
+      }, {
+        "type": "select",
+        "id": "image_position",
+        "label": "Image position",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ],
+        "default": "center",
+        "info": "Control the vertical position of the background image"
+      }, {
+        "type": "header",
+        "content": "Typography"
+      }, {
+        "type": "range",
+        "id": "heading_font_size",
+        "min": 24,
+        "max": 72,
+        "step": 2,
+        "unit": "px",
+        "label": "Heading font size",
+        "default": 48
+      }, {
+        "type": "select",
+        "id": "heading_font_weight",
+        "label": "Heading font weight",
+        "options": [
+          {
+            "value": "300",
+            "label": "Light"
+          },
+          {
+            "value": "400",
+            "label": "Normal"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi Bold"
+          }, {
+            "value": "700",
+            "label": "Bold"
+          }, {
+            "value": "800",
+            "label": "Extra Bold"
+          }
+        ],
+        "default": "700"
+      }, {
+        "type": "select",
+        "id": "heading_font_style",
+        "label": "Heading font style",
+        "options": [
+          {
+            "value": "normal",
+            "label": "Normal"
+          }, {
+            "value": "italic",
+            "label": "Italic"
+          }
+        ],
+        "default": "normal"
+      }, {
+        "type": "color",
+        "id": "heading_color_custom",
+        "label": "Custom heading color",
+        "info": "Override text color setting for heading only"
+      }, {
+        "type": "range",
+        "id": "subtitle_font_size",
+        "min": 14,
+        "max": 24,
+        "step": 1,
+        "unit": "px",
+        "label": "Subtitle font size",
+        "default": 18
+      }, {
+        "type": "select",
+        "id": "subtitle_font_weight",
+        "label": "Subtitle font weight",
+        "options": [
+          {
+            "value": "300",
+            "label": "Light"
+          }, {
+            "value": "400",
+            "label": "Normal"
+          }, {
+            "value": "500",
+            "label": "Medium"
+          }, {
+            "value": "600",
+            "label": "Semi Bold"
+          }
+        ],
+        "default": "400"
+      }, {
+        "type": "color",
+        "id": "subtitle_color_custom",
+        "label": "Custom subtitle color",
+        "info": "Override text color setting for subtitle only"
+      }, {
+        "type": "header",
+        "content": "Button Style"
+      }, {
+        "type": "select",
+        "id": "button_style",
+        "label": "Button style",
+        "options": [
+          {
+            "value": "filled",
+            "label": "Filled"
+          }, {
+            "value": "outlined",
+            "label": "Outlined"
+          }, {
+            "value": "text",
+            "label": "Text Only"
+          }
+        ],
+        "default": "filled"
+      }, {
+        "type": "color",
+        "id": "button_bg_color",
+        "label": "Button background color",
+        "default": "#000000"
+      }, {
+        "type": "color",
+        "id": "button_text_color",
+        "label": "Button text color",
+        "default": "#ffffff"
+      }, {
+        "type": "color",
+        "id": "button_border_color",
+        "label": "Button border color",
+        "info": "Used for outlined style"
+      }, {
+        "type": "range",
+        "id": "button_font_size",
+        "min": 12,
+        "max": 20,
+        "step": 1,
+        "unit": "px",
+        "label": "Button font size",
+        "default": 16
+      }, {
+        "type": "select",
+        "id": "button_font_weight",
+        "label": "Button font weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Normal"
+          }, {
+            "value": "500",
+            "label": "Medium"
+          }, {
+            "value": "600",
+            "label": "Semi Bold"
+          }, {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "600"
+      }, {
+        "type": "range",
+        "id": "button_border_radius",
+        "min": 0,
+        "max": 50,
+        "step": 2,
+        "unit": "px",
+        "label": "Button border radius",
+        "default": 8
+      }
+    ],
+    "presets": [
+      {
+        "name": "Oil Diffusers Hero",
+        "settings": {
+          "hero_title": "Best-Selling Oil Diffusers",
+          "hero_subtitle": "<p>Discover our best-selling oil diffusers designed to transform your space into a calming oasis. From natural wooden textures to sleek ceramic and elegant amber glass, each diffuser blends style with functionality. Perfect for creating a relaxing atmosphere at home, in the office, or as a thoughtful gift.</p>",
+          "hero_button_label": "Shop Diffusers",
+          "hero_button_link": "/collections/diffusers",
+          "content_alignment": "center",
+          "text_color": "light",
+          "overlay_opacity": 35,
+          "hero_height": 520,
+          "heading_font_size": 52,
+          "heading_font_weight": "700",
+          "heading_font_style": "normal",
+          "subtitle_font_size": 18,
+          "subtitle_font_weight": "400",
+          "button_style": "filled",
+          "button_bg_color": "#ffffff",
+          "button_text_color": "#000000",
+          "button_font_size": 16,
+          "button_font_weight": "600",
+          "button_border_radius": 8
+        }
+      }, {
+        "name": "Collection Hero (Basic)",
+        "settings": {
+          "content_alignment": "center",
+          "text_color": "light",
+          "overlay_opacity": 30,
+          "hero_height": 480
+        }
+      }
+    ]
+  }
+{% endschema %}
+
+{% stylesheet %}
+  .collection-hero {
+    --text-color-light: #ffffff;
+    --text-color-dark: #111827;
+    --button-bg-light: #ffffff;
+    --button-text-light: #111827;
+    --button-bg-dark: #111827;
+    --button-text-dark: #ffffff;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-height: var(--hero-height, 480px);
+    overflow: hidden;
+    background-color: #f3f4f6;
+  }
+
+  .collection-hero__image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: var(--image-position, center);
+  }
+
+  .collection-hero__overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, rgba(0, 0, 0, var(--overlay-opacity, 0.3)) 0%, rgba(0, 0, 0, calc(var(--overlay-opacity, 0.3) * 0.8)) 100%);
+    z-index: 2;
+  }
+
+  .collection-hero__content {
+    position: relative;
+    width: 100%;
+    z-index: 3;
+    padding: 2rem 0;
+  }
+
+  .collection-hero__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    text-align: center;
+  }
+
+  .collection-hero--left .collection-hero__container {
+    text-align: left;
+  }
+
+  .collection-hero--right .collection-hero__container {
+    text-align: right;
+  }
+
+  .collection-hero__title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 700;
+    line-height: 1.1;
+    margin: 0 0 1rem;
+    max-width: 800px;
+  }
+
+  .collection-hero--left .collection-hero__title {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .collection-hero--center .collection-hero__title {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .collection-hero--right .collection-hero__title {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .collection-hero__subtitle {
+    font-size: clamp(1rem, 2.5vw, 1.25rem);
+    line-height: 1.5;
+    margin: 0 0 2rem;
+    max-width: 600px;
+    opacity: 0.9;
+  }
+
+  .collection-hero--left .collection-hero__subtitle {
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .collection-hero--center .collection-hero__subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .collection-hero--right .collection-hero__subtitle {
+    margin-left: auto;
+    margin-right: 0;
+  }
+
+  .collection-hero__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 2rem;
+    border-radius: 0.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.3s ease;
+    min-width: 160px;
+    border: 2px solid transparent;
+  }
+
+  /* Button Style Variants */
+  .collection-hero__button--filled {
+    background-color: #000000;
+    color: #ffffff;
+    border: 2px solid #000000;
+  }
+
+  .collection-hero__button--filled:hover {
+    background-color: transparent;
+    color: #000000;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .collection-hero__button--outlined {
+    background-color: transparent;
+    color: #000000;
+    border: 2px solid #000000;
+  }
+
+  .collection-hero__button--outlined:hover {
+    background-color: #000000;
+    color: #ffffff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  .collection-hero__button--text {
+    background-color: transparent;
+    color: #000000;
+    border: none;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .collection-hero__button--text:hover {
+    color: #666666;
+    transform: translateY(-1px);
+    text-decoration: none;
+  }
+
+  .collection-hero--light .collection-hero__title,
+  .collection-hero--light .collection-hero__subtitle {
+    color: var(--text-color-light);
+  }
+
+  .collection-hero--light .collection-hero__button {
+    background-color: var(--button-bg-light);
+    color: var(--button-text-light);
+    border-color: var(--button-bg-light);
+  }
+
+  .collection-hero--light .collection-hero__button:hover {
+    background-color: transparent;
+    color: var(--text-color-light);
+    border-color: var(--button-bg-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(255, 255, 255, 0.2);
+  }
+
+  .collection-hero--dark .collection-hero__title,
+  .collection-hero--dark .collection-hero__subtitle {
+    color: var(--text-color-dark);
+  }
+
+  .collection-hero--dark .collection-hero__button {
+    background-color: var(--button-bg-dark);
+    color: var(--button-text-dark);
+    border-color: var(--button-bg-dark);
+  }
+
+  .collection-hero--dark .collection-hero__button:hover {
+    background-color: transparent;
+    color: var(--text-color-dark);
+    border-color: var(--button-bg-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  }
+
+  @media screen and (max-width: 768px) {
+    .collection-hero {
+      min-height: calc(var(--hero-height, 480px) * 0.8);
+    }
+
+    .collection-hero__content {
+      padding: 1.5rem 0;
+    }
+
+    .collection-hero__container {
+      padding: 0 1rem;
+    }
+
+    .collection-hero__title {
+      margin-bottom: 0.75rem;
+    }
+
+    .collection-hero__subtitle {
+      margin-bottom: 1.5rem;
+    }
+
+    .collection-hero__button {
+      padding: 0.875rem 1.5rem;
+      font-size: 0.875rem;
+      min-width: 140px;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .collection-hero {
+      min-height: calc(var(--hero-height, 480px) * 0.7);
+    }
+
+    .collection-hero__title {
+      font-size: 1.75rem;
+    }
+
+    .collection-hero__subtitle {
+      font-size: 1rem;
+    }
+  }
+{% endstylesheet %}

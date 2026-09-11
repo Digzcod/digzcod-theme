@@ -1,0 +1,93 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "header",
+  "name": "t:general.header",
+  "sections": {
+    "1759379227f5adcc06": {
+      "type": "_blocks",
+      "settings": {}
+    },
+    "header": {
+      "type": "header",
+      "settings": {
+        "header_title_digz": "SM Store",
+        "step_linklist": "main-menu",
+        "full_width_header": true
+      }
+    },
+    "benefit_bar_AjnhFd": {
+      "type": "benefit-bar",
+      "blocks": {
+        "item_Pw8qiE": {
+          "type": "item",
+          "settings": {
+            "icon": "shipping",
+            "text": "Free Shipping",
+            "link": ""
+          }
+        },
+        "item_P6grKq": {
+          "type": "item",
+          "settings": {
+            "icon": "returns",
+            "text": "30-Day Returns",
+            "link": ""
+          }
+        },
+        "item_XJPqCb": {
+          "type": "item",
+          "settings": {
+            "icon": "support",
+            "text": "24/7 Support",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "item_Pw8qiE",
+        "item_P6grKq",
+        "item_XJPqCb"
+      ],
+      "name": "Benefit / Trust Bar",
+      "settings": {
+        "align": "center",
+        "max_width": 1600,
+        "position_top": 72,
+        "z_index": 100,
+        "margin_top": 8,
+        "margin_bottom": 8,
+        "scroll_on_mobile": false,
+        "visible_on_mobile": true,
+        "homepage_only": true,
+        "show_separators": true,
+        "text_color": "#2b2b2b",
+        "accent_color": "#0e7a3d",
+        "bg_color": "#ffffff",
+        "bg_opacity": 100,
+        "blur_strength": 8,
+        "border_color": "#000000",
+        "border_opacity": 10,
+        "separator_color": "#000000",
+        "separator_opacity": 10,
+        "radius": 15,
+        "pad_x": 8,
+        "pad_y": 10,
+        "gap": 14,
+        "shadow": "0 6px 18px rgba(0,0,0,.12)"
+      }
+    }
+  },
+  "order": [
+    "1759379227f5adcc06",
+    "header",
+    "benefit_bar_AjnhFd"
+  ]
+}

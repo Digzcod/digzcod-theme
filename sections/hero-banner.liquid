@@ -1,0 +1,712 @@
+{% comment %} 
+                                        Section: Hero Promo
+                                        Files: 
+                                        - sections/hero-promo.liquid 
+                                        - assets/hero-promo.css 
+                                        - assets/hero-promo.js
+                                        Notes: 
+                                        - No Tailwind; plain CSS for maximum theme compatibility. 
+                                        - Highly customizable via schema settings & blocks. 
+{% endcomment %}
+
+{{ 'hero-banner.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'hero-banner.js' | asset_url }}" defer></script>
+
+{%- assign s = section.settings -%}
+
+<section
+  id="hero-promo-{{ section.id }}"
+  class="hero-promo hero-promo--desktop-position-{{ s.desktop_image_position | default: 'center' }} hero-promo--mobile-position-{{ s.mobile_image_position | default: 'center' }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero-promo"
+  style="
+    --hp-content-max: {{ s.content_max_width }}px;
+    --hp-padding-y: {{ s.padding_y }}px;
+    --hp-padding-x: {{ s.padding_x }}px;
+    --hp-radius: {{ s.corner_radius }}px;
+    --hp-overlay: {{ s.overlay_color }};
+    --hp-overlay-opacity: {{ s.overlay_opacity | divided_by: 100.0 }};
+    --hp-text: {{ s.text_color }};
+    --hp-accent: {{ s.accent_color }};
+    --hp-section-height: {{ s.section_height | default: 70 }}vh;
+    --hp-mobile-section-height: {{ s.mobile_section_height | default: 50 }}vh;
+    --hp-tablet-section-height: {{ s.tablet_section_height | default: 60 }}vh;
+    --hp-heading-size: {{ s.heading_size | default: 3.0 }}rem;
+    --hp-subheading-size: {{ s.subheading_size | default: 1.2 }}rem;
+    --hp-tablet-heading-size: {{ s.tablet_heading_size | default: s.heading_size | default: 2.8 }}rem;
+    --hp-tablet-subheading-size: {{ s.tablet_subheading_size | default: s.subheading_size | default: 1.1 }}rem;
+    --hp-mobile-heading-size: {{ s.mobile_heading_size }}rem;
+    --hp-mobile-subheading-size: {{ s.mobile_subheading_size }}rem;
+    --hp-mobile-padding-y: {{ s.mobile_padding_y }}px;
+    --hp-mobile-padding-x: {{ s.mobile_padding_x }}px;
+    --hp-tablet-padding-y: {{ s.tablet_padding_y | default: s.padding_y }}px;
+    --hp-tablet-padding-x: {{ s.tablet_padding_x | default: s.padding_x }}px;
+    --hp-heading-color: {{ s.heading_color | default: s.text_color }};
+    --hp-subheading-color: {{ s.subheading_color | default: s.text_color }};
+    --hp-body-color: {{ s.body_color | default: s.text_color }};
+    --hp-tablet-heading-color: {{ s.tablet_heading_color | default: s.heading_color | default: s.text_color }};
+    --hp-tablet-subheading-color: {{ s.tablet_subheading_color | default: s.subheading_color | default: s.text_color }};
+    --hp-tablet-body-color: {{ s.tablet_body_color | default: s.body_color | default: s.text_color }};
+    --hp-mobile-heading-color: {{ s.mobile_heading_color | default: s.heading_color | default: s.text_color }};
+    --hp-mobile-subheading-color: {{ s.mobile_subheading_color | default: s.subheading_color | default: s.text_color }};
+    --hp-mobile-body-color: {{ s.mobile_body_color | default: s.body_color | default: s.text_color }};
+  "
+  aria-label="{{ s.heading | escape | default: 'Promotional banner' }}">
+  <div class="hero-promo__media">
+    {%- if s.bg_video != blank -%}
+      <video
+        class="hero-promo__video"
+        autoplay
+        muted
+        loop
+        playsinline
+        {% if s.video_poster != blank %}
+        poster="{{ s.video_poster | image_url: width: 1920 }}"
+        {% endif %}>
+        <source src="{{ s.bg_video | file_url }}" type="video/mp4">
+      </video>
+    {%- else -%}
+      {%- if s.bg_image != blank -%}
+        <div
+          class="hero-promo__background"
+          style="background-image: url('{{ s.bg_image | image_url: width: 1920 }}');"
+          role="img"
+          aria-label="{{ s.bg_image.alt | escape | default: s.heading }}"></div>
+      {%- endif -%}
+
+      {%- if s.mobile_bg_image != blank -%}
+        <div
+          class="hero-promo__background hero-promo__background--mobile"
+          style="background-image: url('{{ s.mobile_bg_image | image_url: width: 1200 }}');"
+          role="img"
+          aria-label="{{ s.mobile_bg_image.alt | escape | default: s.heading }}"></div>
+      {%- endif -%}
+
+      {%- if s.bg_image == blank and s.mobile_bg_image == blank -%}
+        <div class="hero-promo__placeholder" aria-hidden="true"></div>
+      {%- endif -%}
+    {%- endif -%}
+    <div class="hero-promo__overlay" aria-hidden="true"></div>
+  </div>
+
+  <div class="hero-promo__container hero-promo__container--{{ s.layout }}">
+    <div class="hero-promo__content hero-promo__content--{{ s.align }} hero-promo__content--mobile-{{ s.mobile_align }}">
+      {%- if s.kicker != blank -%}
+        <p class="hero-promo__kicker">{{ s.kicker }}</p>
+      {%- endif -%}
+
+      {%- if s.heading != blank -%}
+        <h2 class="hero-promo__heading" style="--hp-heading-size: {{ s.heading_size }}rem;">
+          {{ s.heading }}
+        </h2>
+      {%- endif -%}
+
+      {%- if s.subheading != blank -%}
+        <p class="hero-promo__subheading" style="--hp-subheading-size: {{ s.subheading_size }}rem;">
+          {{ s.subheading }}
+        </p>
+      {%- endif -%}
+
+      {%- if s.body != blank -%}
+        <div class="hero-promo__richtext rte">
+          {{ s.body }}
+        </div>
+    {%- endif -%}
+
+      {%- comment -%} Separate badges and features from buttons for better content flow {%- endcomment -%}
+      {%- assign has_badges_or_features = false -%}
+      {%- for block in section.blocks -%}
+        {%- if block.type == 'badge' or block.type == 'feature' -%}
+          {%- assign has_badges_or_features = true -%}
+          {%- break -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_badges_or_features -%}
+        <div class="hero-promo__extras">
+          {%- for block in section.blocks -%}
+            {%- case block.type -%}
+              {%- when 'badge' -%}
+                {%- assign b = block.settings -%}
+                {%- if b.text != blank -%}
+                  <span class="hp-badge hp-badge--{{ b.variation }}">{{ b.text }}</span>
+                {%- endif -%}
+              {%- when 'feature' -%}
+                {%- assign f = block.settings -%}
+                <div class="hp-feature">
+                  {%- if f.icon != blank -%}
+                    <img
+                      class="hp-feature__icon"
+                      src="{{ f.icon | image_url: width: 64 }}"
+                      alt=""
+                      width="32"
+                      height="32"
+                      loading="lazy">
+                  {%- endif -%}
+                  <div class="hp-feature__text">
+                    <div class="hp-feature__title">{{ f.title }}</div>
+                    {%- if f.caption != blank -%}
+                      <div class="hp-feature__caption">{{ f.caption }}</div>
+                    {%- endif -%}
+                  </div>
+                </div>
+            {%- endcase -%}
+          {%- endfor -%}
+        </div>
+    {%- endif -%}
+
+      {%- comment -%} Buttons as part of content flow {%- endcomment -%}
+      {%- assign button_blocks = section.blocks | where: 'type', 'button' -%}
+      {%- if button_blocks.size > 0 -%}
+        <div class="hero-promo__buttons">
+          {%- for block in button_blocks -%}
+            {%- assign b = block.settings -%}
+            {%- if b.label != blank and b.url != blank -%}
+              <a
+                class="hp-btn hp-btn--{{ b.style }} {% if b.outline %}hp-btn--outline{% endif %}"
+                href="{{ b.url }}"
+                {% if b.style == 'custom' %}
+                style="
+                  --btn-bg: {{ b.button_bg_color }};
+                  --btn-text: {{ b.button_text_color }};
+                  --btn-border: {{ b.button_border_color }};
+                  --btn-border-width: {{ b.button_border_width }}px;
+                  --btn-border-radius: {{ b.button_border_radius }}px;
+                "
+                {% endif %}
+                {% if b.open_new_tab %}
+                target="_blank"
+                rel="noopener noreferrer"
+                {% endif %}>
+                {{ b.label }}
+              </a>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      {%- endif -%}
+    </div>
+  </div>
+
+  {%- if s.enable_scroll_hint -%}
+    <button
+      class="hero-promo__scroll"
+      data-scroll-hint
+      aria-label="{{ 'general.scroll' | t | default: 'Scroll' }}">
+      <span class="hero-promo__scroll-dot" aria-hidden="true"></span>
+    </button>
+  {%- endif -%}
+</section>
+
+{% schema %}
+  {
+    "name": "Hero Banner",
+    "class": "section-hero-promo",
+    "settings": [
+      {
+        "type": "text",
+        "id": "kicker",
+        "label": "Kicker (small label)",
+        "default": "New Arrival"
+      },
+      {
+        "type": "text",
+        "id": "heading",
+        "label": "Heading",
+        "default": "Elevate your everyday."
+      },
+      {
+        "type": "text",
+        "id": "subheading",
+        "label": "Subheading",
+        "default": "Beautiful. Functional. Yours."
+      },
+      {
+        "type": "richtext",
+        "id": "body",
+        "label": "Body",
+        "default": "<p>Crafted with care and designed to last. Explore our latest collection.</p>"
+      }, {
+        "type": "range",
+        "id": "heading_size",
+        "label": "Heading size (rem)",
+        "min": 1.6,
+        "max": 4.0,
+        "step": 0.1,
+        "default": 3.0
+      }, {
+        "type": "range",
+        "id": "subheading_size",
+        "label": "Subheading size (rem)",
+        "min": 1.0,
+        "max": 2.0,
+        "step": 0.1,
+        "default": 1.2
+      }, {
+        "type": "header",
+        "content": "Tablet Settings"
+      }, {
+        "type": "range",
+        "id": "tablet_heading_size",
+        "label": "Tablet heading size (rem)",
+        "min": 1.6,
+        "max": 4.0,
+        "step": 0.1,
+        "default": 2.8,
+        "info": "Font size for tablets (768px - 1024px)"
+      }, {
+        "type": "range",
+        "id": "tablet_subheading_size",
+        "label": "Tablet subheading size (rem)",
+        "min": 1.0,
+        "max": 2.0,
+        "step": 0.1,
+        "default": 1.1,
+        "info": "Font size for tablets (768px - 1024px)"
+      }, {
+        "type": "range",
+        "id": "tablet_padding_y",
+        "label": "Tablet vertical padding (px)",
+        "min": 20,
+        "max": 148,
+        "step": 4,
+        "default": 100,
+        "info": "Padding for tablets (768px - 1024px)"
+      }, {
+        "type": "range",
+        "id": "tablet_padding_x",
+        "label": "Tablet horizontal padding (px)",
+        "min": 16,
+        "max": 60,
+        "step": 2,
+        "default": 20,
+        "info": "Padding for tablets (768px - 1024px)"
+      }, {
+        "type": "header",
+        "content": "Mobile Settings"
+      }, {
+        "type": "range",
+        "id": "mobile_heading_size",
+        "label": "Mobile heading size (rem)",
+        "min": 1.4,
+        "max": 3.0,
+        "step": 0.1,
+        "default": 2.2
+      }, {
+        "type": "range",
+        "id": "mobile_subheading_size",
+        "label": "Mobile subheading size (rem)",
+        "min": 0.9,
+        "max": 1.7,
+        "step": 0.1,
+        "default": 1.1
+      }, {
+        "type": "select",
+        "id": "mobile_align",
+        "label": "Mobile content alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "start",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "end",
+            "label": "Right"
+          }
+        ]
+      }, {
+        "type": "range",
+        "id": "mobile_padding_y",
+        "label": "Mobile vertical padding (px)",
+        "min": 16,
+        "max": 120,
+        "step": 4,
+        "default": 80
+      }, {
+        "type": "range",
+        "id": "mobile_padding_x",
+        "label": "Mobile horizontal padding (px)",
+        "min": 12,
+        "max": 48,
+        "step": 2,
+        "default": 20
+      }, {
+        "type": "header",
+        "content": "Desktop Settings"
+      }, {
+        "type": "range",
+        "id": "section_height",
+        "label": "Section height (vh)",
+        "min": 30,
+        "max": 100,
+        "step": 5,
+        "default": 70,
+        "info": "Controls the height of the hero section on desktop"
+      }, {
+        "type": "range",
+        "id": "tablet_section_height",
+        "label": "Tablet section height (vh)",
+        "min": 30,
+        "max": 100,
+        "step": 5,
+        "default": 60,
+        "info": "Controls the height of the hero section on tablets"
+      }, {
+        "type": "range",
+        "id": "mobile_section_height",
+        "label": "Mobile section height (vh)",
+        "min": 30,
+        "max": 100,
+        "step": 5,
+        "default": 50,
+        "info": "Controls the height of the hero section on mobile"
+      }, {
+        "type": "image_picker",
+        "id": "bg_image",
+        "label": "Background image (desktop)"
+      }, {
+        "type": "image_picker",
+        "id": "mobile_bg_image",
+        "label": "Background image (mobile)"
+      }, {
+        "type": "url",
+        "id": "bg_video",
+        "label": "Background video (mp4 file URL)"
+      }, {
+        "type": "image_picker",
+        "id": "video_poster",
+        "label": "Video poster image (optional)"
+      }, {
+        "type": "select",
+        "id": "desktop_image_position",
+        "label": "Desktop image position",
+        "default": "center",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ],
+        "info": "Controls how the background image is positioned on desktop"
+      }, {
+        "type": "select",
+        "id": "mobile_image_position",
+        "label": "Mobile image position",
+        "default": "center",
+        "options": [
+          {
+            "value": "top",
+            "label": "Top"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "bottom",
+            "label": "Bottom"
+          }
+        ],
+        "info": "Controls how the background image is positioned on mobile"
+      }, {
+        "type": "select",
+        "id": "layout",
+        "label": "Layout",
+        "default": "boxed",
+        "options": [
+          {
+            "value": "boxed",
+            "label": "Boxed"
+          }, {
+            "value": "full",
+            "label": "Full width"
+          }
+        ]
+      }, {
+        "type": "select",
+        "id": "align",
+        "label": "Content alignment",
+        "default": "center",
+        "options": [
+          {
+            "value": "start",
+            "label": "Left"
+          }, {
+            "value": "center",
+            "label": "Center"
+          }, {
+            "value": "end",
+            "label": "Right"
+          }
+        ]
+      }, {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text color",
+        "default": "#ffffff"
+      }, {
+        "type": "header",
+        "content": "Text Colors"
+      }, {
+        "type": "color",
+        "id": "heading_color",
+        "label": "Heading color",
+        "info": "Leave empty to use default text color"
+      }, {
+        "type": "color",
+        "id": "subheading_color",
+        "label": "Subheading color",
+        "info": "Leave empty to use default text color"
+      }, {
+        "type": "color",
+        "id": "body_color",
+        "label": "Body text color",
+        "info": "Leave empty to use default text color"
+      }, {
+        "type": "header",
+        "content": "Tablet Text Colors"
+      }, {
+        "type": "color",
+        "id": "tablet_heading_color",
+        "label": "Tablet heading color",
+        "info": "Leave empty to use desktop heading color"
+      }, {
+        "type": "color",
+        "id": "tablet_subheading_color",
+        "label": "Tablet subheading color",
+        "info": "Leave empty to use desktop subheading color"
+      }, {
+        "type": "color",
+        "id": "tablet_body_color",
+        "label": "Tablet body text color",
+        "info": "Leave empty to use desktop body color"
+      }, {
+        "type": "header",
+        "content": "Mobile Text Colors"
+      }, {
+        "type": "color",
+        "id": "mobile_heading_color",
+        "label": "Mobile heading color",
+        "info": "Leave empty to use desktop heading color"
+      }, {
+        "type": "color",
+        "id": "mobile_subheading_color",
+        "label": "Mobile subheading color",
+        "info": "Leave empty to use desktop subheading color"
+      }, {
+        "type": "color",
+        "id": "mobile_body_color",
+        "label": "Mobile body text color",
+        "info": "Leave empty to use desktop body color"
+      }, {
+        "type": "color",
+        "id": "accent_color",
+        "label": "Accent color",
+        "default": "#ffffff"
+      }, {
+        "type": "color",
+        "id": "overlay_color",
+        "label": "Overlay color",
+        "default": "#000000"
+      }, {
+        "type": "range",
+        "id": "overlay_opacity",
+        "label": "Overlay opacity (%)",
+        "min": 0,
+        "max": 90,
+        "step": 5,
+        "default": 35
+      }, {
+        "type": "range",
+        "id": "content_max_width",
+        "label": "Max content width (px)",
+        "min": 320,
+        "max": 1400,
+        "step": 20,
+        "default": 1040
+      }, {
+        "type": "range",
+        "id": "padding_y",
+        "label": "Vertical padding (px)",
+        "min": 24,
+        "max": 180,
+        "step": 4,
+        "default": 120
+      }, {
+        "type": "range",
+        "id": "padding_x",
+        "label": "Horizontal padding (px)",
+        "min": 16,
+        "max": 80,
+        "step": 2,
+        "default": 24
+      }, {
+        "type": "range",
+        "id": "corner_radius",
+        "label": "Corner radius (px)",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "default": 16
+      }, {
+        "type": "checkbox",
+        "id": "enable_scroll_hint",
+        "label": "Show scroll hint",
+        "default": true
+      }
+    ],
+    "blocks": [
+      {
+        "type": "button",
+        "name": "Button",
+        "limit": 2,
+        "settings": [
+          {
+            "type": "text",
+            "id": "label",
+            "label": "Label",
+            "default": "Shop now"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Link"
+          },
+          {
+            "type": "select",
+            "id": "style",
+            "label": "Style",
+            "default": "primary",
+            "options": [
+              {
+                "value": "primary",
+                "label": "Primary"
+              }, {
+                "value": "secondary",
+                "label": "Secondary"
+              }, {
+                "value": "custom",
+                "label": "Custom"
+              }
+            ]
+          },
+          {
+            "type": "color",
+            "id": "button_bg_color",
+            "label": "Background color",
+            "default": "#000000",
+            "info": "Only applies to custom style"
+          }, {
+            "type": "color",
+            "id": "button_text_color",
+            "label": "Text color",
+            "default": "#ffffff",
+            "info": "Only applies to custom style"
+          }, {
+            "type": "color",
+            "id": "button_border_color",
+            "label": "Border color",
+            "default": "#000000",
+            "info": "Only applies to custom style"
+          }, {
+            "type": "range",
+            "id": "button_border_width",
+            "label": "Border width (px)",
+            "min": 0,
+            "max": 5,
+            "step": 1,
+            "default": 2,
+            "info": "Only applies to custom style"
+          }, {
+            "type": "range",
+            "id": "button_border_radius",
+            "label": "Border radius (px)",
+            "min": 0,
+            "max": 25,
+            "step": 1,
+            "default": 6,
+            "info": "Only applies to custom style"
+          }, {
+            "type": "checkbox",
+            "id": "outline",
+            "label": "Outline",
+            "default": false
+          }, {
+            "type": "checkbox",
+            "id": "open_new_tab",
+            "label": "Open in new tab",
+            "default": false
+          }
+        ]
+      }, {
+        "type": "badge",
+        "name": "Badge",
+        "limit": 3,
+        "settings": [
+          {
+            "type": "text",
+            "id": "text",
+            "label": "Text",
+            "default": "Limited"
+          }, {
+            "type": "select",
+            "id": "variation",
+            "label": "Variation",
+            "default": "soft",
+            "options": [
+              {
+                "value": "soft",
+                "label": "Soft"
+              }, {
+                "value": "solid",
+                "label": "Solid"
+              }
+            ]
+          }
+        ]
+      }, {
+        "type": "feature",
+        "name": "Feature",
+        "limit": 3,
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "icon",
+            "label": "Icon (optional)"
+          }, {
+            "type": "text",
+            "id": "title",
+            "label": "Title",
+            "default": "Free Shipping"
+          }, {
+            "type": "text",
+            "id": "caption",
+            "label": "Caption",
+            "default": "Orders over ₱2,000"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Hero Banner",
+        "category": "Banner",
+        "blocks": [
+          {
+            "type": "badge"
+          }, {
+            "type": "button"
+          }, {
+            "type": "button"
+          }
+        ]
+      }
+    ]
+  }
+{% endschema %}
