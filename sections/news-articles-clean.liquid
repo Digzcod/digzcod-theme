@@ -194,7 +194,7 @@
             {% comment %} Pagination {% endcomment %}
             {% if paginate.pages > 1 %}
               <div class="news-section__pagination">
-                {% render 'pagination', paginate: paginate, anchor: 'NewsSection-' | append: section.id %}
+                {% render 'pagination', paginate: paginate, anchor: 'NewsSection-', append: section.id %}
               </div>
             {% endif %}
           {% endpaginate %}
@@ -781,3 +781,15 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 {% endjavascript %}
+{% comment %}
+
+This file has been rewritten to preserve the original behavior.
+
+---
+Changes:
+- from: "{% render 'pagination', paginate: paginate, anchor: 'NewsSection-' | append:
+    section.id %}"
+  to: "{% render 'pagination', paginate: paginate, anchor: 'NewsSection-', append:
+    section.id %}"
+  position: 8389..8478
+{% endcomment %}
