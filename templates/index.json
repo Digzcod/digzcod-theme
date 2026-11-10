@@ -412,6 +412,7 @@
         "lifestyle_5",
         "lifestyle_6"
       ],
+      "disabled": true,
       "settings": {
         "heading": "Follow Our Lifestyle",
         "instagram_handle": "yourbrand",
@@ -433,30 +434,6 @@
         "image_spacing": 1,
         "color_scheme": "1"
       }
-    },
-    "email_newsletter": {
-      "type": "email-newsletter",
-      "settings": {
-        "heading": "Stay in the Loop",
-        "subheading": "<p>Subscribe to our newsletter for exclusive offers, wellness tips, and product updates.</p>",
-        "discount_text": "Get 10% off your first order",
-        "placeholder_text": "Enter your email address",
-        "button_text": "Subscribe",
-        "success_message": "Thanks for subscribing! Check your email for your discount code.",
-        "privacy_text": "<p>We respect your privacy. Unsubscribe at any time.</p>",
-        "layout_style": "centered",
-        "content_alignment": "left",
-        "form_width": 100,
-        "input_style": "inline",
-        "button_style": "gradient",
-        "enable_background_image": true,
-        "background_image": "shopify://shop_images/story-defuser.png",
-        "overlay_opacity": 30,
-        "padding_top": 4,
-        "padding_bottom": 4,
-        "content_width": 80,
-        "color_scheme": "2"
-      }
     }
   },
   "order": [
@@ -467,7 +444,6 @@
     "trust_icons",
     "customer_testimonials",
     "blog_preview",
-    "instagram_gallery",
-    "email_newsletter"
+    "instagram_gallery"
   ]
 }

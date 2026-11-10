@@ -14,7 +14,7 @@
     "footer": {
       "type": "footer",
       "settings": {
-        "show_newsletter": true,
+        "show_newsletter": false,
         "newsletter_heading": "Stay in the loop",
         "newsletter_text": "Subscribe to our newsletter for the latest updates, exclusive offers, and wellness tips.",
         "show_social_icons": true,
